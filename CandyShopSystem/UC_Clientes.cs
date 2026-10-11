@@ -16,6 +16,9 @@ namespace CandyShopSystem
         private BindingSource bindingSourceClientes = new BindingSource();
         private DataTable tablaClientes = new DataTable();
 
+        //estructura de datos: cola de atención de clientes
+        private Queue<ECliente> colaAtencionClientes = new Queue<ECliente>();
+
         private Image imgVer;
         private Image imgEditar;
         private Image imgEliminar;
@@ -38,7 +41,7 @@ namespace CandyShopSystem
 
         private void InicializarIconosAcciones()
         {
-            // Colores: Azul suave para ver, lila para editar y rosa/rojo suave para eliminar
+            // Colores: Azul suave para ver, lila para editar y rosa para eliminar
             imgVer = IconChar.BookOpen.ToBitmap(Color.FromArgb(100, 130, 200), 18);
             imgEditar = IconChar.PenToSquare.ToBitmap(Color.FromArgb(140, 110, 230), 18);
             imgEliminar = IconChar.TrashAlt.ToBitmap(Color.FromArgb(235, 95, 115), 18);
@@ -84,6 +87,14 @@ namespace CandyShopSystem
             {
                 btnN.Click -= btnNuevoCliente_Click;
                 btnN.Click += btnNuevoCliente_Click;
+            }
+
+            // Vincular el botón de atender cliente en la cola
+            Control btnAtender = BuscarControlPorNombre(this, "btnAtenderCliente") ?? BuscarControlPorNombre(this, "btnAtender");
+            if (btnAtender != null)
+            {
+                btnAtender.Click -= btnAtenderCliente_Click;
+                btnAtender.Click += btnAtenderCliente_Click;
             }
 
             if (dgvClientes != null)
@@ -154,6 +165,13 @@ namespace CandyShopSystem
             {
                 List<ECliente> lista = await Task.Run(() => objClienteBL.ObtenerClientes());
                 tablaClientes = ConvertirListaADataTable(lista);
+
+                // Cargar también la Cola de Atención con los clientes recuperados
+                colaAtencionClientes.Clear();
+                foreach (var c in lista)
+                {
+                    colaAtencionClientes.Enqueue(c);
+                }
 
                 bindingSourceClientes.DataSource = tablaClientes;
                 dgvClientes.DataSource = null;
@@ -371,7 +389,7 @@ namespace CandyShopSystem
                     }
                 }
             }
-            // para elimina r cliente
+            // para eliminar cliente
             else if (colName == "colEliminar")
             {
                 var result = MessageBox.Show(
@@ -407,6 +425,26 @@ namespace CandyShopSystem
                 {
                     await CargarTablaClientesAsync();
                 }
+            }
+        }
+
+        //estructura de datos: cola de atención de clientes 
+        private void btnAtenderCliente_Click(object sender, EventArgs e)
+        {
+            if (colaAtencionClientes != null && colaAtencionClientes.Count > 0)
+            {
+                //saca al cliente que está al frente de la cola para atenderlo
+                ECliente clienteParaAtender = colaAtencionClientes.Dequeue();
+
+                //abre el formulario de atención al cliente con el cliente que se acaba de sacar de la cola
+                using (FormAtenderCliente modal = new FormAtenderCliente(clienteParaAtender, colaAtencionClientes.Count))
+                {
+                    modal.ShowDialog();
+                }
+            }
+            else
+            {
+                MessageBox.Show("No hay clientes pendientes en la cola de atención.", "Cola Vacía", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 

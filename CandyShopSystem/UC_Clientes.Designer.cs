@@ -33,10 +33,11 @@
             this.btnNuevoCliente = new RJCodeAdvance.RJControls.RJButton();
             this.lblGestiondeclientes = new System.Windows.Forms.Label();
             this.txtBuscar = new RJCodeAdvance.RJControls.RJTextBox();
-            this.btnBuscar = new FontAwesome.Sharp.IconButton();
             this.pnlFooter = new System.Windows.Forms.Panel();
             this.pnlGrid = new System.Windows.Forms.Panel();
             this.dgvClientes = new Zuby.ADGV.AdvancedDataGridView();
+            this.btnAtenderCliente = new RJCodeAdvance.RJControls.RJButton();
+            this.btnBuscar = new FontAwesome.Sharp.IconButton();
             this.pnlHeaderClientes.SuspendLayout();
             this.pnlFooter.SuspendLayout();
             this.pnlGrid.SuspendLayout();
@@ -117,27 +118,10 @@
             this.txtBuscar.Texts = "";
             this.txtBuscar.UnderlinedStyle = false;
             // 
-            // btnBuscar
-            // 
-            this.btnBuscar.BackColor = System.Drawing.Color.White;
-            this.btnBuscar.FlatAppearance.BorderSize = 0;
-            this.btnBuscar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnBuscar.IconChar = FontAwesome.Sharp.IconChar.MagnifyingGlass;
-            this.btnBuscar.IconColor = System.Drawing.Color.Black;
-            this.btnBuscar.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            this.btnBuscar.IconSize = 18;
-            this.btnBuscar.Location = new System.Drawing.Point(570, 29);
-            this.btnBuscar.Name = "btnBuscar";
-            this.btnBuscar.Size = new System.Drawing.Size(110, 35);
-            this.btnBuscar.TabIndex = 4;
-            this.btnBuscar.Text = "Buscar";
-            this.btnBuscar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
-            this.btnBuscar.UseVisualStyleBackColor = false;
-            this.btnBuscar.Click += new System.EventHandler(this.btnBuscar_Click);
-            // 
             // pnlFooter
             // 
             this.pnlFooter.BackColor = System.Drawing.Color.White;
+            this.pnlFooter.Controls.Add(this.btnAtenderCliente);
             this.pnlFooter.Controls.Add(this.txtBuscar);
             this.pnlFooter.Controls.Add(this.btnBuscar);
             this.pnlFooter.Dock = System.Windows.Forms.DockStyle.Top;
@@ -173,6 +157,43 @@
             this.dgvClientes.SortStringChangedInvokeBeforeDatasourceUpdate = true;
             this.dgvClientes.TabIndex = 0;
             // 
+            // btnAtenderCliente
+            // 
+            this.btnAtenderCliente.BackColor = System.Drawing.Color.MediumSlateBlue;
+            this.btnAtenderCliente.BackgroundColor = System.Drawing.Color.MediumSlateBlue;
+            this.btnAtenderCliente.BorderColor = System.Drawing.Color.PaleVioletRed;
+            this.btnAtenderCliente.BorderRadius = 8;
+            this.btnAtenderCliente.BorderSize = 0;
+            this.btnAtenderCliente.FlatAppearance.BorderSize = 0;
+            this.btnAtenderCliente.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnAtenderCliente.ForeColor = System.Drawing.Color.White;
+            this.btnAtenderCliente.Location = new System.Drawing.Point(1120, 23);
+            this.btnAtenderCliente.Name = "btnAtenderCliente";
+            this.btnAtenderCliente.Size = new System.Drawing.Size(150, 40);
+            this.btnAtenderCliente.TabIndex = 7;
+            this.btnAtenderCliente.Text = "AtenderCliente";
+            this.btnAtenderCliente.TextColor = System.Drawing.Color.White;
+            this.btnAtenderCliente.UseVisualStyleBackColor = false;
+            this.btnAtenderCliente.Click += new System.EventHandler(this.btnAtenderCliente_Click);
+            // 
+            // btnBuscar
+            // 
+            this.btnBuscar.BackColor = System.Drawing.Color.White;
+            this.btnBuscar.FlatAppearance.BorderSize = 0;
+            this.btnBuscar.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnBuscar.IconChar = FontAwesome.Sharp.IconChar.MagnifyingGlass;
+            this.btnBuscar.IconColor = System.Drawing.Color.Black;
+            this.btnBuscar.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            this.btnBuscar.IconSize = 18;
+            this.btnBuscar.Location = new System.Drawing.Point(570, 29);
+            this.btnBuscar.Name = "btnBuscar";
+            this.btnBuscar.Size = new System.Drawing.Size(110, 35);
+            this.btnBuscar.TabIndex = 4;
+            this.btnBuscar.Text = "Buscar";
+            this.btnBuscar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
+            this.btnBuscar.UseVisualStyleBackColor = false;
+            this.btnBuscar.Click += new System.EventHandler(this.btnBuscar_Click);
+            // 
             // UC_Clientes
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -204,5 +225,6 @@
         private RJCodeAdvance.RJControls.RJTextBox txtBuscar;
         private Zuby.ADGV.AdvancedDataGridView dgvClientes;
         private System.Windows.Forms.Label label1;
+        private RJCodeAdvance.RJControls.RJButton btnAtenderCliente;
     }
 }

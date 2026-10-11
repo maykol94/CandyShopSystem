@@ -176,6 +176,12 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FormAtenderCliente.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormAtenderCliente.Designer.cs">
+      <DependentUpon>FormAtenderCliente.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormClienteModal.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -244,6 +250,9 @@
     <Compile Include="UC_Stock.Designer.cs">
       <DependentUpon>UC_Stock.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="FormAtenderCliente.resx">
+      <DependentUpon>FormAtenderCliente.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormClienteModal.resx">
       <DependentUpon>FormClienteModal.cs</DependentUpon>
     </EmbeddedResource>

@@ -216,7 +216,7 @@
             "Pulperia",
             "Escuela",
             "Particular"});
-            this.cmbTipoCliente.Location = new System.Drawing.Point(128, 400);
+            this.cmbTipoCliente.Location = new System.Drawing.Point(155, 400);
             this.cmbTipoCliente.Name = "cmbTipoCliente";
             this.cmbTipoCliente.Size = new System.Drawing.Size(168, 24);
             this.cmbTipoCliente.TabIndex = 20;
@@ -227,9 +227,9 @@
             this.btnCancelar.IconColor = System.Drawing.Color.Black;
             this.btnCancelar.IconFont = FontAwesome.Sharp.IconFont.Auto;
             this.btnCancelar.IconSize = 15;
-            this.btnCancelar.Location = new System.Drawing.Point(288, 440);
+            this.btnCancelar.Location = new System.Drawing.Point(211, 459);
             this.btnCancelar.Name = "btnCancelar";
-            this.btnCancelar.Size = new System.Drawing.Size(108, 28);
+            this.btnCancelar.Size = new System.Drawing.Size(137, 38);
             this.btnCancelar.TabIndex = 21;
             this.btnCancelar.Text = "Cancelar";
             this.btnCancelar.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -244,9 +244,9 @@
             this.btnGuardar.IconColor = System.Drawing.Color.Black;
             this.btnGuardar.IconFont = FontAwesome.Sharp.IconFont.Auto;
             this.btnGuardar.IconSize = 15;
-            this.btnGuardar.Location = new System.Drawing.Point(411, 440);
+            this.btnGuardar.Location = new System.Drawing.Point(382, 459);
             this.btnGuardar.Name = "btnGuardar";
-            this.btnGuardar.Size = new System.Drawing.Size(108, 28);
+            this.btnGuardar.Size = new System.Drawing.Size(137, 38);
             this.btnGuardar.TabIndex = 22;
             this.btnGuardar.Text = "Guardar";
             this.btnGuardar.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
