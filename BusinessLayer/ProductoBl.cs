@@ -20,7 +20,7 @@ namespace BusinessLayer
 
             if (string.IsNullOrWhiteSpace(obj.NombreProducto))
             {
-                mensaje = "Debe ingresar el nombre de la golosina o producto.";
+                mensaje = "Debe ingresar el nombre del dulce o producto.";
                 return false;
             }
 

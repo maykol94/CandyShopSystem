@@ -58,9 +58,11 @@ namespace CandyShopSystem
         //boton de iniciar swsion
         private void btnIngresar_Click(object sender, EventArgs e)
         {
-            string usuarioVal = txtUsuario != null ? ObtenerTexto(txtUsuario) : "";
-            string claveVal = txtClave != null ? ObtenerTexto(txtClave) : "";
+            //obtiene lso textos de las librerias rj y la normal
+            string usuarioVal = ObtenerTexto(txtUsuario);
+            string claveVal = ObtenerTexto(txtClave);
 
+            //se calidan lso campos q los campos no esten vacios
             if (string.IsNullOrWhiteSpace(usuarioVal))
             {
                 MessageBox.Show("Por favor, ingrese su nombre de usuario.", "Campo requerido", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -73,26 +75,63 @@ namespace CandyShopSystem
                 return;
             }
 
-            string mensaje = string.Empty;
-            EUsuario usuarioValidado = objUsuarioBL.ValidarUsuario(usuarioVal, claveVal, out mensaje);
-
-            if (usuarioValidado != null)
+            //sin esta vaina no podes entrar al sistema si no tenes la base de datos conectada, asi q para pruebas se puede usar admin / 123
+            if (usuarioVal.Equals("admin", StringComparison.OrdinalIgnoreCase) && claveVal == "123")
             {
-                //aqui se guarda la sesion del usuario q ha iniciado sesion
-                UsuarioSesion = usuarioValidado;
+                //crea un usuario simulado
+                UsuarioSesion = new EUsuario
+                {
+                    IdUsuario = 1,
+                    NombreUsuario = "Administrador",
+                    IdRol = 1
+                };
 
-                MessageBox.Show($"¡Bienvenido/a {usuarioValidado.NombreUsuario}!", "Acceso Concedido", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Bienvenido", "Acceso Concedido", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                //esto es para q no quede abierot el login de inicio si tocan el link de registrarsr
+                // Ocultar Login y mostrar el FormPrincipal
                 this.Hide();
-                FormPrincipal formPrincipal = new FormPrincipal();
-                formPrincipal.FormClosed += (s, args) => this.Close();
-                formPrincipal.Show();
+                FormPrincipal mainForm = new FormPrincipal();
+                mainForm.FormClosed += (s, args) => this.Close();
+                mainForm.Show();
+                return;
             }
-            else
+
+            //si no es admin / 123, intenta con la base de datos cuando esten los procedimientos
+            try
             {
-                MessageBox.Show(mensaje, "Error de Inicio de Sesión", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                string mensaje = string.Empty;
+                EUsuario usuarioValidado = objUsuarioBL.ValidarUsuario(usuarioVal, claveVal, out mensaje);
+
+                if (usuarioValidado != null)
+                {
+                    UsuarioSesion = usuarioValidado;
+                    MessageBox.Show($"¡Bienvenido/a {usuarioValidado.NombreUsuario}!", "Acceso Concedido", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                    this.Hide();
+                    FormPrincipal mainForm = new FormPrincipal();
+                    mainForm.FormClosed += (s, args) => this.Close();
+                    mainForm.Show();
+                    return;
+                }
             }
+            catch
+            {
+                // Si no hay conexion a la base de datos
+            }
+
+  
+            MessageBox.Show("Usuario o contrasena incorrectos.\n\nPara ingresar usa lo sig\nUsuario: admin\nContrasena: 123", "Error de acceso", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+        // para q se vea el form principal cuando se loguea
+        private void AbrirFormPrincipal()
+        {
+            this.Hide();
+            FormPrincipal formPrincipal = new FormPrincipal();
+
+            formPrincipal.FormClosed += (s, args) => this.Close();
+
+            formPrincipal.Show();
         }
 
         //boton para ver la contrasena
@@ -144,5 +183,7 @@ namespace CandyShopSystem
 
             return ctrl.Text.Trim();
         }
+
+
     }
 }
