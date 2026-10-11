@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="BusinessLayer/BusinessLayer.csproj" Id="aefdb548-756d-45b2-a487-df0474b82771" />
+  <Project Path="CandyShopSystem/PresentationLayer.csproj" Id="526befee-1d4b-4372-adfb-7f8cc5e48ccd" />
+  <Project Path="DataAccesLayer/DataAccesLayer.csproj" Id="db39354a-58ff-4f3b-a713-94b19a395227" />
+  <Project Path="EntityLayer/EntityLayer.csproj" Id="0ef549b6-7693-4d99-9762-386e45912416" />
+</Solution>
