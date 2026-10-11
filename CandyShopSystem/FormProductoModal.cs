@@ -73,7 +73,7 @@ namespace CandyShopSystem
                     }
                     else
                     {
-                        // Soporte si usas un ComboBox personalizado (ej. RJComboBox)
+                        //para funcione dependidendo de la librebria 
                         var propDS = cmb.GetType().GetProperty("DataSource");
                         var propDM = cmb.GetType().GetProperty("DisplayMember");
                         var propVM = cmb.GetType().GetProperty("ValueMember");
@@ -113,25 +113,6 @@ namespace CandyShopSystem
                 }
             }
 
-            EProducto nuevoProducto = new EProducto
-            {
-                NombreProducto = nombre,
-                IdCategoria = idCategoria
-            };
-
-            string mensaje = string.Empty;
-            bool resultado = objProductoBL.RegistrarProducto(nuevoProducto, out mensaje);
-
-            if (resultado)
-            {
-                MessageBox.Show("¡Producto registrado con éxito!", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                this.DialogResult = DialogResult.OK;
-                this.Close();
-            }
-            else
-            {
-                MessageBox.Show("No se pudo guardar el producto: " + mensaje, "Error al guardar", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
         }
 
         private void btnCancelar_Click(object sender, EventArgs e)
@@ -140,11 +121,11 @@ namespace CandyShopSystem
             this.Close();
         }
 
-        // --- MÉTODOS AUXILIARES PARA BÚSQUEDA DINÁMICA DE CONTROLES ---
+        // métodos auxiliares para buscar controles por nombre o tipo, y obtener texto de controles
 
         private Control ObtenerControlCategoria(Control contenedor)
         {
-            // Busca por nombres comunes que le pudiste dar en el diseñador
+            // Busca por nombres comunes
             string[] nombresPosibles = { "cmbCategoria", "cboCategoria", "cbCategoria", "cmbCat", "cboCat" };
             foreach (string nombre in nombresPosibles)
             {
@@ -152,7 +133,7 @@ namespace CandyShopSystem
                 if (ctrl != null) return ctrl;
             }
 
-            // Si no encuentra por nombre, busca cualquier ComboBox dentro del formulario
+            // Si no encuentra por nombre, se busca por tipo
             return BuscarControlPorTipo<ComboBox>(contenedor);
         }
 

@@ -44,7 +44,7 @@ namespace CandyShopSystem
             dgvUltimasVentas.Rows.Add("3", "Pulpería El Rosario", "C$ 420.00", "Hoy, 12:00 PM");
             dgvUltimasVentas.Rows.Add("4", "Distribuidora San José", "C$ 1,200.00", "Hoy, 01:45 PM");
 
-            // Formato visual de la tabla (Estilo Pastel)
+            // Formato visual de la tabla
             dgvUltimasVentas.EnableHeadersVisualStyles = false;
             dgvUltimasVentas.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(255, 235, 243);
             dgvUltimasVentas.ColumnHeadersDefaultCellStyle.ForeColor = Color.FromArgb(70, 70, 70);

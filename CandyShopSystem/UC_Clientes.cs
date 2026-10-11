@@ -41,7 +41,7 @@ namespace CandyShopSystem
 
         private void InicializarIconosAcciones()
         {
-            // Colores: Azul suave para ver, lila para editar y rosa para eliminar
+            // Colores del icono: Ver (Azul), Editar (Morado), Eliminar (Rojo)
             imgVer = IconChar.BookOpen.ToBitmap(Color.FromArgb(100, 130, 200), 18);
             imgEditar = IconChar.PenToSquare.ToBitmap(Color.FromArgb(140, 110, 230), 18);
             imgEliminar = IconChar.TrashAlt.ToBitmap(Color.FromArgb(235, 95, 115), 18);

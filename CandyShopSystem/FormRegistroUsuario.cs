@@ -11,7 +11,7 @@ namespace CandyShopSystem
     {
         private UsuarioBL objUsuarioBL = new UsuarioBL();
 
-        //importante: estas variables controlan la visibilidad de las contraseñas en los campos de texto
+        //para alternar entre mostrar y ocultar la contraseña
         private bool mostrarPassword = false;
         private bool mostrarConfirmarPassword = false;
 
@@ -37,7 +37,6 @@ namespace CandyShopSystem
             this.StartPosition = FormStartPosition.CenterScreen;
             this.BackColor = Color.FromArgb(243, 244, 248);
 
-            // Asegurar que ambas cajas de texto inicien ocultando la clave
             if (txtClave != null) txtClave.PasswordChar = true;
             if (txtConfirmarClave != null) txtConfirmarClave.PasswordChar = true;
         }

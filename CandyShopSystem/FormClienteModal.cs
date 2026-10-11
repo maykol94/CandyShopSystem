@@ -50,7 +50,7 @@ namespace CandyShopSystem
                 }
             }
 
-            // Si se abre desde el botón VER (👁️), deshabilitar controles y ocultar botón de guardar
+            //si se abre en modo solo lectura, bloquear los campos de texto y el combo box, y cambiar el texto del botón cancelar a "Cerrar"
             if (esModoSoloLectura)
             {
                 BloquearModoDetalles();
@@ -107,9 +107,9 @@ namespace CandyShopSystem
 
             string texto = descripcion.Trim().ToLower();
 
-            if (texto.Contains("pulper")) return 1;    // 1: Pulpería
-            if (texto.Contains("escuela")) return 2;   // 2: Escuela
-            if (texto.Contains("particular")) return 3;// 3: Particular
+            if (texto.Contains("pulper")) return 1;    
+            if (texto.Contains("escuela")) return 2;   
+            if (texto.Contains("particular")) return 3;
 
             return 0;
         }

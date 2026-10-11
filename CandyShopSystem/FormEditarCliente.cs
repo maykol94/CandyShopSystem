@@ -78,9 +78,9 @@ namespace CandyShopSystem
 
             string texto = descripcion.Trim().ToLower();
 
-            if (texto.Contains("pulper")) return 1;    // 1: Pulpería
-            if (texto.Contains("escuela")) return 2;   // 2: Escuela
-            if (texto.Contains("particular")) return 3;// 3: Particular
+            if (texto.Contains("pulper")) return 1;    
+            if (texto.Contains("escuela")) return 2;   
+            if (texto.Contains("particular")) return 3;
 
             return 0;
         }
@@ -111,7 +111,7 @@ namespace CandyShopSystem
 
                 int idTipoCliente = ObtenerIdTipoCliente(tipoClienteTexto);
 
-                // CAPTURAR EL ID REAL: Garantiza que sea el ID original para que SQL Server ejecute el UPDATE
+                //para capturar el id del cliente que se esta editando, si es nuevo sera 0
                 int idClienteReal = (clienteEdicion != null) ? clienteEdicion.IdCliente : 0;
 
                 ECliente oCliente = new ECliente()
@@ -127,7 +127,7 @@ namespace CandyShopSystem
 
                 string mensaje = string.Empty;
 
-                // Si tu capa ClienteBL tiene ModificarCliente úsalo, de lo contrario RegistrarCliente (debe procesar UPDATE si IdCliente > 0)
+                //si la capa negocio retorna true, significa que se registro correctamente, si retorna false, significa que hubo un error 
                 bool resultado = objClienteBL.RegistrarCliente(oCliente, out mensaje);
 
                 if (resultado)

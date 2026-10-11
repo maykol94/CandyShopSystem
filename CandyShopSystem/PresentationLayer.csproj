@@ -212,6 +212,12 @@
     <Compile Include="FormProductoModal.Designer.cs">
       <DependentUpon>FormProductoModal.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormRegistrarPedido.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormRegistrarPedido.Designer.cs">
+      <DependentUpon>FormRegistrarPedido.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormRegistroUsuario.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -231,6 +237,12 @@
     </Compile>
     <Compile Include="UC_Dashboard.Designer.cs">
       <DependentUpon>UC_Dashboard.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UC_Pedidos.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UC_Pedidos.Designer.cs">
+      <DependentUpon>UC_Pedidos.cs</DependentUpon>
     </Compile>
     <Compile Include="uc_Productos.cs">
       <SubType>UserControl</SubType>
@@ -268,6 +280,9 @@
     <EmbeddedResource Include="FormProductoModal.resx">
       <DependentUpon>FormProductoModal.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FormRegistrarPedido.resx">
+      <DependentUpon>FormRegistrarPedido.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormRegistroUsuario.resx">
       <DependentUpon>FormRegistroUsuario.cs</DependentUpon>
     </EmbeddedResource>
@@ -286,6 +301,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UC_Dashboard.resx">
       <DependentUpon>UC_Dashboard.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UC_Pedidos.resx">
+      <DependentUpon>UC_Pedidos.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="uc_Productos.resx">
       <DependentUpon>uc_Productos.cs</DependentUpon>

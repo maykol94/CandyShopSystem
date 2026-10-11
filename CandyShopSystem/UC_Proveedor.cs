@@ -16,7 +16,6 @@ namespace CandyShopSystem
         private BindingSource bindingSourceProveedores = new BindingSource();
         private DataTable tablaProveedores = new DataTable();
 
-        // Imágenes pre-renderizadas de FontAwesome para máximo rendimiento visual
         private Image imgVer;
         private Image imgEditar;
         private Image imgEliminar;
@@ -39,7 +38,6 @@ namespace CandyShopSystem
 
         private void InicializarIconosAcciones()
         {
-            // Colores e iconos de FontAwesome idénticos a la plantilla de referencia
             imgVer = IconChar.BookOpen.ToBitmap(Color.FromArgb(123, 136, 198), 18);
             imgEditar = IconChar.PenToSquare.ToBitmap(Color.FromArgb(140, 138, 214), 18);
             imgEliminar = IconChar.TrashAlt.ToBitmap(Color.FromArgb(152, 148, 168), 18);
@@ -49,19 +47,17 @@ namespace CandyShopSystem
         {
             AjustarAnchoAContenedor();
             VincularEventos();
-            await CargarTablaProveedoresAsync();
+       
         }
 
         private void VincularEventos()
         {
-            // 1. Vincular caja de texto de búsqueda
             Control txtB = BuscarControlPorNombre(this, "txtBuscar");
             if (txtB != null)
             {
                 txtB.TextChanged -= FiltrarTabla;
                 txtB.TextChanged += FiltrarTabla;
 
-                // Soporte si se trata de un control personalizado (ej. RJTextBox)
                 var propTexts = txtB.GetType().GetProperty("Texts");
                 if (propTexts != null)
                 {
@@ -75,7 +71,7 @@ namespace CandyShopSystem
                 }
             }
 
-            // 2. Botón Buscar
+         
             Control btnB = BuscarControlPorNombre(this, "btnBuscar");
             if (btnB != null)
             {
@@ -83,7 +79,6 @@ namespace CandyShopSystem
                 btnB.Click += btnBuscar_Click;
             }
 
-            // 3. Botón Nuevo Proveedor
             Control btnN = BuscarControlPorNombre(this, "btnNuevoProveedor") ?? BuscarControlPorNombre(this, "btnNuevo");
             if (btnN != null)
             {
@@ -91,7 +86,6 @@ namespace CandyShopSystem
                 btnN.Click += btnNuevoProveedor_Click;
             }
 
-            // 4. Eventos del AdvancedDataGridView
             if (dgvProveedores != null)
             {
                 dgvProveedores.FilterStringChanged -= dgvProveedores_FilterStringChanged;
@@ -154,25 +148,7 @@ namespace CandyShopSystem
             dgvProveedores.RowTemplate.Height = 38;
         }
 
-        public async Task CargarTablaProveedoresAsync()
-        {
-            try
-            {
-                List<EProveedor> lista = await Task.Run(() => objProveedorBL.ObtenerProveedores());
-                tablaProveedores = ConvertirListaADataTable(lista);
-
-                bindingSourceProveedores.DataSource = tablaProveedores;
-                dgvProveedores.DataSource = null;
-                dgvProveedores.DataSource = bindingSourceProveedores;
-
-                AjustarColumnasGrid();
-                AgregarColumnasAcciones();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error al cargar proveedores: " + ex.Message, "Error BD", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
+      
 
         private DataTable ConvertirListaADataTable(List<EProveedor> lista)
         {
@@ -252,7 +228,6 @@ namespace CandyShopSystem
             }
         }
 
-        // --- DIBUJO PERSONALIZADO DE ICONOS FONTAWESOME ---
 
         private void dgvProveedores_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
         {
@@ -280,7 +255,6 @@ namespace CandyShopSystem
             }
         }
 
-        // --- FILTRADO SEGURO DE LA CAJA DE TEXTO ---
 
         private void dgvProveedores_FilterStringChanged(object sender, EventArgs e)
         {
@@ -354,7 +328,7 @@ namespace CandyShopSystem
             // Abre modal para registrar proveedor
         }
 
-        // --- MÉTODOS AUXILIARES ---
+  
 
         private Control BuscarControlPorNombre(Control contenedor, string nombre)
         {
