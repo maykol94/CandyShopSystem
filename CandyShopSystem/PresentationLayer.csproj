@@ -176,6 +176,24 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FormEditarProducto.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormEditarProducto.Designer.cs">
+      <DependentUpon>FormEditarProducto.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormEditarProveedor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormEditarProveedor.Designer.cs">
+      <DependentUpon>FormEditarProveedor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormRegistrarProveedor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormRegistrarProveedor.Designer.cs">
+      <DependentUpon>FormRegistrarProveedor.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormAtenderCliente.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -206,11 +224,11 @@
     <Compile Include="FormPrincipal.Designer.cs">
       <DependentUpon>FormPrincipal.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormProductoModal.cs">
+    <Compile Include="FormRegistrarProducto.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FormProductoModal.Designer.cs">
-      <DependentUpon>FormProductoModal.cs</DependentUpon>
+    <Compile Include="FormRegistrarProducto.Designer.cs">
+      <DependentUpon>FormRegistrarProducto.cs</DependentUpon>
     </Compile>
     <Compile Include="FormRegistrarPedido.cs">
       <SubType>Form</SubType>
@@ -244,11 +262,11 @@
     <Compile Include="UC_Pedidos.Designer.cs">
       <DependentUpon>UC_Pedidos.cs</DependentUpon>
     </Compile>
-    <Compile Include="uc_Productos.cs">
+    <Compile Include="UC_Productos.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="uc_Productos.Designer.cs">
-      <DependentUpon>uc_Productos.cs</DependentUpon>
+    <Compile Include="UC_Productos.Designer.cs">
+      <DependentUpon>UC_Productos.cs</DependentUpon>
     </Compile>
     <Compile Include="UC_Proveedor.cs">
       <SubType>UserControl</SubType>
@@ -271,17 +289,26 @@
     <EmbeddedResource Include="FormEditarCliente.resx">
       <DependentUpon>FormEditarCliente.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FormEditarProducto.resx">
+      <DependentUpon>FormEditarProducto.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormEditarProveedor.resx">
+      <DependentUpon>FormEditarProveedor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormLogin.resx">
       <DependentUpon>FormLogin.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormPrincipal.resx">
       <DependentUpon>FormPrincipal.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="FormProductoModal.resx">
-      <DependentUpon>FormProductoModal.cs</DependentUpon>
+    <EmbeddedResource Include="FormRegistrarProducto.resx">
+      <DependentUpon>FormRegistrarProducto.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormRegistrarPedido.resx">
       <DependentUpon>FormRegistrarPedido.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormRegistrarProveedor.resx">
+      <DependentUpon>FormRegistrarProveedor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormRegistroUsuario.resx">
       <DependentUpon>FormRegistroUsuario.cs</DependentUpon>
@@ -305,8 +332,8 @@
     <EmbeddedResource Include="UC_Pedidos.resx">
       <DependentUpon>UC_Pedidos.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="uc_Productos.resx">
-      <DependentUpon>uc_Productos.cs</DependentUpon>
+    <EmbeddedResource Include="UC_Productos.resx">
+      <DependentUpon>UC_Productos.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UC_Proveedor.resx">
       <DependentUpon>UC_Proveedor.cs</DependentUpon>

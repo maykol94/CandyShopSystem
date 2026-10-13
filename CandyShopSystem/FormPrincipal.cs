@@ -1,5 +1,6 @@
 ﻿using BusinessLayer;
 using EntityLayer;
+using PresentationLayer;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -18,19 +19,16 @@ namespace CandyShopSystem
         {
             InitializeComponent();
 
-            // Fuerza a que la ventana inicie maximizada en pantalla grande
             this.WindowState = FormWindowState.Maximized;
         }
 
         private void FormPrincipal_Load(object sender, EventArgs e)
         {
-            // Forzar el estado Maximized y procesar el layout antes de cargar el control user
             this.WindowState = FormWindowState.Maximized;
             this.PerformLayout();
 
             EstilarBotonesMenu();
 
-            //cargar el UserControl de Dashboard al iniciar la aplicación
             if (btnDashboard != null)
             {
                 ResaltarBotonActivo(btnDashboard);
@@ -44,20 +42,15 @@ namespace CandyShopSystem
             this.panelContenedor.SuspendLayout();
             this.panelContenedor.Controls.Clear();
 
-            //Anular cualquier restricción de AutoSize que traiga el UserControl
             controlHijo.AutoSize = false;
 
-            //furza ek tamano del usercontrol
             controlHijo.Size = this.panelContenedor.ClientSize;
 
-            //establece el Dock del UserControl para que ocupe todo el espacio del panel contenedor
             controlHijo.Dock = DockStyle.Fill;
 
-            //para que el UserControl se muestre correctamente, se agrega al panel contenedor y se trae al frente
             this.panelContenedor.Controls.Add(controlHijo);
             controlHijo.BringToFront();
 
-            //recalcula el layout del panel contenedor y del UserControl para que se muestren correctamente
             this.panelContenedor.ResumeLayout(true);
             this.panelContenedor.PerformLayout();
             controlHijo.PerformLayout();
@@ -116,31 +109,29 @@ namespace CandyShopSystem
         private void btnProductos_Click(object sender, EventArgs e)
         {
             ResaltarBotonActivo((Button)sender);
-            AbrirControlEnContenedor(new uc_Productos());
+            AbrirControlEnContenedor(new UC_Productos());
         }
 
 
-        // Instancia del UserControl en la parte superior de la clase
-        private UC_Proveedor ucProveedor;
+        //para el usercontrol de proveedores
+        UC_Proveedores ucProveedores = new UC_Proveedores();
 
-        // Método de navegación del botón Proveedores
         private void btnProveedores_Click(object sender, EventArgs e)
         {
-            // Crear la instancia de UC_Proveedor si no existe
-            if (ucProveedor == null)
+            // Crear la instancia de UC_Proveedores si no existe
+            if (ucProveedores == null)
             {
-                ucProveedor = new UC_Proveedor();
-                ucProveedor.Dock = DockStyle.Fill;
+                ucProveedores = new UC_Proveedores();
+                ucProveedores.Dock = DockStyle.Fill;
             }
 
-            // Buscar automáticamente el panel contenedor central
             Control contenedor = BuscarPanelContenedor(this);
 
             if (contenedor != null)
             {
                 contenedor.Controls.Clear();
-                contenedor.Controls.Add(ucProveedor);
-                ucProveedor.BringToFront();
+                contenedor.Controls.Add(ucProveedores);
+                ucProveedores.BringToFront();
             }
             else
             {
@@ -154,10 +145,8 @@ namespace CandyShopSystem
             //limpia el panel contenedor antes de agregar el UserControl de Stock
             panelContenedor.Controls.Clear();
 
-            //estancia del UserControl de Stock
             UC_Stock ucStock = new UC_Stock();
 
-            //para q el usercontrol ocupe todo el espacio del panel contenedor
             ucStock.Dock = DockStyle.Fill;
 
             //para q no quede atras de otros controles
@@ -165,7 +154,7 @@ namespace CandyShopSystem
             ucStock.BringToFront();
         }
 
-        // Método auxiliar para localizar el panel principal
+        //para localizar el panel contenedor en FormPrincipal
         private Control BuscarPanelContenedor(Control padre)
         {
             string[] nombresPosibles = { "pnlContenedor", "panelContenedor", "pnlDesktop", "pnlContent", "pnlCentral", "panel1" };
@@ -187,14 +176,11 @@ namespace CandyShopSystem
 
         private void btnPedidos_Click(object sender, EventArgs e)
         {
-            //instancia del UserControl de Pedidos
             UC_Pedidos ucPedidos = new UC_Pedidos();
             ucPedidos.Dock = DockStyle.Fill;
 
-            //Limpiar el panel contenedor donde se cargan las pantallas
             panelContenedor.Controls.Clear();
 
-            //Agregar el nuevo UserControl y mostrarlo
             panelContenedor.Controls.Add(ucPedidos);
             ucPedidos.BringToFront();
             ucPedidos.Show();

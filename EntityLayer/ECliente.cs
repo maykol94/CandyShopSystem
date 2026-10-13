@@ -15,7 +15,7 @@ namespace EntityLayer
 
         public string TipoCliente { get; set; }
 
-        //sin esto se pone fresa el UC_Cliente
+        //para mostrar el tipo de cliente en la vista
         public string TipoClienteDescripcion
         {
             get => !string.IsNullOrEmpty(TipoCliente) ? TipoCliente : "";

@@ -239,9 +239,9 @@
             this.btnGuardar.IconColor = System.Drawing.Color.White;
             this.btnGuardar.IconFont = FontAwesome.Sharp.IconFont.Auto;
             this.btnGuardar.IconSize = 15;
-            this.btnGuardar.Location = new System.Drawing.Point(443, 441);
+            this.btnGuardar.Location = new System.Drawing.Point(423, 441);
             this.btnGuardar.Name = "btnGuardar";
-            this.btnGuardar.Size = new System.Drawing.Size(108, 40);
+            this.btnGuardar.Size = new System.Drawing.Size(142, 40);
             this.btnGuardar.TabIndex = 16;
             this.btnGuardar.Text = "Guardar";
             this.btnGuardar.TextAlign = System.Drawing.ContentAlignment.MiddleRight;

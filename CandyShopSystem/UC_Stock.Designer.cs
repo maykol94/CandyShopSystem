@@ -32,11 +32,12 @@
             this.pnlHeader = new System.Windows.Forms.Panel();
             this.label2 = new System.Windows.Forms.Label();
             this.pnlHeader2 = new System.Windows.Forms.Panel();
-            this.rjTextBox1 = new RJCodeAdvance.RJControls.RJTextBox();
-            this.dgvStock = new Zuby.ADGV.AdvancedDataGridView();
+            this.txtBuscarInventario = new RJCodeAdvance.RJControls.RJTextBox();
+            this.pnlAlerta = new System.Windows.Forms.Panel();
+            this.dgvInventario = new Zuby.ADGV.AdvancedDataGridView();
             this.pnlHeader.SuspendLayout();
             this.pnlHeader2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvStock)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvInventario)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -73,57 +74,66 @@
             // pnlHeader2
             // 
             this.pnlHeader2.BackColor = System.Drawing.Color.White;
-            this.pnlHeader2.Controls.Add(this.rjTextBox1);
+            this.pnlHeader2.Controls.Add(this.txtBuscarInventario);
             this.pnlHeader2.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlHeader2.Location = new System.Drawing.Point(0, 79);
             this.pnlHeader2.Name = "pnlHeader2";
-            this.pnlHeader2.Size = new System.Drawing.Size(1280, 60);
+            this.pnlHeader2.Size = new System.Drawing.Size(1280, 52);
             this.pnlHeader2.TabIndex = 2;
             // 
-            // rjTextBox1
+            // txtBuscarInventario
             // 
-            this.rjTextBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(245)))), ((int)(((byte)(249)))));
-            this.rjTextBox1.BorderColor = System.Drawing.Color.MediumSlateBlue;
-            this.rjTextBox1.BorderFocusColor = System.Drawing.Color.HotPink;
-            this.rjTextBox1.BorderRadius = 15;
-            this.rjTextBox1.BorderSize = 2;
-            this.rjTextBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rjTextBox1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.rjTextBox1.Location = new System.Drawing.Point(9, 21);
-            this.rjTextBox1.Margin = new System.Windows.Forms.Padding(4);
-            this.rjTextBox1.Multiline = false;
-            this.rjTextBox1.Name = "rjTextBox1";
-            this.rjTextBox1.Padding = new System.Windows.Forms.Padding(10, 7, 10, 7);
-            this.rjTextBox1.PasswordChar = false;
-            this.rjTextBox1.PlaceholderColor = System.Drawing.Color.DarkGray;
-            this.rjTextBox1.PlaceholderText = "Buscar en inventario";
-            this.rjTextBox1.Size = new System.Drawing.Size(279, 35);
-            this.rjTextBox1.TabIndex = 0;
-            this.rjTextBox1.Texts = "";
-            this.rjTextBox1.UnderlinedStyle = false;
+            this.txtBuscarInventario.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(245)))), ((int)(((byte)(249)))));
+            this.txtBuscarInventario.BorderColor = System.Drawing.Color.MediumSlateBlue;
+            this.txtBuscarInventario.BorderFocusColor = System.Drawing.Color.HotPink;
+            this.txtBuscarInventario.BorderRadius = 15;
+            this.txtBuscarInventario.BorderSize = 2;
+            this.txtBuscarInventario.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtBuscarInventario.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.txtBuscarInventario.Location = new System.Drawing.Point(9, 7);
+            this.txtBuscarInventario.Margin = new System.Windows.Forms.Padding(4);
+            this.txtBuscarInventario.Multiline = false;
+            this.txtBuscarInventario.Name = "txtBuscarInventario";
+            this.txtBuscarInventario.Padding = new System.Windows.Forms.Padding(10, 7, 10, 7);
+            this.txtBuscarInventario.PasswordChar = false;
+            this.txtBuscarInventario.PlaceholderColor = System.Drawing.Color.DarkGray;
+            this.txtBuscarInventario.PlaceholderText = "Buscar en inventario";
+            this.txtBuscarInventario.Size = new System.Drawing.Size(473, 35);
+            this.txtBuscarInventario.TabIndex = 0;
+            this.txtBuscarInventario.Texts = "";
+            this.txtBuscarInventario.UnderlinedStyle = false;
             // 
-            // dgvStock
+            // pnlAlerta
             // 
-            this.dgvStock.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvStock.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvStock.FilterAndSortEnabled = true;
-            this.dgvStock.FilterStringChangedInvokeBeforeDatasourceUpdate = true;
-            this.dgvStock.Location = new System.Drawing.Point(0, 139);
-            this.dgvStock.MaxFilterButtonImageHeight = 23;
-            this.dgvStock.Name = "dgvStock";
-            this.dgvStock.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.dgvStock.RowHeadersWidth = 51;
-            this.dgvStock.RowTemplate.Height = 24;
-            this.dgvStock.Size = new System.Drawing.Size(1280, 581);
-            this.dgvStock.SortStringChangedInvokeBeforeDatasourceUpdate = true;
-            this.dgvStock.TabIndex = 3;
+            this.pnlAlerta.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pnlAlerta.Location = new System.Drawing.Point(0, 131);
+            this.pnlAlerta.Name = "pnlAlerta";
+            this.pnlAlerta.Size = new System.Drawing.Size(1280, 50);
+            this.pnlAlerta.TabIndex = 3;
+            // 
+            // dgvInventario
+            // 
+            this.dgvInventario.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvInventario.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvInventario.FilterAndSortEnabled = true;
+            this.dgvInventario.FilterStringChangedInvokeBeforeDatasourceUpdate = true;
+            this.dgvInventario.Location = new System.Drawing.Point(0, 181);
+            this.dgvInventario.MaxFilterButtonImageHeight = 23;
+            this.dgvInventario.Name = "dgvInventario";
+            this.dgvInventario.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.dgvInventario.RowHeadersWidth = 51;
+            this.dgvInventario.RowTemplate.Height = 24;
+            this.dgvInventario.Size = new System.Drawing.Size(1280, 539);
+            this.dgvInventario.SortStringChangedInvokeBeforeDatasourceUpdate = true;
+            this.dgvInventario.TabIndex = 4;
             // 
             // UC_Stock
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(245)))), ((int)(((byte)(249)))));
-            this.Controls.Add(this.dgvStock);
+            this.Controls.Add(this.dgvInventario);
+            this.Controls.Add(this.pnlAlerta);
             this.Controls.Add(this.pnlHeader2);
             this.Controls.Add(this.pnlHeader);
             this.Name = "UC_Stock";
@@ -131,7 +141,7 @@
             this.pnlHeader.ResumeLayout(false);
             this.pnlHeader.PerformLayout();
             this.pnlHeader2.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dgvStock)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvInventario)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -142,7 +152,8 @@
         private System.Windows.Forms.Panel pnlHeader;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Panel pnlHeader2;
-        private RJCodeAdvance.RJControls.RJTextBox rjTextBox1;
-        private Zuby.ADGV.AdvancedDataGridView dgvStock;
+        private RJCodeAdvance.RJControls.RJTextBox txtBuscarInventario;
+        private System.Windows.Forms.Panel pnlAlerta;
+        private Zuby.ADGV.AdvancedDataGridView dgvInventario;
     }
 }

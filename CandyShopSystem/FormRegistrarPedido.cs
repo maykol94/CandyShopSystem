@@ -14,120 +14,111 @@ namespace CandyShopSystem
         public FormRegistrarPedido()
         {
             InitializeComponent();
-            this.StartPosition = FormStartPosition.CenterParent;
-            this.FormBorderStyle = FormBorderStyle.FixedDialog;
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
 
-            CargarComboEstados();
+            this.StartPosition = FormStartPosition.CenterParent;
+
+            CargarEstados();
         }
 
-        private void CargarComboEstados()
+        private void CargarEstados()
         {
-            DataTable dtEstados = new DataTable();
-            dtEstados.Columns.Add("IdEstado", typeof(int));
-            dtEstados.Columns.Add("NombreEstado", typeof(string));
-
-            dtEstados.Rows.Add(13, "Pendiente");
-            dtEstados.Rows.Add(14, "En ruta");
-            dtEstados.Rows.Add(15, "Entregado");
-
-            ComboBox cb = BuscarControlPorNombre(this, "cmbEstado") as ComboBox
-                       ?? BuscarControlPorNombre(this, "cboEstado") as ComboBox;
-
-            if (cb != null)
+            Control cboEstadoCtrl = BuscarControlPorNombre(this, "cboEstado") ?? BuscarControlPorNombre(this, "cmbEstado");
+            if (cboEstadoCtrl is ComboBox cmb)
             {
-                cb.DataSource = dtEstados;
-                cb.DisplayMember = "NombreEstado";
-                cb.ValueMember = "IdEstado";
-                cb.SelectedValue = 13;
+                DataTable dtEstado = new DataTable();
+                dtEstado.Columns.Add("id_estado", typeof(int));
+                dtEstado.Columns.Add("descripcion", typeof(string));
+
+                dtEstado.Rows.Add(13, "Pendiente");
+                dtEstado.Rows.Add(14, "En ruta");
+
+                cmb.DataSource = dtEstado;
+                cmb.DisplayMember = "descripcion";
+                cmb.ValueMember = "id_estado";
+                cmb.SelectedValue = 13;
             }
         }
 
         private void btnGuardar_Click(object sender, EventArgs e)
         {
-            //extrae el numero de factura
-            Control txtFacturaCtrl = BuscarControlPorNombre(this, "txtFactura")
-                                  ?? BuscarControlPorNombre(this, "txtNFactura")
-                                  ?? BuscarControlPorNombre(this, "txtNumFactura")
-                                  ?? BuscarControlPorNombre(this, "txtFacturaModal");
+            Control txtFacturaCtrl = BuscarControlPorNombre(this, "txtIdFactura") ?? BuscarControlPorNombre(this, "txtFactura") ?? BuscarControlPorNombre(this, "txtNFactura");
+            Control txtFechaCtrl = BuscarControlPorNombre(this, "txtFechaEntrega") ?? BuscarControlPorNombre(this, "txtFecha") ?? BuscarControlPorNombre(this, "dtpFechaEntrega");
+            Control txtClienteCtrl = BuscarControlPorNombre(this, "txtCliente") ?? BuscarControlPorNombre(this, "txtNombreCliente");
+            Control txtDireccionCtrl = BuscarControlPorNombre(this, "txtDireccionAdicional") ?? BuscarControlPorNombre(this, "txtDireccion") ?? BuscarControlPorNombre(this, "txtDir");
+            Control cboEstadoCtrl = BuscarControlPorNombre(this, "cboEstado") ?? BuscarControlPorNombre(this, "cmbEstado");
 
-            string textoFactura = ExtraerTextoDeControl(txtFacturaCtrl);
+            string idFacturaTexto = ExtraerTexto(txtFacturaCtrl);
+            string fechaTexto = ExtraerTexto(txtFechaCtrl);
+            string cliente = ExtraerTexto(txtClienteCtrl);
+            string direccionSolo = ExtraerTexto(txtDireccionCtrl);
 
-            if (string.IsNullOrWhiteSpace(textoFactura))
+            int idEstado = 13;
+            if (cboEstadoCtrl is ComboBox cmb && cmb.SelectedValue != null)
             {
-                foreach (Control c in this.Controls)
-                {
-                    if (c.Name.ToLower().Contains("factura") || c.Name.ToLower().Contains("nfactura"))
-                    {
-                        textoFactura = ExtraerTextoDeControl(c);
-                        if (!string.IsNullOrWhiteSpace(textoFactura)) break;
-                    }
-                }
+                idEstado = Convert.ToInt32(cmb.SelectedValue);
             }
 
-            if (!int.TryParse(textoFactura, out int idFactura) || idFactura <= 0)
+            //sevalida el numero de factura
+            if (!int.TryParse(idFacturaTexto, out int idFactura))
             {
-                MessageBox.Show($"No se pudo leer el número de factura ingresado ('{textoFactura}'). Por favor ingrese un número entero válido.",
-                                "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Ingrese un número de factura válido.", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            //extraer datos de los controles de la ventana
-            Control txtClienteCtrl = BuscarControlPorNombre(this, "txtCliente");
-            Control txtDireccionCtrl = BuscarControlPorNombre(this, "txtDireccion");
-            Control txtFechaCtrl = BuscarControlPorNombre(this, "txtFechaEntrega")
-                                ?? BuscarControlPorNombre(this, "dtpFechaEntrega")
-                                ?? BuscarControlPorNombre(this, "txtFecha");
-
-            ComboBox cmbEstadoCtrl = BuscarControlPorNombre(this, "cmbEstado") as ComboBox
-                                  ?? BuscarControlPorNombre(this, "cboEstado") as ComboBox;
-
-            string clienteText = ExtraerTextoDeControl(txtClienteCtrl);
-            string direccionText = ExtraerTextoDeControl(txtDireccionCtrl);
-            string direccionCliente = $"{clienteText} - {direccionText}".Trim(' ', '-');
-
-            if (string.IsNullOrWhiteSpace(direccionCliente))
+            //se valida la fecha de entrega
+            string fechaEntregaFormateada = string.Empty;
+            if (DateTime.TryParse(fechaTexto, out DateTime fechaValida))
             {
-                MessageBox.Show("Por favor ingrese la dirección o el cliente.", "Validación", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                fechaEntregaFormateada = fechaValida.ToString("yyyy-MM-dd");
+            }
+            else
+            {
+                MessageBox.Show("Ingrese una fecha válida en el formato (yyyy-MM-dd).", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            //se valida q la fecha ingresada sea válida y se convierte a formato yyyy-MM-dd
-            string textoFecha = ExtraerTextoDeControl(txtFechaCtrl);
-
-            if (!DateTime.TryParse(textoFecha, out DateTime fechaConvertida))
+            //valida la dirección de entrega y el cliente
+            if (string.IsNullOrWhiteSpace(direccionSolo) && string.IsNullOrWhiteSpace(cliente))
             {
-                MessageBox.Show($"La fecha ingresada ('{textoFecha}') no es válida. Por favor ingrese una fecha válida (Ej. 2026-09-23).",
-                                "Fecha Inválida", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Ingrese el cliente o la dirección de entrega.", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            string fechaEntregaFormateada = fechaConvertida.ToString("yyyy-MM-dd");
+            //conecta las 2 txtbox en un solo string para guardar en la base de datos
+            string direccionCompleta = string.Empty;
+            if (!string.IsNullOrWhiteSpace(cliente) && !string.IsNullOrWhiteSpace(direccionSolo))
+            {
+                direccionCompleta = $"{cliente} - {direccionSolo}";
+            }
+            else if (!string.IsNullOrWhiteSpace(cliente))
+            {
+                direccionCompleta = cliente;
+            }
+            else
+            {
+                direccionCompleta = direccionSolo;
+            }
 
-            //se crea un objeto EPedido con los datos extraídos y validados
             EPedido nuevoPedido = new EPedido
             {
                 IdFactura = idFactura,
                 FechaEntrega = fechaEntregaFormateada,
-                DireccionAdicional = direccionCliente,
-                IdEstado = cmbEstadoCtrl != null && cmbEstadoCtrl.SelectedValue != null ? Convert.ToInt32(cmbEstadoCtrl.SelectedValue) : 13
+                DireccionAdicional = direccionCompleta,
+                IdEstado = idEstado
             };
 
-            //con esto se guardará el pedido en la base de datos y se mostrará un mensaje de éxito o error según corresponda
             string mensaje = string.Empty;
             bool exito = objPedidoBl.RegistrarPedido(nuevoPedido, out mensaje);
 
             if (exito)
             {
-                MessageBox.Show($"¡Pedido #{nuevoPedido.IdPedido} registrado con éxito asociado a la Factura #{idFactura}!",
-                                "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("¡Pedido registrado correctamente!", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 this.DialogResult = DialogResult.OK;
                 this.Close();
             }
             else
             {
-                MessageBox.Show("Error al guardar pedido en BD: " + mensaje, "Error BD", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Error al registrar pedido: " + mensaje, "Error BD", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -137,17 +128,15 @@ namespace CandyShopSystem
             this.Close();
         }
 
-        //metodos seguros para extraer texto de controles y buscar controles por nombre
-        private string ExtraerTextoDeControl(Control ctrl)
+        private string ExtraerTexto(Control ctrl)
         {
             if (ctrl == null) return string.Empty;
 
-            if (ctrl.Controls.Count > 0)
+            var propTexts = ctrl.GetType().GetProperty("Texts");
+            if (propTexts != null)
             {
-                foreach (Control subCtrl in ctrl.Controls)
-                {
-                    if (subCtrl is TextBox tbSub) return tbSub.Text.Trim();
-                }
+                string val = propTexts.GetValue(ctrl, null) as string;
+                if (!string.IsNullOrWhiteSpace(val)) return val.Trim();
             }
 
             return ctrl.Text.Trim();

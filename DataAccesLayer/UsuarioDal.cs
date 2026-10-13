@@ -8,7 +8,7 @@ namespace DataAccesLayer
 {
     public class UsuarioDAL
     {
-        // Método para validacion para el inicio de sesion
+        //validar usuario y contraseña para iniciar sesión, usando un procedimiento almacenado
         public EUsuario ValidarUsuario(string usuario, string clave, out string mensaje)
         {
             EUsuario oUsuario = null;

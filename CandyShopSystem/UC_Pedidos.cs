@@ -234,8 +234,10 @@ namespace CandyShopSystem
         {
             using (FormRegistrarPedido frm = new FormRegistrarPedido())
             {
-                frm.ShowDialog();
-                await CargarPedidosDesdeBDAsync();
+                if (frm.ShowDialog() == DialogResult.OK)
+                {
+                    await CargarPedidosDesdeBDAsync();
+                }
             }
         }
 
@@ -251,11 +253,11 @@ namespace CandyShopSystem
                 if (despachadoBD)
                 {
                     MessageBox.Show(
-                        $"=== PEDIDO DESPACHADO (FIFO) ===\n\n" +
-                        $"N° Pedido: #{pedidoAtendido.IdPedido}\n" +
-                        $"N° Factura: #{pedidoAtendido.IdFactura}\n" +
+                        $"Pedido Despachado\n\n" +
+                        $"N Pedido: #{pedidoAtendido.IdPedido}\n" +
+                        $"N Factura: #{pedidoAtendido.IdFactura}\n" +
                         $"Dirección: {pedidoAtendido.DireccionAdicional}\n\n" +
-                        $"Quedan {colaPedidos.Count} pedido(s) pendientes en cola.",
+                        $"Quedan {colaPedidos.Count} pedidos pendientes en cola.",
                         "Éxito al Despachar",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Information

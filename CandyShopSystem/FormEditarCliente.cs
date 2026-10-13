@@ -127,7 +127,7 @@ namespace CandyShopSystem
 
                 string mensaje = string.Empty;
 
-                //si la capa negocio retorna true, significa que se registro correctamente, si retorna false, significa que hubo un error 
+                // Llamar al método para registrar o actualizar el cliente
                 bool resultado = objClienteBL.RegistrarCliente(oCliente, out mensaje);
 
                 if (resultado)

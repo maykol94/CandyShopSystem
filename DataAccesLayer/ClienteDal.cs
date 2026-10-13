@@ -9,7 +9,6 @@ namespace DataAccesLayer
 {
     public class ClienteDAL
     {
-        //obtiene la lista de clientes desde la base de datos usando un procedimiento almacenado
         public List<ECliente> ObtenerClientes()
         {
             List<ECliente> lista = new List<ECliente>();
@@ -19,7 +18,7 @@ namespace DataAccesLayer
                 try
                 {
                     SqlCommand cmd = new SqlCommand("sp_ObtenerClientes", oconexion);
-                    cmd.CommandType = CommandType.StoredProcedure; // Indica que se usará un procedimiento almacenado
+                    cmd.CommandType = CommandType.StoredProcedure;
 
                     oconexion.Open();
                     using (SqlDataReader dr = cmd.ExecuteReader())
@@ -59,7 +58,7 @@ namespace DataAccesLayer
                 try
                 {
                     SqlCommand cmd = new SqlCommand("sp_GuardarCliente", oconexion);
-                    cmd.CommandType = CommandType.StoredProcedure; // Indica que se usará un procedimiento almacenado
+                    cmd.CommandType = CommandType.StoredProcedure; // Indica que se usa un procedimiento almacenado
 
                     //estos son los parametros que se van a enviar al procedimiento almacenado
                     cmd.Parameters.AddWithValue("@IdCliente", obj.IdCliente);

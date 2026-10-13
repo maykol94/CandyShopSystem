@@ -7,20 +7,20 @@ using System.Windows.Forms;
 using BusinessLayer;
 using EntityLayer;
 using FontAwesome.Sharp;
+using CandyShopSystem;
 
-namespace CandyShopSystem
+namespace PresentationLayer
 {
-    public partial class UC_Proveedor : UserControl
+    public partial class UC_Proveedores : UserControl
     {
-        private ProveedorBL objProveedorBL = new ProveedorBL();
+        private ProveedorBl objProveedorBl = new ProveedorBl();
         private BindingSource bindingSourceProveedores = new BindingSource();
         private DataTable tablaProveedores = new DataTable();
 
-        private Image imgVer;
         private Image imgEditar;
         private Image imgEliminar;
 
-        public UC_Proveedor()
+        public UC_Proveedores()
         {
             InitializeComponent();
             this.BackColor = Color.FromArgb(248, 249, 253);
@@ -32,27 +32,26 @@ namespace CandyShopSystem
             InicializarIconosAcciones();
             EstilarGrid();
 
-            this.Load += UC_Proveedor_Load;
-            this.Resize += UC_Proveedor_Resize;
+            this.Load += UC_Proveedores_Load;
+            this.Resize += UC_Proveedores_Resize;
         }
 
         private void InicializarIconosAcciones()
         {
-            imgVer = IconChar.BookOpen.ToBitmap(Color.FromArgb(123, 136, 198), 18);
-            imgEditar = IconChar.PenToSquare.ToBitmap(Color.FromArgb(140, 138, 214), 18);
-            imgEliminar = IconChar.TrashAlt.ToBitmap(Color.FromArgb(152, 148, 168), 18);
+            imgEditar = IconChar.PenToSquare.ToBitmap(Color.FromArgb(140, 110, 230), 18);
+            imgEliminar = IconChar.TrashAlt.ToBitmap(Color.FromArgb(235, 95, 115), 18);
         }
 
-        private async void UC_Proveedor_Load(object sender, EventArgs e)
+        private async void UC_Proveedores_Load(object sender, EventArgs e)
         {
             AjustarAnchoAContenedor();
             VincularEventos();
-       
+            await CargarTablaProveedoresAsync();
         }
 
         private void VincularEventos()
         {
-            Control txtB = BuscarControlPorNombre(this, "txtBuscar");
+            Control txtB = BuscarControlPorNombre(this, "txtBuscarProveedor") ?? BuscarControlPorNombre(this, "txtBuscar");
             if (txtB != null)
             {
                 txtB.TextChanged -= FiltrarTabla;
@@ -71,8 +70,7 @@ namespace CandyShopSystem
                 }
             }
 
-         
-            Control btnB = BuscarControlPorNombre(this, "btnBuscar");
+            Control btnB = BuscarControlPorNombre(this, "btnBuscarProveedor") ?? BuscarControlPorNombre(this, "btnBuscar");
             if (btnB != null)
             {
                 btnB.Click -= btnBuscar_Click;
@@ -86,23 +84,18 @@ namespace CandyShopSystem
                 btnN.Click += btnNuevoProveedor_Click;
             }
 
-            if (dgvProveedores != null)
+            Control dgvCtrl = BuscarControlPorNombre(this, "dgvProveedores") ?? BuscarControlPorNombre(this, "dgvData");
+            if (dgvCtrl is DataGridView dgvGrid)
             {
-                dgvProveedores.FilterStringChanged -= dgvProveedores_FilterStringChanged;
-                dgvProveedores.FilterStringChanged += dgvProveedores_FilterStringChanged;
+                dgvGrid.CellContentClick -= dgvProveedores_CellContentClick;
+                dgvGrid.CellContentClick += dgvProveedores_CellContentClick;
 
-                dgvProveedores.SortStringChanged -= dgvProveedores_SortStringChanged;
-                dgvProveedores.SortStringChanged += dgvProveedores_SortStringChanged;
-
-                dgvProveedores.CellContentClick -= dgvProveedores_CellContentClick;
-                dgvProveedores.CellContentClick += dgvProveedores_CellContentClick;
-
-                dgvProveedores.CellPainting -= dgvProveedores_CellPainting;
-                dgvProveedores.CellPainting += dgvProveedores_CellPainting;
+                dgvGrid.CellPainting -= dgvProveedores_CellPainting;
+                dgvGrid.CellPainting += dgvProveedores_CellPainting;
             }
         }
 
-        private void UC_Proveedor_Resize(object sender, EventArgs e)
+        private void UC_Proveedores_Resize(object sender, EventArgs e)
         {
             AjustarAnchoAContenedor();
         }
@@ -118,37 +111,62 @@ namespace CandyShopSystem
 
         private void EstilarGrid()
         {
-            if (dgvProveedores == null) return;
+            Control dgvCtrl = BuscarControlPorNombre(this, "dgvProveedores") ?? BuscarControlPorNombre(this, "dgvData");
+            if (dgvCtrl is DataGridView dgv)
+            {
+                dgv.BackgroundColor = Color.White;
+                dgv.BorderStyle = BorderStyle.None;
+                dgv.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
+                dgv.GridColor = Color.FromArgb(245, 240, 243);
+                dgv.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
+                dgv.ReadOnly = true;
 
-            dgvProveedores.BackgroundColor = Color.White;
-            dgvProveedores.BorderStyle = BorderStyle.None;
-            dgvProveedores.CellBorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
-            dgvProveedores.GridColor = Color.FromArgb(240, 240, 245);
-            dgvProveedores.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            dgvProveedores.ReadOnly = true;
+                dgv.RowHeadersVisible = false;
+                dgv.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+                dgv.Dock = DockStyle.Fill;
 
-            dgvProveedores.RowHeadersVisible = false;
-            dgvProveedores.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
-            dgvProveedores.Dock = DockStyle.Fill;
+                dgv.EnableHeadersVisualStyles = false;
+                dgv.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
+                dgv.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(253, 242, 244);
+                dgv.ColumnHeadersDefaultCellStyle.ForeColor = Color.FromArgb(190, 46, 95);
+                dgv.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
+                dgv.ColumnHeadersHeight = 42;
 
-            dgvProveedores.EnableHeadersVisualStyles = false;
-            dgvProveedores.ColumnHeadersBorderStyle = DataGridViewHeaderBorderStyle.None;
-            dgvProveedores.ColumnHeadersDefaultCellStyle.BackColor = Color.FromArgb(245, 245, 250);
-            dgvProveedores.ColumnHeadersDefaultCellStyle.ForeColor = Color.FromArgb(100, 100, 120);
-            dgvProveedores.ColumnHeadersDefaultCellStyle.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
-            dgvProveedores.ColumnHeadersHeight = 42;
+                dgv.ColumnHeadersDefaultCellStyle.Padding = new Padding(8, 0, 0, 0);
+                dgv.DefaultCellStyle.Padding = new Padding(8, 0, 0, 0);
 
-            dgvProveedores.ColumnHeadersDefaultCellStyle.Padding = new Padding(8, 0, 0, 0);
-            dgvProveedores.DefaultCellStyle.Padding = new Padding(8, 0, 0, 0);
-
-            dgvProveedores.DefaultCellStyle.SelectionBackColor = Color.FromArgb(242, 235, 255);
-            dgvProveedores.DefaultCellStyle.SelectionForeColor = Color.FromArgb(112, 18, 206);
-            dgvProveedores.DefaultCellStyle.ForeColor = Color.FromArgb(70, 70, 80);
-            dgvProveedores.DefaultCellStyle.Font = new Font("Segoe UI", 9.5F);
-            dgvProveedores.RowTemplate.Height = 38;
+                dgv.DefaultCellStyle.SelectionBackColor = Color.FromArgb(254, 226, 233);
+                dgv.DefaultCellStyle.SelectionForeColor = Color.FromArgb(190, 46, 95);
+                dgv.DefaultCellStyle.ForeColor = Color.FromArgb(70, 70, 80);
+                dgv.DefaultCellStyle.Font = new Font("Segoe UI", 9.5F);
+                dgv.RowTemplate.Height = 38;
+            }
         }
 
-      
+        public async Task CargarTablaProveedoresAsync()
+        {
+            try
+            {
+                List<EProveedor> lista = await Task.Run(() => objProveedorBl.ObtenerProveedores());
+                tablaProveedores = ConvertirListaADataTable(lista);
+
+                bindingSourceProveedores.DataSource = tablaProveedores;
+
+                Control dgvCtrl = BuscarControlPorNombre(this, "dgvProveedores") ?? BuscarControlPorNombre(this, "dgvData");
+                if (dgvCtrl is DataGridView dgv)
+                {
+                    dgv.DataSource = null;
+                    dgv.DataSource = bindingSourceProveedores;
+
+                    AgregarColumnasAcciones(dgv);
+                    AjustarColumnasGrid(dgv);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al cargar proveedores: " + ex.Message, "Error BD", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
 
         private DataTable ConvertirListaADataTable(List<EProveedor> lista)
         {
@@ -158,112 +176,108 @@ namespace CandyShopSystem
             dt.Columns.Add("Contacto", typeof(string));
             dt.Columns.Add("Telefono", typeof(string));
             dt.Columns.Add("Direccion", typeof(string));
-            dt.Columns.Add("Estado", typeof(string));
+            dt.Columns.Add("IdEstado", typeof(int));
+            dt.Columns.Add("EstadoTexto", typeof(string));
 
             foreach (var item in lista)
             {
+                string txtEstado = item.IdEstado == 11 ? "Activo" : "Inactivo";
                 dt.Rows.Add(
                     item.IdProveedor,
                     item.NombreProveedor,
                     item.Contacto,
                     item.Telefono,
                     item.Direccion,
-                    item.Estado
+                    item.IdEstado,
+                    txtEstado
                 );
             }
 
             return dt;
         }
 
-        private void AjustarColumnasGrid()
+        private void AgregarColumnasAcciones(DataGridView dgv)
         {
-            if (dgvProveedores.Columns.Count > 0)
-            {
-                if (dgvProveedores.Columns["IdProveedor"] != null) dgvProveedores.Columns["IdProveedor"].Visible = false;
-
-                if (dgvProveedores.Columns["NombreProveedor"] != null) dgvProveedores.Columns["NombreProveedor"].HeaderText = "PROVEEDOR / EMPRESA";
-                if (dgvProveedores.Columns["Contacto"] != null) dgvProveedores.Columns["Contacto"].HeaderText = "CONTACTO";
-                if (dgvProveedores.Columns["Telefono"] != null) dgvProveedores.Columns["Telefono"].HeaderText = "TELÉFONO";
-                if (dgvProveedores.Columns["Direccion"] != null) dgvProveedores.Columns["Direccion"].HeaderText = "DIRECCIÓN";
-                if (dgvProveedores.Columns["Estado"] != null) dgvProveedores.Columns["Estado"].HeaderText = "ESTADO";
-
-                if (dgvProveedores.Columns["NombreProveedor"] != null) dgvProveedores.Columns["NombreProveedor"].FillWeight = 150;
-                if (dgvProveedores.Columns["Contacto"] != null) dgvProveedores.Columns["Contacto"].FillWeight = 100;
-                if (dgvProveedores.Columns["Telefono"] != null) dgvProveedores.Columns["Telefono"].FillWeight = 90;
-                if (dgvProveedores.Columns["Direccion"] != null) dgvProveedores.Columns["Direccion"].FillWeight = 160;
-                if (dgvProveedores.Columns["Estado"] != null) dgvProveedores.Columns["Estado"].FillWeight = 70;
-            }
-        }
-
-        private void AgregarColumnasAcciones()
-        {
-            if (dgvProveedores.Columns["colVer"] == null)
-            {
-                DataGridViewButtonColumn btnVer = new DataGridViewButtonColumn();
-                btnVer.Name = "colVer";
-                btnVer.HeaderText = "";
-                btnVer.Width = 30;
-                btnVer.FlatStyle = FlatStyle.Flat;
-                dgvProveedores.Columns.Add(btnVer);
-            }
-
-            if (dgvProveedores.Columns["colEditar"] == null)
+            if (dgv.Columns["colEditar"] == null)
             {
                 DataGridViewButtonColumn btnEditar = new DataGridViewButtonColumn();
                 btnEditar.Name = "colEditar";
                 btnEditar.HeaderText = "";
-                btnEditar.Width = 30;
+                btnEditar.Width = 35;
                 btnEditar.FlatStyle = FlatStyle.Flat;
-                dgvProveedores.Columns.Add(btnEditar);
+                dgv.Columns.Add(btnEditar);
             }
 
-            if (dgvProveedores.Columns["colEliminar"] == null)
+            if (dgv.Columns["colEliminar"] == null)
             {
                 DataGridViewButtonColumn btnEliminar = new DataGridViewButtonColumn();
                 btnEliminar.Name = "colEliminar";
                 btnEliminar.HeaderText = "";
-                btnEliminar.Width = 30;
+                btnEliminar.Width = 35;
                 btnEliminar.FlatStyle = FlatStyle.Flat;
-                dgvProveedores.Columns.Add(btnEliminar);
+                dgv.Columns.Add(btnEliminar);
             }
         }
 
+        private void AjustarColumnasGrid(DataGridView dgv)
+        {
+            if (dgv.Columns.Count > 0)
+            {
+                if (dgv.Columns["IdProveedor"] != null) dgv.Columns["IdProveedor"].Visible = false;
+                if (dgv.Columns["IdEstado"] != null) dgv.Columns["IdEstado"].Visible = false;
+
+                if (dgv.Columns["NombreProveedor"] != null) dgv.Columns["NombreProveedor"].HeaderText = "PROVEEDOR";
+                if (dgv.Columns["Contacto"] != null) dgv.Columns["Contacto"].HeaderText = "CONTACTO";
+                if (dgv.Columns["Telefono"] != null) dgv.Columns["Telefono"].HeaderText = "TELÉFONO";
+                if (dgv.Columns["Direccion"] != null) dgv.Columns["Direccion"].HeaderText = "DIRECCIÓN";
+                if (dgv.Columns["EstadoTexto"] != null) dgv.Columns["EstadoTexto"].HeaderText = "ESTADO";
+
+                if (dgv.Columns["NombreProveedor"] != null) dgv.Columns["NombreProveedor"].FillWeight = 140;
+                if (dgv.Columns["Contacto"] != null) dgv.Columns["Contacto"].FillWeight = 100;
+                if (dgv.Columns["Telefono"] != null) dgv.Columns["Telefono"].FillWeight = 90;
+                if (dgv.Columns["Direccion"] != null) dgv.Columns["Direccion"].FillWeight = 140;
+                if (dgv.Columns["EstadoTexto"] != null) dgv.Columns["EstadoTexto"].FillWeight = 80;
+
+                int index = 0;
+                if (dgv.Columns["NombreProveedor"] != null) dgv.Columns["NombreProveedor"].DisplayIndex = index++;
+                if (dgv.Columns["Contacto"] != null) dgv.Columns["Contacto"].DisplayIndex = index++;
+                if (dgv.Columns["Telefono"] != null) dgv.Columns["Telefono"].DisplayIndex = index++;
+                if (dgv.Columns["Direccion"] != null) dgv.Columns["Direccion"].DisplayIndex = index++;
+                if (dgv.Columns["EstadoTexto"] != null) dgv.Columns["EstadoTexto"].DisplayIndex = index++;
+
+                // Solo las 2 columnas de acciones al final (Editar y Eliminar)
+                if (dgv.Columns["colEditar"] != null) dgv.Columns["colEditar"].DisplayIndex = index++;
+                if (dgv.Columns["colEliminar"] != null) dgv.Columns["colEliminar"].DisplayIndex = index++;
+            }
+        }
 
         private void dgvProveedores_CellPainting(object sender, DataGridViewCellPaintingEventArgs e)
         {
             if (e.RowIndex < 0) return;
 
-            string colName = dgvProveedores.Columns[e.ColumnIndex].Name;
-
-            if (colName == "colVer" || colName == "colEditar" || colName == "colEliminar")
+            Control dgvCtrl = BuscarControlPorNombre(this, "dgvProveedores") ?? BuscarControlPorNombre(this, "dgvData");
+            if (dgvCtrl is DataGridView dgv)
             {
-                e.Paint(e.CellBounds, DataGridViewPaintParts.All & ~DataGridViewPaintParts.ContentForeground);
+                string colName = dgv.Columns[e.ColumnIndex].Name;
 
-                Image imgToDraw = null;
-                if (colName == "colVer") imgToDraw = imgVer;
-                else if (colName == "colEditar") imgToDraw = imgEditar;
-                else if (colName == "colEliminar") imgToDraw = imgEliminar;
-
-                if (imgToDraw != null)
+                if (colName == "colEditar" || colName == "colEliminar")
                 {
-                    int x = e.CellBounds.Left + (e.CellBounds.Width - imgToDraw.Width) / 2;
-                    int y = e.CellBounds.Top + (e.CellBounds.Height - imgToDraw.Height) / 2;
-                    e.Graphics.DrawImage(imgToDraw, new Point(x, y));
+                    e.Paint(e.CellBounds, DataGridViewPaintParts.All & ~DataGridViewPaintParts.ContentForeground);
+
+                    Image imgToDraw = null;
+                    if (colName == "colEditar") imgToDraw = imgEditar;
+                    else if (colName == "colEliminar") imgToDraw = imgEliminar;
+
+                    if (imgToDraw != null)
+                    {
+                        int x = e.CellBounds.Left + (e.CellBounds.Width - imgToDraw.Width) / 2;
+                        int y = e.CellBounds.Top + (e.CellBounds.Height - imgToDraw.Height) / 2;
+                        e.Graphics.DrawImage(imgToDraw, new Point(x, y));
+                    }
+
+                    e.Handled = true;
                 }
-
-                e.Handled = true;
             }
-        }
-
-
-        private void dgvProveedores_FilterStringChanged(object sender, EventArgs e)
-        {
-            try { bindingSourceProveedores.Filter = dgvProveedores.FilterString; } catch { }
-        }
-
-        private void dgvProveedores_SortStringChanged(object sender, EventArgs e)
-        {
-            try { bindingSourceProveedores.Sort = dgvProveedores.SortString; } catch { }
         }
 
         private void btnBuscar_Click(object sender, EventArgs e)
@@ -275,7 +289,7 @@ namespace CandyShopSystem
         {
             try
             {
-                Control txtB = BuscarControlPorNombre(this, "txtBuscar");
+                Control txtB = BuscarControlPorNombre(this, "txtBuscarProveedor") ?? BuscarControlPorNombre(this, "txtBuscar");
                 string busqueda = ObtenerTextoControl(txtB);
 
                 if (string.IsNullOrWhiteSpace(busqueda))
@@ -287,7 +301,7 @@ namespace CandyShopSystem
                 busqueda = busqueda.Replace("'", "''").Trim();
 
                 string filtroBusqueda = string.Format(
-                    "NombreProveedor LIKE '%{0}%' OR Contacto LIKE '%{0}%' OR Telefono LIKE '%{0}%' OR Direccion LIKE '%{0}%'",
+                    "NombreProveedor LIKE '%{0}%' OR Contacto LIKE '%{0}%' OR Telefono LIKE '%{0}%' OR Direccion LIKE '%{0}%' OR EstadoTexto LIKE '%{0}%'",
                     busqueda
                 );
 
@@ -299,36 +313,80 @@ namespace CandyShopSystem
             }
         }
 
-        private void dgvProveedores_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        private async void dgvProveedores_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0) return;
 
-            int idProveedor = Convert.ToInt32(dgvProveedores.Rows[e.RowIndex].Cells["IdProveedor"].Value);
+            Control dgvCtrl = BuscarControlPorNombre(this, "dgvProveedores") ?? BuscarControlPorNombre(this, "dgvData");
+            if (dgvCtrl is DataGridView dgv)
+            {
+                DataGridViewRow row = dgv.Rows[e.RowIndex];
+                DataRowView rowView = row.DataBoundItem as DataRowView;
 
-            if (dgvProveedores.Columns[e.ColumnIndex].Name == "colVer")
-            {
-                MessageBox.Show("Detalles del proveedor ID: " + idProveedor, "Ver Proveedor", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            else if (dgvProveedores.Columns[e.ColumnIndex].Name == "colEditar")
-            {
-                MessageBox.Show("Editar proveedor ID: " + idProveedor, "Editar Proveedor", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-            else if (dgvProveedores.Columns[e.ColumnIndex].Name == "colEliminar")
-            {
-                var result = MessageBox.Show("¿Está seguro de eliminar el proveedor seleccionado?", "Confirmar eliminación", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (result == DialogResult.Yes)
+                if (rowView == null) return;
+
+                EProveedor proveedorSeleccionado = new EProveedor()
                 {
-                    // Lógica de eliminación en base de datos
+                    IdProveedor = Convert.ToInt32(rowView["IdProveedor"]),
+                    NombreProveedor = rowView["NombreProveedor"].ToString(),
+                    Contacto = rowView["Contacto"] != DBNull.Value ? rowView["Contacto"].ToString() : "",
+                    Telefono = rowView["Telefono"] != DBNull.Value ? rowView["Telefono"].ToString() : "",
+                    Direccion = rowView["Direccion"] != DBNull.Value ? rowView["Direccion"].ToString() : "",
+                    IdEstado = Convert.ToInt32(rowView["IdEstado"])
+                };
+
+                string colName = dgv.Columns[e.ColumnIndex].Name;
+
+                // Editar Proveedor
+                if (colName == "colEditar")
+                {
+                    using (FormEditarProveedor modal = new FormEditarProveedor(proveedorSeleccionado))
+                    {
+                        if (modal.ShowDialog() == DialogResult.OK)
+                        {
+                            await CargarTablaProveedoresAsync();
+                        }
+                    }
+                }
+                // Eliminar Proveedor
+                else if (colName == "colEliminar")
+                {
+                    var result = MessageBox.Show(
+                        $"¿Está seguro de eliminar al proveedor '{proveedorSeleccionado.NombreProveedor}'?",
+                        "Confirmar eliminación",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question
+                    );
+
+                    if (result == DialogResult.Yes)
+                    {
+                        string mensaje = string.Empty;
+                        bool respuesta = objProveedorBl.EliminarProveedor(proveedorSeleccionado.IdProveedor, out mensaje);
+
+                        if (respuesta)
+                        {
+                            MessageBox.Show("¡Proveedor eliminado correctamente!", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            await CargarTablaProveedoresAsync();
+                        }
+                        else
+                        {
+                            MessageBox.Show("No se pudo eliminar el proveedor: " + mensaje, "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        }
+                    }
                 }
             }
         }
 
         private async void btnNuevoProveedor_Click(object sender, EventArgs e)
         {
-            // Abre modal para registrar proveedor
+            using (FormRegistrarProveedor modal = new FormRegistrarProveedor())
+            {
+                if (modal.ShowDialog() == DialogResult.OK)
+                {
+                    await CargarTablaProveedoresAsync();
+                }
+            }
         }
-
-  
 
         private Control BuscarControlPorNombre(Control contenedor, string nombre)
         {
