@@ -17,11 +17,11 @@ namespace CandyShopSystem
         {
             InitializeComponent();
 
-            this.Size = new Size(580, 520);
-            this.MinimumSize = new Size(580, 520);
-            this.MaximumSize = new Size(580, 520);
+            this.Size = new Size(643, 493);
+            this.MinimumSize = new Size(643, 493);
+            this.MaximumSize = new Size(643, 493);
 
-            this.FormBorderStyle = FormBorderStyle.FixedDialog;
+            this.FormBorderStyle = FormBorderStyle.None;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.StartPosition = FormStartPosition.CenterParent;

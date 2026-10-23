@@ -53,7 +53,7 @@
             this.pnlHeaderModal.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlHeaderModal.Location = new System.Drawing.Point(0, 0);
             this.pnlHeaderModal.Name = "pnlHeaderModal";
-            this.pnlHeaderModal.Size = new System.Drawing.Size(531, 62);
+            this.pnlHeaderModal.Size = new System.Drawing.Size(658, 62);
             this.pnlHeaderModal.TabIndex = 1;
             // 
             // label6
@@ -227,7 +227,7 @@
             this.btnCancelar.IconColor = System.Drawing.Color.Black;
             this.btnCancelar.IconFont = FontAwesome.Sharp.IconFont.Auto;
             this.btnCancelar.IconSize = 15;
-            this.btnCancelar.Location = new System.Drawing.Point(211, 459);
+            this.btnCancelar.Location = new System.Drawing.Point(328, 459);
             this.btnCancelar.Name = "btnCancelar";
             this.btnCancelar.Size = new System.Drawing.Size(137, 38);
             this.btnCancelar.TabIndex = 21;
@@ -239,12 +239,13 @@
             // 
             // btnGuardar
             // 
-            this.btnGuardar.BackColor = System.Drawing.Color.MediumPurple;
+            this.btnGuardar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(237)))), ((int)(((byte)(77)))), ((int)(((byte)(145)))));
+            this.btnGuardar.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
             this.btnGuardar.IconChar = FontAwesome.Sharp.IconChar.Check;
-            this.btnGuardar.IconColor = System.Drawing.Color.Black;
+            this.btnGuardar.IconColor = System.Drawing.Color.White;
             this.btnGuardar.IconFont = FontAwesome.Sharp.IconFont.Auto;
             this.btnGuardar.IconSize = 15;
-            this.btnGuardar.Location = new System.Drawing.Point(382, 459);
+            this.btnGuardar.Location = new System.Drawing.Point(495, 459);
             this.btnGuardar.Name = "btnGuardar";
             this.btnGuardar.Size = new System.Drawing.Size(137, 38);
             this.btnGuardar.TabIndex = 22;
@@ -259,7 +260,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(235)))), ((int)(((byte)(243)))));
-            this.ClientSize = new System.Drawing.Size(531, 534);
+            this.ClientSize = new System.Drawing.Size(658, 534);
             this.Controls.Add(this.btnGuardar);
             this.Controls.Add(this.btnCancelar);
             this.Controls.Add(this.cmbTipoCliente);
@@ -273,6 +274,7 @@
             this.Controls.Add(this.txtNombreCliente);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.pnlHeaderModal);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "FormEditarCliente";
             this.Text = "FormEditarCliente";
             this.pnlHeaderModal.ResumeLayout(false);

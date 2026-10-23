@@ -110,7 +110,7 @@
             this.pnlHeaderModal.Dock = System.Windows.Forms.DockStyle.Top;
             this.pnlHeaderModal.Location = new System.Drawing.Point(0, 0);
             this.pnlHeaderModal.Name = "pnlHeaderModal";
-            this.pnlHeaderModal.Size = new System.Drawing.Size(577, 62);
+            this.pnlHeaderModal.Size = new System.Drawing.Size(643, 62);
             this.pnlHeaderModal.TabIndex = 0;
             // 
             // label6
@@ -150,7 +150,7 @@
             this.txtNombreCliente.PasswordChar = false;
             this.txtNombreCliente.PlaceholderColor = System.Drawing.Color.DarkGray;
             this.txtNombreCliente.PlaceholderText = "Nombre Completo";
-            this.txtNombreCliente.Size = new System.Drawing.Size(457, 35);
+            this.txtNombreCliente.Size = new System.Drawing.Size(504, 35);
             this.txtNombreCliente.TabIndex = 11;
             this.txtNombreCliente.Texts = "";
             this.txtNombreCliente.UnderlinedStyle = false;
@@ -172,7 +172,7 @@
             this.txtNombreNegocio.PasswordChar = false;
             this.txtNombreNegocio.PlaceholderColor = System.Drawing.Color.DarkGray;
             this.txtNombreNegocio.PlaceholderText = "Nombre del Negocio";
-            this.txtNombreNegocio.Size = new System.Drawing.Size(452, 35);
+            this.txtNombreNegocio.Size = new System.Drawing.Size(504, 35);
             this.txtNombreNegocio.TabIndex = 12;
             this.txtNombreNegocio.Texts = "";
             this.txtNombreNegocio.UnderlinedStyle = false;
@@ -226,7 +226,7 @@
             this.txtDireccionCliente.PasswordChar = false;
             this.txtDireccionCliente.PlaceholderColor = System.Drawing.Color.DarkGray;
             this.txtDireccionCliente.PlaceholderText = "Direccion";
-            this.txtDireccionCliente.Size = new System.Drawing.Size(250, 35);
+            this.txtDireccionCliente.Size = new System.Drawing.Size(504, 35);
             this.txtDireccionCliente.TabIndex = 15;
             this.txtDireccionCliente.Texts = "";
             this.txtDireccionCliente.UnderlinedStyle = false;
@@ -239,7 +239,7 @@
             this.btnGuardar.IconColor = System.Drawing.Color.White;
             this.btnGuardar.IconFont = FontAwesome.Sharp.IconFont.Auto;
             this.btnGuardar.IconSize = 15;
-            this.btnGuardar.Location = new System.Drawing.Point(423, 441);
+            this.btnGuardar.Location = new System.Drawing.Point(481, 441);
             this.btnGuardar.Name = "btnGuardar";
             this.btnGuardar.Size = new System.Drawing.Size(142, 40);
             this.btnGuardar.TabIndex = 16;
@@ -257,7 +257,7 @@
             this.btnCancelar.IconColor = System.Drawing.Color.Black;
             this.btnCancelar.IconFont = FontAwesome.Sharp.IconFont.Auto;
             this.btnCancelar.IconSize = 15;
-            this.btnCancelar.Location = new System.Drawing.Point(269, 441);
+            this.btnCancelar.Location = new System.Drawing.Point(333, 441);
             this.btnCancelar.Name = "btnCancelar";
             this.btnCancelar.Size = new System.Drawing.Size(142, 40);
             this.btnCancelar.TabIndex = 17;
@@ -271,8 +271,8 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.White;
-            this.ClientSize = new System.Drawing.Size(577, 493);
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(235)))), ((int)(((byte)(243)))));
+            this.ClientSize = new System.Drawing.Size(643, 493);
             this.Controls.Add(this.btnCancelar);
             this.Controls.Add(this.btnGuardar);
             this.Controls.Add(this.txtDireccionCliente);
@@ -286,7 +286,7 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.pnlHeaderModal);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.MaximizeBox = false;
             this.Name = "FormClienteModal";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

@@ -18,10 +18,8 @@ namespace PresentationLayer
             _producto = producto;
 
             this.StartPosition = FormStartPosition.CenterParent;
-            this.FormBorderStyle = FormBorderStyle.FixedDialog;
-            this.MaximizeBox = false;
-            this.MinimizeBox = false;
-            this.BackColor = Color.FromArgb(253, 246, 248);
+            this.FormBorderStyle = FormBorderStyle.None;;
+            this.BackColor = Color.FromArgb(255, 235, 243);
 
             this.Load += FormEditarProducto_Load;
         }
