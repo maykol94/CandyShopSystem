@@ -1,120 +1,116 @@
-﻿using DataAccessLayer;
-using EntityLayer;
+﻿using EntityLayer;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
 using System.Data;
 
-namespace DataAccesLayer
+namespace DataAccessLayer
 {
-    public class ClienteDAL
+    public class ClienteDal
     {
+        private string cadena = Conexion.cadena;
+
+        //lista de clientes
         public List<ECliente> ObtenerClientes()
         {
             List<ECliente> lista = new List<ECliente>();
 
-            using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
+            using (SqlConnection oconexion = new SqlConnection(cadena))
             {
                 try
                 {
-                    SqlCommand cmd = new SqlCommand("sp_ObtenerClientes", oconexion);
+                    SqlCommand cmd = new SqlCommand("sp_obtenerclientes", oconexion);
                     cmd.CommandType = CommandType.StoredProcedure;
 
                     oconexion.Open();
+
                     using (SqlDataReader dr = cmd.ExecuteReader())
                     {
                         while (dr.Read())
                         {
                             lista.Add(new ECliente()
                             {
-                                IdCliente = Convert.ToInt32(dr["IdCliente"]),
-                                NombreCliente = dr["NombreCliente"].ToString(),
-                                NombreNegocio = dr["NombreNegocio"].ToString(),
-                                Contacto = dr["Contacto"].ToString(),
-                                Direccion = dr["Direccion"].ToString(),
-                                IdTipoCliente = Convert.ToInt32(dr["IdTipoCliente"]),
-                                TipoClienteDescripcion = dr["TipoClienteDescripcion"].ToString()
+                                IdCliente = Convert.ToInt32(dr[0]),
+                                NombreCliente = dr[1].ToString(),
+                                NombreNegocio = dr[2].ToString(),
+                                Contacto = dr[3].ToString(),
+                                Direccion = dr[4].ToString(),
+                                IdTipoCliente = Convert.ToInt32(dr[5]),
+                                TipoCliente = dr[6].ToString()
                             });
                         }
                     }
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    lista = new List<ECliente>();
+                    throw;
                 }
             }
 
             return lista;
         }
 
-        //para registrar un cliente en la base de datos usando un procedimiento almacenado
-        public bool RegistrarCliente(ECliente obj, out string Mensaje)
+        //guardar cliente y edutar cliente
+        public bool GuardarCliente(ECliente obj, out string mensaje)
         {
             bool respuesta = false;
-            Mensaje = string.Empty;
+            mensaje = string.Empty;
 
-            using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
+            using (SqlConnection oconexion = new SqlConnection(cadena))
             {
                 try
                 {
-                    SqlCommand cmd = new SqlCommand("sp_GuardarCliente", oconexion);
-                    cmd.CommandType = CommandType.StoredProcedure; // Indica que se usa un procedimiento almacenado
+                    SqlCommand cmd = new SqlCommand("sp_guardarcliente", oconexion);
+                    cmd.CommandType = CommandType.StoredProcedure;
 
-                    //estos son los parametros que se van a enviar al procedimiento almacenado
-                    cmd.Parameters.AddWithValue("@IdCliente", obj.IdCliente);
-                    cmd.Parameters.AddWithValue("@NombreCliente", obj.NombreCliente);
-                    cmd.Parameters.AddWithValue("@NombreNegocio", (object)obj.NombreNegocio ?? DBNull.Value);
-                    cmd.Parameters.AddWithValue("@Contacto", (object)obj.Contacto ?? DBNull.Value);
-                    cmd.Parameters.AddWithValue("@Direccion", (object)obj.Direccion ?? DBNull.Value);
-                    cmd.Parameters.AddWithValue("@IdTipoCliente", obj.IdTipoCliente);
-
-                    // Parámetros de salida
-                    cmd.Parameters.Add("@Resultado", SqlDbType.Bit).Direction = ParameterDirection.Output;
-                    cmd.Parameters.Add("@Mensaje", SqlDbType.VarChar, 500).Direction = ParameterDirection.Output;
+                    cmd.Parameters.AddWithValue("@id_cliente", obj.IdCliente);
+                    cmd.Parameters.AddWithValue("@nombre_cliente", obj.NombreCliente);
+                    cmd.Parameters.AddWithValue("@nombre_negocio", obj.NombreNegocio ?? "");
+                    cmd.Parameters.AddWithValue("@contacto", obj.Contacto ?? "");
+                    cmd.Parameters.AddWithValue("@direccion", obj.Direccion ?? "");
+                    cmd.Parameters.AddWithValue("@id_tipo_cliente", obj.IdTipoCliente);
 
                     oconexion.Open();
                     cmd.ExecuteNonQuery();
 
-                    respuesta = Convert.ToBoolean(cmd.Parameters["@Resultado"].Value);
-                    Mensaje = cmd.Parameters["@Mensaje"].Value.ToString();
+                    respuesta = true;
+                    mensaje = "Cliente guardado correctamente.";
                 }
                 catch (Exception ex)
                 {
                     respuesta = false;
-                    Mensaje = ex.Message;
+                    mensaje = ex.Message;
                 }
             }
 
             return respuesta;
         }
 
-        public bool EliminarCliente(int idCliente, out string Mensaje)
+        //Eliminar cliente
+        public bool EliminarCliente(int idCliente, out string mensaje)
         {
             bool respuesta = false;
-            Mensaje = string.Empty;
+            mensaje = string.Empty;
 
-            using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
+            using (SqlConnection oconexion = new SqlConnection(cadena))
             {
                 try
                 {
-                    SqlCommand cmd = new SqlCommand("sp_EliminarCliente", oconexion);
+                    SqlCommand cmd = new SqlCommand("sp_eliminarcliente", oconexion);
                     cmd.CommandType = CommandType.StoredProcedure;
 
-                    cmd.Parameters.AddWithValue("@IdCliente", idCliente);
-
-                    cmd.Parameters.Add("@Resultado", SqlDbType.Bit).Direction = ParameterDirection.Output;
-                    cmd.Parameters.Add("@Mensaje", SqlDbType.VarChar, 500).Direction = ParameterDirection.Output;
+                    cmd.Parameters.AddWithValue("@id_cliente", idCliente);
 
                     oconexion.Open();
                     cmd.ExecuteNonQuery();
 
-                    respuesta = Convert.ToBoolean(cmd.Parameters["@Resultado"].Value);
-                    Mensaje = cmd.Parameters["@Mensaje"].Value.ToString();
+                    respuesta = true;
+                    mensaje = "Cliente eliminado correctamente.";
                 }
                 catch (Exception ex)
                 {
                     respuesta = false;
-                    Mensaje = ex.Message;
+                    mensaje = ex.Message;
                 }
             }
 

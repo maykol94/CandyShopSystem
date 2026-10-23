@@ -34,10 +34,10 @@
             this.lblGestiondeclientes = new System.Windows.Forms.Label();
             this.txtBuscar = new RJCodeAdvance.RJControls.RJTextBox();
             this.pnlFooter = new System.Windows.Forms.Panel();
-            this.pnlGrid = new System.Windows.Forms.Panel();
-            this.dgvClientes = new Zuby.ADGV.AdvancedDataGridView();
             this.btnAtenderCliente = new RJCodeAdvance.RJControls.RJButton();
             this.btnBuscar = new FontAwesome.Sharp.IconButton();
+            this.pnlGrid = new System.Windows.Forms.Panel();
+            this.dgvClientes = new Zuby.ADGV.AdvancedDataGridView();
             this.pnlHeaderClientes.SuspendLayout();
             this.pnlFooter.SuspendLayout();
             this.pnlGrid.SuspendLayout();
@@ -84,6 +84,7 @@
             this.btnNuevoCliente.Text = "Nuevo cliente+";
             this.btnNuevoCliente.TextColor = System.Drawing.Color.White;
             this.btnNuevoCliente.UseVisualStyleBackColor = false;
+            this.btnNuevoCliente.Click += new System.EventHandler(this.btnNuevoCliente_Click);
             // 
             // lblGestiondeclientes
             // 
@@ -130,33 +131,6 @@
             this.pnlFooter.Size = new System.Drawing.Size(1280, 70);
             this.pnlFooter.TabIndex = 1;
             // 
-            // pnlGrid
-            // 
-            this.pnlGrid.Controls.Add(this.dgvClientes);
-            this.pnlGrid.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlGrid.Location = new System.Drawing.Point(0, 140);
-            this.pnlGrid.Name = "pnlGrid";
-            this.pnlGrid.Padding = new System.Windows.Forms.Padding(10);
-            this.pnlGrid.Size = new System.Drawing.Size(1280, 580);
-            this.pnlGrid.TabIndex = 2;
-            // 
-            // dgvClientes
-            // 
-            this.dgvClientes.BackgroundColor = System.Drawing.Color.White;
-            this.dgvClientes.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.dgvClientes.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvClientes.FilterAndSortEnabled = true;
-            this.dgvClientes.FilterStringChangedInvokeBeforeDatasourceUpdate = true;
-            this.dgvClientes.Location = new System.Drawing.Point(10, 10);
-            this.dgvClientes.MaxFilterButtonImageHeight = 23;
-            this.dgvClientes.Name = "dgvClientes";
-            this.dgvClientes.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.dgvClientes.RowHeadersWidth = 51;
-            this.dgvClientes.RowTemplate.Height = 24;
-            this.dgvClientes.Size = new System.Drawing.Size(1260, 560);
-            this.dgvClientes.SortStringChangedInvokeBeforeDatasourceUpdate = true;
-            this.dgvClientes.TabIndex = 0;
-            // 
             // btnAtenderCliente
             // 
             this.btnAtenderCliente.BackColor = System.Drawing.Color.MediumSlateBlue;
@@ -193,6 +167,33 @@
             this.btnBuscar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnBuscar.UseVisualStyleBackColor = false;
             this.btnBuscar.Click += new System.EventHandler(this.btnBuscar_Click);
+            // 
+            // pnlGrid
+            // 
+            this.pnlGrid.Controls.Add(this.dgvClientes);
+            this.pnlGrid.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.pnlGrid.Location = new System.Drawing.Point(0, 140);
+            this.pnlGrid.Name = "pnlGrid";
+            this.pnlGrid.Padding = new System.Windows.Forms.Padding(10);
+            this.pnlGrid.Size = new System.Drawing.Size(1280, 580);
+            this.pnlGrid.TabIndex = 2;
+            // 
+            // dgvClientes
+            // 
+            this.dgvClientes.BackgroundColor = System.Drawing.Color.White;
+            this.dgvClientes.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.dgvClientes.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvClientes.FilterAndSortEnabled = true;
+            this.dgvClientes.FilterStringChangedInvokeBeforeDatasourceUpdate = true;
+            this.dgvClientes.Location = new System.Drawing.Point(10, 10);
+            this.dgvClientes.MaxFilterButtonImageHeight = 23;
+            this.dgvClientes.Name = "dgvClientes";
+            this.dgvClientes.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.dgvClientes.RowHeadersWidth = 51;
+            this.dgvClientes.RowTemplate.Height = 24;
+            this.dgvClientes.Size = new System.Drawing.Size(1260, 560);
+            this.dgvClientes.SortStringChangedInvokeBeforeDatasourceUpdate = true;
+            this.dgvClientes.TabIndex = 0;
             // 
             // UC_Clientes
             // 

@@ -9,7 +9,7 @@ namespace CandyShopSystem
 {
     public partial class FormClienteModal : Form
     {
-        private ClienteBL objClienteBL = new ClienteBL();
+        private ClienteBl objClienteBl = new ClienteBl();
         private ECliente clienteEdicion = null;
         private bool esModoSoloLectura = false;
 
@@ -27,7 +27,7 @@ namespace CandyShopSystem
             this.StartPosition = FormStartPosition.CenterParent;
 
             clienteEdicion = cliente;
-            esModoSoloLectura = esSoloLectura;
+            this.esModoSoloLectura = esSoloLectura;
 
             this.Load += FormClienteModal_Load;
         }
@@ -35,6 +35,7 @@ namespace CandyShopSystem
         private void FormClienteModal_Load(object sender, EventArgs e)
         {
             VincularValidacionTelefono();
+            VincularBotonGuardar();
 
             if (clienteEdicion != null)
             {
@@ -50,10 +51,61 @@ namespace CandyShopSystem
                 }
             }
 
-            //si se abre en modo solo lectura, bloquear los campos de texto y el combo box, y cambiar el texto del botón cancelar a "Cerrar"
+            // Si se abre en modo solo lectura, bloquear los campos y ocultar guardar
             if (esModoSoloLectura)
             {
                 BloquearModoDetalles();
+            }
+        }
+
+        private void VincularBotonGuardar()
+        {
+            Control btnG = BuscarControl(this, "btnGuardar");
+            if (btnG != null)
+            {
+                btnG.Click -= btnGuardar_Click;
+                btnG.Click += btnGuardar_Click;
+            }
+        }
+
+        private void btnGuardar_Click(object sender, EventArgs e)
+        {
+            Control txtNom = ObtenerCampoTexto("Nombre");
+            Control txtNeg = ObtenerCampoTexto("Negocio");
+            Control txtDir = ObtenerCampoTexto("Direccion");
+            Control txtTel = ObtenerCampoTexto("Telefono");
+            Control combo = BuscarControl(this, "cmbTipoCliente") ?? BuscarControl(this, "cboTipoCliente") ?? EscanearComboBox(this);
+
+            string nombre = GetTexto(txtNom);
+            string negocio = GetTexto(txtNeg);
+            string direccion = GetTexto(txtDir);
+            string contacto = GetTexto(txtTel);
+            string tipoClienteTexto = GetTexto(combo);
+
+            int idTipoCliente = ObtenerIdTipoCliente(tipoClienteTexto);
+
+            ECliente obj = new ECliente()
+            {
+                IdCliente = clienteEdicion != null ? clienteEdicion.IdCliente : 0,
+                NombreCliente = nombre,
+                NombreNegocio = negocio,
+                Direccion = direccion,
+                Contacto = contacto,
+                IdTipoCliente = idTipoCliente
+            };
+
+            string mensaje = string.Empty;
+            bool resultado = objClienteBl.GuardarCliente(obj, out mensaje);
+
+            if (resultado)
+            {
+                MessageBox.Show(mensaje, "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                this.DialogResult = DialogResult.OK;
+                this.Close();
+            }
+            else
+            {
+                MessageBox.Show(mensaje, "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
@@ -107,68 +159,11 @@ namespace CandyShopSystem
 
             string texto = descripcion.Trim().ToLower();
 
-            if (texto.Contains("pulper")) return 1;    
-            if (texto.Contains("escuela")) return 2;   
+            if (texto.Contains("pulper")) return 1;
+            if (texto.Contains("escuela")) return 2;
             if (texto.Contains("particular")) return 3;
 
-            return 0;
-        }
-
-        private void btnGuardar_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                string nombreVal = GetTexto(ObtenerCampoTexto("Nombre"));
-                string negocioVal = GetTexto(ObtenerCampoTexto("Negocio"));
-                string direccionVal = GetTexto(ObtenerCampoTexto("Direccion"));
-                string telefonoVal = GetTexto(ObtenerCampoTexto("Telefono"));
-
-                Control combo = BuscarControl(this, "cmbTipoCliente") ?? BuscarControl(this, "cboTipoCliente") ?? EscanearComboBox(this);
-                string tipoClienteTexto = GetTexto(combo);
-
-                if (string.IsNullOrWhiteSpace(nombreVal))
-                {
-                    MessageBox.Show("Por favor, ingrese el Nombre Completo del cliente.", "Campo requerido", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-
-                if (string.IsNullOrWhiteSpace(tipoClienteTexto))
-                {
-                    MessageBox.Show("Debe seleccionar un Tipo de Cliente.", "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return;
-                }
-
-                int idTipoCliente = ObtenerIdTipoCliente(tipoClienteTexto);
-
-                ECliente oCliente = new ECliente()
-                {
-                    IdCliente = clienteEdicion != null ? clienteEdicion.IdCliente : 0,
-                    NombreCliente = nombreVal,
-                    NombreNegocio = negocioVal,
-                    Direccion = direccionVal,
-                    Contacto = telefonoVal,
-                    TipoCliente = tipoClienteTexto,
-                    IdTipoCliente = idTipoCliente
-                };
-
-                string mensaje = string.Empty;
-                bool resultado = objClienteBL.RegistrarCliente(oCliente, out mensaje);
-
-                if (resultado)
-                {
-                    MessageBox.Show("¡Cliente registrado correctamente!", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    this.DialogResult = DialogResult.OK;
-                    this.Close();
-                }
-                else
-                {
-                    MessageBox.Show(mensaje, "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Ocurrió un error inesperado al guardar: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            return 1; // ID por defecto en caso de no hacer match
         }
 
         private void btnCancelar_Click(object sender, EventArgs e)

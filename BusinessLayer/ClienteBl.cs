@@ -1,27 +1,51 @@
-﻿
-using System.Collections.Generic;
-using DataAccesLayer;
+﻿using DataAccessLayer;
 using EntityLayer;
+using System.Collections.Generic;
 
 namespace BusinessLayer
 {
-    public class ClienteBL
+    public class ClienteBl
     {
-        private ClienteDAL objClienteDAL = new ClienteDAL();
+        private ClienteDal objDal = new ClienteDal();
 
+        //lista de clientes
         public List<ECliente> ObtenerClientes()
         {
-            return objClienteDAL.ObtenerClientes();
+            return objDal.ObtenerClientes();
         }
 
-        public bool RegistrarCliente(ECliente obj, out string Mensaje)
+        //guarda y edita cliente
+        public bool GuardarCliente(ECliente obj, out string mensaje)
         {
-            return objClienteDAL.RegistrarCliente(obj, out Mensaje);
+            mensaje = string.Empty;
+
+            if (string.IsNullOrWhiteSpace(obj.NombreCliente))
+            {
+                mensaje = "El nombre del cliente no puede estar vacío.";
+                return false;
+            }
+
+            if (obj.IdTipoCliente <= 0)
+            {
+                mensaje = "Debe seleccionar un tipo de cliente válido.";
+                return false;
+            }
+
+            return objDal.GuardarCliente(obj, out mensaje);
         }
 
-        public bool EliminarCliente(int idCliente, out string Mensaje)
+        //Validar y eliminar cliente
+        public bool EliminarCliente(int idCliente, out string mensaje)
         {
-            return objClienteDAL.EliminarCliente(idCliente, out Mensaje);
+            mensaje = string.Empty;
+
+            if (idCliente <= 0)
+            {
+                mensaje = "Debe seleccionar un cliente válido para eliminar.";
+                return false;
+            }
+
+            return objDal.EliminarCliente(idCliente, out mensaje);
         }
     }
 }

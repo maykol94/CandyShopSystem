@@ -3,9 +3,10 @@ using Microsoft.Data.SqlClient;
 
 namespace DataAccessLayer
 {
-    public class Conexion
+    public static class Conexion
     {
-        public static string cadena = @"Server=MAYKOL\SQLEXPRESS; Database=candy_shop_2; Integrated Security=True; TrustServerCertificate=True;";
+        // Cadena de conexión a tu base de datos candy_shop_2
+        public static string cadena = "Server=localhost; Database=candy_shop_2; Integrated Security=True; TrustServerCertificate=True;";
 
         public static SqlConnection ObtenerConexion()
         {
