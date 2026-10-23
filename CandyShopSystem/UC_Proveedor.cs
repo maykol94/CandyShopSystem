@@ -245,7 +245,6 @@ namespace PresentationLayer
                 if (dgv.Columns["Direccion"] != null) dgv.Columns["Direccion"].DisplayIndex = index++;
                 if (dgv.Columns["EstadoTexto"] != null) dgv.Columns["EstadoTexto"].DisplayIndex = index++;
 
-                // Solo las 2 columnas de acciones al final (Editar y Eliminar)
                 if (dgv.Columns["colEditar"] != null) dgv.Columns["colEditar"].DisplayIndex = index++;
                 if (dgv.Columns["colEliminar"] != null) dgv.Columns["colEliminar"].DisplayIndex = index++;
             }

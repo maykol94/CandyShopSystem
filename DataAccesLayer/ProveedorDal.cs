@@ -8,202 +8,106 @@ namespace DataAccessLayer
 {
     public class ProveedorDal
     {
+        // 1. Obtener lista de proveedores
         public List<EProveedor> ObtenerProveedores()
         {
             List<EProveedor> lista = new List<EProveedor>();
 
-            using (SqlConnection oConexion = Conexion.ObtenerConexion())
+            using (SqlConnection oconexion = Conexion.ObtenerConexion())
             {
                 try
                 {
-                    SqlCommand cmd = new SqlCommand("sp_obtenerproveedores", oConexion);
+                    SqlCommand cmd = new SqlCommand("sp_obtenerproveedores", oconexion);
                     cmd.CommandType = CommandType.StoredProcedure;
 
-                    oConexion.Open();
+                    oconexion.Open();
 
                     using (SqlDataReader dr = cmd.ExecuteReader())
                     {
                         while (dr.Read())
                         {
-                            lista.Add(new EProveedor
+                            lista.Add(new EProveedor()
                             {
-                                IdProveedor = Convert.ToInt32(dr["id_proveedor"]),
-                                NombreProveedor = dr["nombre_proveedor"].ToString(),
-                                Contacto = dr["contacto"] != DBNull.Value ? dr["contacto"].ToString() : string.Empty,
-                                Telefono = dr["telefono"] != DBNull.Value ? dr["telefono"].ToString() : string.Empty,
-                                Direccion = dr["direccion"] != DBNull.Value ? dr["direccion"].ToString() : string.Empty,
-                                IdEstado = Convert.ToInt32(dr["id_estado"])
+                                IdProveedor = Convert.ToInt32(dr[0]),
+                                NombreProveedor = dr[1].ToString(),
+                                Contacto = dr[2].ToString(),
+                                Telefono = dr[3].ToString(),
+                                Direccion = dr[4].ToString(),
+                                IdEstado = Convert.ToInt32(dr[5])
                             });
                         }
                     }
                 }
-                catch
+                catch (Exception)
                 {
-                    //en caso de q falle el procedimiedo almacenado
-                    lista = ObtenerProveedoresDirecto(oConexion);
+                    throw;
                 }
             }
 
             return lista;
         }
 
-        private List<EProveedor> ObtenerProveedoresDirecto(SqlConnection oConexion)
-        {
-            List<EProveedor> lista = new List<EProveedor>();
-            try
-            {
-                if (oConexion.State != ConnectionState.Open)
-                    oConexion.Open();
-
-                string query = "SELECT id_proveedor, nombre_proveedor, contacto, telefono, direccion, id_estado FROM proveedor.proveedor ORDER BY id_proveedor DESC";
-                SqlCommand cmd = new SqlCommand(query, oConexion);
-                cmd.CommandType = CommandType.Text;
-
-                using (SqlDataReader dr = cmd.ExecuteReader())
-                {
-                    while (dr.Read())
-                    {
-                        lista.Add(new EProveedor
-                        {
-                            IdProveedor = Convert.ToInt32(dr["id_proveedor"]),
-                            NombreProveedor = dr["nombre_proveedor"].ToString(),
-                            Contacto = dr["contacto"] != DBNull.Value ? dr["contacto"].ToString() : string.Empty,
-                            Telefono = dr["telefono"] != DBNull.Value ? dr["telefono"].ToString() : string.Empty,
-                            Direccion = dr["direccion"] != DBNull.Value ? dr["direccion"].ToString() : string.Empty,
-                            IdEstado = Convert.ToInt32(dr["id_estado"])
-                        });
-                    }
-                }
-            }
-            catch
-            {
-                lista = new List<EProveedor>();
-            }
-            return lista;
-        }
-
-        public bool RegistrarProveedor(EProveedor obj, out string mensaje)
+        // 2. Guardar o Editar proveedor
+        public bool GuardarProveedor(EProveedor obj, out string Mensaje)
         {
             bool respuesta = false;
-            mensaje = string.Empty;
+            Mensaje = string.Empty;
 
-            using (SqlConnection oConexion = Conexion.ObtenerConexion())
+            using (SqlConnection oconexion = Conexion.ObtenerConexion())
             {
                 try
                 {
-                    SqlCommand cmd = new SqlCommand("sp_registrarproveedor", oConexion);
+                    SqlCommand cmd = new SqlCommand("sp_guardarproveedor", oconexion);
                     cmd.CommandType = CommandType.StoredProcedure;
 
-                    cmd.Parameters.AddWithValue("@nombre_proveedor", obj.NombreProveedor ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("@contacto", string.IsNullOrWhiteSpace(obj.Contacto) ? (object)DBNull.Value : obj.Contacto);
-                    cmd.Parameters.AddWithValue("@telefono", obj.Telefono ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("@direccion", string.IsNullOrWhiteSpace(obj.Direccion) ? (object)DBNull.Value : obj.Direccion);
-                    cmd.Parameters.AddWithValue("@id_estado", obj.IdEstado);
+                    cmd.Parameters.AddWithValue("@id_proveedor", obj.IdProveedor);
+                    cmd.Parameters.AddWithValue("@nombre_proveedor", obj.NombreProveedor ?? "");
+                    cmd.Parameters.AddWithValue("@contacto", obj.Contacto ?? "");
+                    cmd.Parameters.AddWithValue("@telefono", obj.Telefono ?? "");
+                    cmd.Parameters.AddWithValue("@direccion", obj.Direccion ?? "");
+                    cmd.Parameters.AddWithValue("@id_estado", obj.IdEstado > 0 ? obj.IdEstado : 11);
 
-                    // parametrp de salida id prveedor generado
-                    SqlParameter paramIdGenerado = new SqlParameter("@id_proveedor_generado", SqlDbType.Int)
-                    {
-                        Direction = ParameterDirection.Output
-                    };
-                    cmd.Parameters.Add(paramIdGenerado);
+                    oconexion.Open();
 
-                    oConexion.Open();
                     cmd.ExecuteNonQuery();
-
-                    if (paramIdGenerado.Value != DBNull.Value && Convert.ToInt32(paramIdGenerado.Value) > 0)
-                    {
-                        obj.IdProveedor = Convert.ToInt32(paramIdGenerado.Value);
-                        respuesta = true;
-                    }
+                    respuesta = true;
+                    Mensaje = obj.IdProveedor == 0 ? "Proveedor registrado correctamente." : "Proveedor actualizado correctamente.";
                 }
                 catch (Exception ex)
                 {
                     respuesta = false;
-                    mensaje = ex.Message;
+                    Mensaje = ex.Message;
                 }
             }
 
             return respuesta;
         }
 
-        public bool EliminarProveedor(int idProveedor, out string mensaje)
+        // 3. Eliminar proveedor
+        public bool EliminarProveedor(int idProveedor, out string Mensaje)
         {
             bool respuesta = false;
-            mensaje = string.Empty;
+            Mensaje = string.Empty;
 
-            using (SqlConnection oConexion = Conexion.ObtenerConexion())
+            using (SqlConnection oconexion = Conexion.ObtenerConexion())
             {
                 try
                 {
-                    SqlCommand cmd = new SqlCommand("sp_eliminarproveedor", oConexion);
+                    SqlCommand cmd = new SqlCommand("sp_eliminarproveedor", oconexion);
                     cmd.CommandType = CommandType.StoredProcedure;
 
                     cmd.Parameters.AddWithValue("@id_proveedor", idProveedor);
 
-                    SqlParameter paramRespuesta = new SqlParameter("@respuesta", SqlDbType.Bit) { Direction = ParameterDirection.Output };
-                    SqlParameter paramMensaje = new SqlParameter("@mensaje", SqlDbType.VarChar, 500) { Direction = ParameterDirection.Output };
+                    oconexion.Open();
 
-                    cmd.Parameters.Add(paramRespuesta);
-                    cmd.Parameters.Add(paramMensaje);
-
-                    oConexion.Open();
                     cmd.ExecuteNonQuery();
-
-                    if (paramRespuesta.Value != DBNull.Value)
-                        respuesta = Convert.ToBoolean(paramRespuesta.Value);
-
-                    if (paramMensaje.Value != DBNull.Value)
-                        mensaje = paramMensaje.Value.ToString();
+                    respuesta = true;
+                    Mensaje = "Proveedor eliminado correctamente.";
                 }
                 catch (Exception ex)
                 {
                     respuesta = false;
-                    mensaje = ex.Message;
-                }
-            }
-
-            return respuesta;
-        }
-
-
-        public bool EditarProveedor(EProveedor obj, out string mensaje)
-        {
-            bool respuesta = false;
-            mensaje = string.Empty;
-
-            using (SqlConnection oConexion = Conexion.ObtenerConexion())
-            {
-                try
-                {
-                    SqlCommand cmd = new SqlCommand("sp_editarproveedor", oConexion);
-                    cmd.CommandType = CommandType.StoredProcedure;
-
-                    cmd.Parameters.AddWithValue("@id_proveedor", obj.IdProveedor);
-                    cmd.Parameters.AddWithValue("@nombre_proveedor", obj.NombreProveedor ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("@contacto", string.IsNullOrWhiteSpace(obj.Contacto) ? (object)DBNull.Value : obj.Contacto);
-                    cmd.Parameters.AddWithValue("@telefono", obj.Telefono ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("@direccion", string.IsNullOrWhiteSpace(obj.Direccion) ? (object)DBNull.Value : obj.Direccion);
-                    cmd.Parameters.AddWithValue("@id_estado", obj.IdEstado);
-
-                    SqlParameter paramRespuesta = new SqlParameter("@respuesta", SqlDbType.Bit) { Direction = ParameterDirection.Output };
-                    SqlParameter paramMensaje = new SqlParameter("@mensaje", SqlDbType.VarChar, 500) { Direction = ParameterDirection.Output };
-
-                    cmd.Parameters.Add(paramRespuesta);
-                    cmd.Parameters.Add(paramMensaje);
-
-                    oConexion.Open();
-                    cmd.ExecuteNonQuery();
-
-                    if (paramRespuesta.Value != DBNull.Value)
-                        respuesta = Convert.ToBoolean(paramRespuesta.Value);
-
-                    if (paramMensaje.Value != DBNull.Value)
-                        mensaje = paramMensaje.Value.ToString();
-                }
-                catch (Exception ex)
-                {
-                    respuesta = false;
-                    mensaje = ex.Message;
+                    Mensaje = ex.Message;
                 }
             }
 

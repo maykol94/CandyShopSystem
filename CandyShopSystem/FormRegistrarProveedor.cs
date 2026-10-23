@@ -112,6 +112,7 @@ namespace CandyShopSystem
 
             EProveedor nuevoProveedor = new EProveedor
             {
+                IdProveedor = 0, // 0 indica registro nuevo
                 NombreProveedor = nombre,
                 Contacto = contacto,
                 Direccion = direccion,
@@ -120,7 +121,7 @@ namespace CandyShopSystem
             };
 
             string mensaje = string.Empty;
-            bool exito = objProveedorBl.RegistrarProveedor(nuevoProveedor, out mensaje);
+            bool exito = objProveedorBl.GuardarProveedor(nuevoProveedor, out mensaje);
 
             if (exito)
             {
@@ -140,7 +141,6 @@ namespace CandyShopSystem
             this.Close();
         }
 
-        //metodo para los texto de txt
         private string ExtraerTexto(Control ctrl)
         {
             if (ctrl == null) return string.Empty;

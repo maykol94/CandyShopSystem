@@ -113,7 +113,8 @@ namespace CandyShopSystem
             {
                 idEstado = Convert.ToInt32(cmb.SelectedValue);
             }
-            //vliadiones
+
+            // Validaciones
             if (string.IsNullOrWhiteSpace(nombre))
             {
                 MessageBox.Show("Ingrese el nombre del proveedor.", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -132,7 +133,7 @@ namespace CandyShopSystem
                 return;
             }
 
-            //se actiualizan los datos del proveedor
+            // Se actualizan los datos del objeto proveedorEditar
             proveedorEditar.NombreProveedor = nombre;
             proveedorEditar.Contacto = contacto;
             proveedorEditar.Telefono = telefono;
@@ -140,7 +141,7 @@ namespace CandyShopSystem
             proveedorEditar.IdEstado = idEstado;
 
             string mensaje = string.Empty;
-            bool exito = objProveedorBl.EditarProveedor(proveedorEditar, out mensaje);
+            bool exito = objProveedorBl.GuardarProveedor(proveedorEditar, out mensaje);
 
             if (exito)
             {
@@ -160,7 +161,6 @@ namespace CandyShopSystem
             this.Close();
         }
 
-        //metodos para establecer y estraer texto de los txt
         private void EstablecerTexto(Control ctrl, string valor)
         {
             if (ctrl == null) return;

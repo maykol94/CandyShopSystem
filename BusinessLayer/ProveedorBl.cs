@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using EntityLayer;
+﻿using System.Collections.Generic;
 using DataAccessLayer;
+using EntityLayer;
 
 namespace BusinessLayer
 {
@@ -9,38 +8,42 @@ namespace BusinessLayer
     {
         private ProveedorDal objProveedorDal = new ProveedorDal();
 
+        // Obtener lista de proveedores
         public List<EProveedor> ObtenerProveedores()
         {
             return objProveedorDal.ObtenerProveedores();
         }
 
-        public bool RegistrarProveedor(EProveedor obj, out string mensaje)
+        // Guardar o Editar proveedor con validaciones de negocio
+        public bool GuardarProveedor(EProveedor obj, out string Mensaje)
         {
-            mensaje = string.Empty;
+            Mensaje = string.Empty;
 
             if (string.IsNullOrWhiteSpace(obj.NombreProveedor))
             {
-                mensaje = "El nombre del proveedor no puede estar vacío.";
+                Mensaje = "El nombre del proveedor no puede estar vacío.";
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(obj.Contacto))
+            {
+                Mensaje = "El nombre de contacto no puede estar vacío.";
                 return false;
             }
 
             if (string.IsNullOrWhiteSpace(obj.Telefono))
             {
-                mensaje = "El teléfono del proveedor no puede estar vacío.";
+                Mensaje = "El teléfono no puede estar vacío.";
                 return false;
             }
 
-            return objProveedorDal.RegistrarProveedor(obj, out mensaje);
+            return objProveedorDal.GuardarProveedor(obj, out Mensaje);
         }
 
-        public bool EditarProveedor(EProveedor obj, out string mensaje)
+        // Eliminar proveedor
+        public bool EliminarProveedor(int idProveedor, out string Mensaje)
         {
-            return objProveedorDal.EditarProveedor(obj, out mensaje);
-        }
-
-        public bool EliminarProveedor(int idProveedor, out string mensaje)
-        {
-            return objProveedorDal.EliminarProveedor(idProveedor, out mensaje);
+            return objProveedorDal.EliminarProveedor(idProveedor, out Mensaje);
         }
     }
 }
