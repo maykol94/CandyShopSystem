@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Drawing;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using BusinessLayer;
 using EntityLayer;
@@ -18,72 +19,149 @@ namespace PresentationLayer
             _producto = producto;
 
             this.StartPosition = FormStartPosition.CenterParent;
-            this.FormBorderStyle = FormBorderStyle.None;;
+            this.FormBorderStyle = FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.BackColor = Color.FromArgb(255, 235, 243);
 
             this.Load += FormEditarProducto_Load;
         }
 
-        private void FormEditarProducto_Load(object sender, EventArgs e)
+        private async void FormEditarProducto_Load(object sender, EventArgs e)
         {
-            CargarCombos();
+            await CargarCombosAsync();
             CargarDatosProducto();
+            VincularEventos();
         }
 
-        private void CargarCombos()
+        private void VincularEventos()
         {
-            cboCategoria.DataSource = objProductoBl.ObtenerCategoriasCombo();
-            cboCategoria.DisplayMember = "nombre_categoria";
-            cboCategoria.ValueMember = "id_categoria";
+            Control btnG = BuscarControlPorNombre(this, "btnGuardar");
+            if (btnG != null)
+            {
+                btnG.Click -= btnGuardar_Click;
+                btnG.Click += btnGuardar_Click;
+            }
 
-            cboMarca.DataSource = objProductoBl.ObtenerMarcasCombo();
-            cboMarca.DisplayMember = "nombre_marca";
-            cboMarca.ValueMember = "id_marca";
+            Control btnC = BuscarControlPorNombre(this, "btnCancelar");
+            if (btnC != null)
+            {
+                btnC.Click -= btnCancelar_Click;
+                btnC.Click += btnCancelar_Click;
+            }
+        }
 
-            cboTipoProducto.DataSource = objProductoBl.ObtenerTiposProductoCombo();
-            cboTipoProducto.DisplayMember = "nombre_tipo";
-            cboTipoProducto.ValueMember = "id_tipo_producto";
+        private async Task CargarCombosAsync()
+        {
+            try
+            {
+                DataSet ds = await objProductoBl.ObtenerCatalogosProductoAsync();
+
+                if (ds != null && ds.Tables.Count >= 3)
+                {
+                    ComboBox cboCat = ObtenerComboBox("cboCategoria");
+                    if (cboCat != null)
+                    {
+                        cboCat.DisplayMember = "nombre_categoria";
+                        cboCat.ValueMember = "id_categoria";
+                        cboCat.DataSource = ds.Tables[0];
+                    }
+
+                    ComboBox cboMar = ObtenerComboBox("cboMarca");
+                    if (cboMar != null)
+                    {
+                        cboMar.DisplayMember = "nombre_marca";
+                        cboMar.ValueMember = "id_marca";
+                        cboMar.DataSource = ds.Tables[1];
+                    }
+
+                    ComboBox cboTip = ObtenerComboBox("cboTipoProducto");
+                    if (cboTip != null)
+                    {
+                        cboTip.DisplayMember = "nombre_tipo";
+                        cboTip.ValueMember = "id_tipo_producto";
+                        cboTip.DataSource = ds.Tables[2];
+                    }
+
+                    ComboBox cboEst = ObtenerComboBox("cboEstado");
+                    if (cboEst != null && ds.Tables.Count >= 4)
+                    {
+                        cboEst.DisplayMember = "nombre_estado";
+                        cboEst.ValueMember = "id_estado";
+                        cboEst.DataSource = ds.Tables[3];
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al cargar catálogos: " + ex.Message, "Error BD", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void CargarDatosProducto()
         {
             if (_producto != null)
             {
-                // Asignar texto
-                var propTexts = txtNombreProducto.GetType().GetProperty("Texts");
-                if (propTexts != null)
+                Control txtNombreCtrl = BuscarControlPorNombre(this, "txtNombreProducto") ?? BuscarControlPorNombre(this, "txtNombre");
+                if (txtNombreCtrl != null)
                 {
-                    propTexts.SetValue(txtNombreProducto, _producto.NombreProducto);
-                }
-                else
-                {
-                    txtNombreProducto.Text = _producto.NombreProducto;
+                    var propTexts = txtNombreCtrl.GetType().GetProperty("Texts");
+                    if (propTexts != null)
+                    {
+                        propTexts.SetValue(txtNombreCtrl, _producto.NombreProducto);
+                    }
+                    else
+                    {
+                        txtNombreCtrl.Text = _producto.NombreProducto;
+                    }
                 }
 
-                cboCategoria.SelectedValue = _producto.IdCategoria;
-                cboMarca.SelectedValue = _producto.IdMarca;
-                cboTipoProducto.SelectedValue = _producto.IdTipoProducto;
+                ComboBox cboCat = ObtenerComboBox("cboCategoria");
+                if (cboCat != null) cboCat.SelectedValue = _producto.IdCategoria;
+
+                ComboBox cboMar = ObtenerComboBox("cboMarca");
+                if (cboMar != null && _producto.IdMarca.HasValue)
+                {
+                    cboMar.SelectedValue = _producto.IdMarca.Value;
+                }
+
+                ComboBox cboTip = ObtenerComboBox("cboTipoProducto");
+                if (cboTip != null) cboTip.SelectedValue = _producto.IdTipoProducto;
+
+                ComboBox cboEst = ObtenerComboBox("cboEstado");
+                if (cboEst != null) cboEst.SelectedValue = _producto.IdEstado;
             }
         }
 
-        private void btnGuardar_Click(object sender, EventArgs e)
+        private async void btnGuardar_Click(object sender, EventArgs e)
         {
-            string nombreProd = ObtenerTexto(txtNombreProducto);
+            Control txtNombreCtrl = BuscarControlPorNombre(this, "txtNombreProducto") ?? BuscarControlPorNombre(this, "txtNombre");
+            string nombreProd = ObtenerTexto(txtNombreCtrl);
 
             if (string.IsNullOrWhiteSpace(nombreProd))
             {
                 MessageBox.Show("Ingrese el nombre del producto.", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtNombreProducto.Focus();
+                if (txtNombreCtrl != null) txtNombreCtrl.Focus();
                 return;
             }
 
-            _producto.NombreProducto = nombreProd;
-            _producto.IdCategoria = Convert.ToInt32(cboCategoria.SelectedValue);
-            _producto.IdMarca = Convert.ToInt32(cboMarca.SelectedValue);
-            _producto.IdTipoProducto = Convert.ToInt32(cboTipoProducto.SelectedValue);
+            ComboBox cboCat = ObtenerComboBox("cboCategoria");
+            ComboBox cboMar = ObtenerComboBox("cboMarca");
+            ComboBox cboTip = ObtenerComboBox("cboTipoProducto");
+            ComboBox cboEst = ObtenerComboBox("cboEstado");
 
-            string mensaje = string.Empty;
-            bool exito = objProductoBl.EditarProducto(_producto, out mensaje);
+            int idCategoria = cboCat?.SelectedValue != null ? Convert.ToInt32(cboCat.SelectedValue) : 0;
+            int? idMarca = (cboMar?.SelectedValue != null && Convert.ToInt32(cboMar.SelectedValue) > 0) ? Convert.ToInt32(cboMar.SelectedValue) : (int?)null;
+            int idTipoProducto = cboTip?.SelectedValue != null ? Convert.ToInt32(cboTip.SelectedValue) : 0;
+            int idEstado = cboEst?.SelectedValue != null ? Convert.ToInt32(cboEst.SelectedValue) : 1;
+
+            _producto.NombreProducto = nombreProd;
+            _producto.IdCategoria = idCategoria;
+            _producto.IdMarca = idMarca;
+            _producto.IdTipoProducto = idTipoProducto;
+            _producto.IdEstado = idEstado;
+
+            var (exito, mensaje) = await objProductoBl.GuardarProductoAsync(_producto);
 
             if (exito)
             {
@@ -103,12 +181,30 @@ namespace PresentationLayer
             this.Close();
         }
 
+        private ComboBox ObtenerComboBox(string nombre)
+        {
+            Control ctrl = BuscarControlPorNombre(this, nombre);
+            return ctrl as ComboBox;
+        }
+
+        private Control BuscarControlPorNombre(Control contenedor, string nombre)
+        {
+            if (contenedor == null) return null;
+            if (string.Equals(contenedor.Name, nombre, StringComparison.OrdinalIgnoreCase)) return contenedor;
+
+            foreach (Control hijo in contenedor.Controls)
+            {
+                Control encontrado = BuscarControlPorNombre(hijo, nombre);
+                if (encontrado != null) return encontrado;
+            }
+
+            return null;
+        }
 
         private string ObtenerTexto(object control)
         {
             if (control == null) return "";
 
-            //si se usa cualquier otrs libreria
             var propTexts = control.GetType().GetProperty("Texts");
             if (propTexts != null)
             {
@@ -116,7 +212,6 @@ namespace PresentationLayer
                 if (!string.IsNullOrWhiteSpace(valTexts)) return valTexts.Trim();
             }
 
-            //si es un control de windows forms
             var propText = control.GetType().GetProperty("Text");
             if (propText != null)
             {

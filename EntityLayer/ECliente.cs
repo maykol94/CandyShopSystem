@@ -10,4 +10,6 @@
         public int IdTipoCliente { get; set; }
         public string TipoCliente { get; set; }
     }
+
+    //DEJAR UNA OPCION DE DESACTIVAR CLIENTE, PARA QUE NO SE ELIMINE DE LA BASE DE DATOS, SOLO SE DESACTIVE Y NO APAREZCA EN LA LISTA DE CLIENTES   
 }

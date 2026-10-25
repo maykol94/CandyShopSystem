@@ -91,7 +91,6 @@
             this.btnNuevoProducto.Text = "+Nuevos Productos";
             this.btnNuevoProducto.TextColor = System.Drawing.Color.White;
             this.btnNuevoProducto.UseVisualStyleBackColor = false;
-            this.btnNuevoProducto.Click += new System.EventHandler(this.btnNuevoProducto_Click);
             // 
             // txtBuscar
             // 

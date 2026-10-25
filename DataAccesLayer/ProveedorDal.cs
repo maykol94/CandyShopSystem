@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Threading.Tasks;
 using Microsoft.Data.SqlClient;
 using EntityLayer;
 
@@ -8,51 +9,40 @@ namespace DataAccessLayer
 {
     public class ProveedorDal
     {
-        // 1. Obtener lista de proveedores
-        public List<EProveedor> ObtenerProveedores()
+       
+        public async Task<List<EProveedor>> ObtenerProveedoresAsync()
         {
             List<EProveedor> lista = new List<EProveedor>();
 
             using (SqlConnection oconexion = Conexion.ObtenerConexion())
             {
-                try
+                SqlCommand cmd = new SqlCommand("sp_obtenerproveedores", oconexion);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                await oconexion.OpenAsync();
+
+                using (SqlDataReader dr = await cmd.ExecuteReaderAsync())
                 {
-                    SqlCommand cmd = new SqlCommand("sp_obtenerproveedores", oconexion);
-                    cmd.CommandType = CommandType.StoredProcedure;
-
-                    oconexion.Open();
-
-                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    while (await dr.ReadAsync())
                     {
-                        while (dr.Read())
+                        lista.Add(new EProveedor()
                         {
-                            lista.Add(new EProveedor()
-                            {
-                                IdProveedor = Convert.ToInt32(dr[0]),
-                                NombreProveedor = dr[1].ToString(),
-                                Contacto = dr[2].ToString(),
-                                Telefono = dr[3].ToString(),
-                                Direccion = dr[4].ToString(),
-                                IdEstado = Convert.ToInt32(dr[5])
-                            });
-                        }
+                            IdProveedor = Convert.ToInt32(dr[0]),
+                            NombreProveedor = dr[1].ToString(),
+                            Contacto = dr[2].ToString(),
+                            Telefono = dr[3].ToString(),
+                            Direccion = dr[4].ToString(),
+                            IdEstado = Convert.ToInt32(dr[5])
+                        });
                     }
-                }
-                catch (Exception)
-                {
-                    throw;
                 }
             }
 
             return lista;
         }
 
-        // 2. Guardar o Editar proveedor
-        public bool GuardarProveedor(EProveedor obj, out string Mensaje)
+        public async Task<(bool Exito, string Mensaje)> GuardarProveedorAsync(EProveedor obj)
         {
-            bool respuesta = false;
-            Mensaje = string.Empty;
-
             using (SqlConnection oconexion = Conexion.ObtenerConexion())
             {
                 try
@@ -67,28 +57,21 @@ namespace DataAccessLayer
                     cmd.Parameters.AddWithValue("@direccion", obj.Direccion ?? "");
                     cmd.Parameters.AddWithValue("@id_estado", obj.IdEstado > 0 ? obj.IdEstado : 11);
 
-                    oconexion.Open();
+                    await oconexion.OpenAsync();
+                    await cmd.ExecuteNonQueryAsync();
 
-                    cmd.ExecuteNonQuery();
-                    respuesta = true;
-                    Mensaje = obj.IdProveedor == 0 ? "Proveedor registrado correctamente." : "Proveedor actualizado correctamente.";
+                    string msg = obj.IdProveedor == 0 ? "Proveedor registrado correctamente." : "Proveedor actualizado correctamente.";
+                    return (true, msg);
                 }
                 catch (Exception ex)
                 {
-                    respuesta = false;
-                    Mensaje = ex.Message;
+                    return (false, ex.Message);
                 }
             }
-
-            return respuesta;
         }
 
-        // 3. Eliminar proveedor
-        public bool EliminarProveedor(int idProveedor, out string Mensaje)
+        public async Task<(bool Exito, string Mensaje)> EliminarProveedorAsync(int idProveedor)
         {
-            bool respuesta = false;
-            Mensaje = string.Empty;
-
             using (SqlConnection oconexion = Conexion.ObtenerConexion())
             {
                 try
@@ -98,20 +81,16 @@ namespace DataAccessLayer
 
                     cmd.Parameters.AddWithValue("@id_proveedor", idProveedor);
 
-                    oconexion.Open();
+                    await oconexion.OpenAsync();
+                    await cmd.ExecuteNonQueryAsync();
 
-                    cmd.ExecuteNonQuery();
-                    respuesta = true;
-                    Mensaje = "Proveedor eliminado correctamente.";
+                    return (true, "Proveedor eliminado correctamente.");
                 }
                 catch (Exception ex)
                 {
-                    respuesta = false;
-                    Mensaje = ex.Message;
+                    return (false, ex.Message);
                 }
             }
-
-            return respuesta;
         }
     }
 }

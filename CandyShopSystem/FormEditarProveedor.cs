@@ -2,6 +2,7 @@
 using System.Data;
 using System.Drawing;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using BusinessLayer;
 using EntityLayer;
@@ -27,8 +28,8 @@ namespace CandyShopSystem
 
         private void CargarEstados()
         {
-            Control cboEstadoCtrl = BuscarControlPorNombre(this, "cboEstado") ?? BuscarControlPorNombre(this, "cmbEstado");
-            if (cboEstadoCtrl is ComboBox cmb)
+            ComboBox cmb = ObtenerComboBoxEstado();
+            if (cmb != null)
             {
                 DataTable dtEstado = new DataTable();
                 dtEstado.Columns.Add("id_estado", typeof(int));
@@ -37,9 +38,10 @@ namespace CandyShopSystem
                 dtEstado.Rows.Add(11, "Activo");
                 dtEstado.Rows.Add(12, "Inactivo");
 
-                cmb.DataSource = dtEstado;
+                // Configurar miembros antes de asignar el DataSource
                 cmb.DisplayMember = "descripcion";
                 cmb.ValueMember = "id_estado";
+                cmb.DataSource = dtEstado;
             }
         }
 
@@ -51,14 +53,14 @@ namespace CandyShopSystem
             Control txtContactoCtrl = BuscarControlPorNombre(this, "txtContacto");
             Control txtTelefonoCtrl = BuscarControlPorNombre(this, "txtTelefono");
             Control txtDireccionCtrl = BuscarControlPorNombre(this, "txtDireccion") ?? BuscarControlPorNombre(this, "txtDir");
-            Control cboEstadoCtrl = BuscarControlPorNombre(this, "cboEstado") ?? BuscarControlPorNombre(this, "cmbEstado");
 
             EstablecerTexto(txtNombreCtrl, proveedorEditar.NombreProveedor);
             EstablecerTexto(txtContactoCtrl, proveedorEditar.Contacto);
             EstablecerTexto(txtTelefonoCtrl, proveedorEditar.Telefono);
             EstablecerTexto(txtDireccionCtrl, proveedorEditar.Direccion);
 
-            if (cboEstadoCtrl is ComboBox cmb)
+            ComboBox cmb = ObtenerComboBoxEstado();
+            if (cmb != null)
             {
                 cmb.SelectedValue = proveedorEditar.IdEstado;
             }
@@ -95,13 +97,12 @@ namespace CandyShopSystem
             }
         }
 
-        private void btnGuardar_Click(object sender, EventArgs e)
+        private async void btnGuardar_Click(object sender, EventArgs e)
         {
             Control txtNombreCtrl = BuscarControlPorNombre(this, "txtNombreProveedor") ?? BuscarControlPorNombre(this, "txtNombre");
             Control txtContactoCtrl = BuscarControlPorNombre(this, "txtContacto");
             Control txtTelefonoCtrl = BuscarControlPorNombre(this, "txtTelefono");
             Control txtDireccionCtrl = BuscarControlPorNombre(this, "txtDireccion") ?? BuscarControlPorNombre(this, "txtDir");
-            Control cboEstadoCtrl = BuscarControlPorNombre(this, "cboEstado") ?? BuscarControlPorNombre(this, "cmbEstado");
 
             string nombre = ExtraerTexto(txtNombreCtrl);
             string contacto = ExtraerTexto(txtContactoCtrl);
@@ -109,12 +110,19 @@ namespace CandyShopSystem
             string direccion = ExtraerTexto(txtDireccionCtrl);
 
             int idEstado = 11;
-            if (cboEstadoCtrl is ComboBox cmb && cmb.SelectedValue != null)
+            ComboBox cmb = ObtenerComboBoxEstado();
+            if (cmb != null)
             {
-                idEstado = Convert.ToInt32(cmb.SelectedValue);
+                if (cmb.SelectedValue != null && int.TryParse(cmb.SelectedValue.ToString(), out int valEstado))
+                {
+                    idEstado = valEstado;
+                }
+                else if (cmb.SelectedItem is DataRowView drv)
+                {
+                    idEstado = Convert.ToInt32(drv["id_estado"]);
+                }
             }
 
-            // Validaciones
             if (string.IsNullOrWhiteSpace(nombre))
             {
                 MessageBox.Show("Ingrese el nombre del proveedor.", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -133,15 +141,13 @@ namespace CandyShopSystem
                 return;
             }
 
-            // Se actualizan los datos del objeto proveedorEditar
             proveedorEditar.NombreProveedor = nombre;
             proveedorEditar.Contacto = contacto;
             proveedorEditar.Telefono = telefono;
             proveedorEditar.Direccion = direccion;
             proveedorEditar.IdEstado = idEstado;
 
-            string mensaje = string.Empty;
-            bool exito = objProveedorBl.GuardarProveedor(proveedorEditar, out mensaje);
+            var (exito, mensaje) = await objProveedorBl.GuardarProveedorAsync(proveedorEditar);
 
             if (exito)
             {
@@ -161,32 +167,39 @@ namespace CandyShopSystem
             this.Close();
         }
 
+        private ComboBox ObtenerComboBoxEstado()
+        {
+           
+            string[] nombresPosibles = { "cboEstado", "cmbEstado", "cbEstado", "cboEstadoProveedor", "cmbEstadoProveedor" };
+            foreach (string nombre in nombresPosibles)
+            {
+                Control ctrl = BuscarControlPorNombre(this, nombre);
+                if (ctrl is ComboBox cmb) return cmb;
+            }
+
+            return BuscarPrimerComboBox(this);
+        }
+
+        private ComboBox BuscarPrimerComboBox(Control contenedor)
+        {
+            if (contenedor is ComboBox cmb) return cmb;
+            foreach (Control hijo in contenedor.Controls)
+            {
+                ComboBox encontrado = BuscarPrimerComboBox(hijo);
+                if (encontrado != null) return encontrado;
+            }
+            return null;
+        }
+
         private void EstablecerTexto(Control ctrl, string valor)
         {
             if (ctrl == null) return;
-
-            var propTexts = ctrl.GetType().GetProperty("Texts");
-            if (propTexts != null)
-            {
-                propTexts.SetValue(ctrl, valor, null);
-            }
-            else
-            {
-                ctrl.Text = valor;
-            }
+            ctrl.Text = valor;
         }
 
         private string ExtraerTexto(Control ctrl)
         {
             if (ctrl == null) return string.Empty;
-
-            var propTexts = ctrl.GetType().GetProperty("Texts");
-            if (propTexts != null)
-            {
-                string val = propTexts.GetValue(ctrl, null) as string;
-                if (!string.IsNullOrWhiteSpace(val)) return val.Trim();
-            }
-
             return ctrl.Text.Trim();
         }
 

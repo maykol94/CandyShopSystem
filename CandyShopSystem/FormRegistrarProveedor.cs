@@ -2,6 +2,7 @@
 using System.Data;
 using System.Drawing;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using BusinessLayer;
 using EntityLayer;
@@ -25,7 +26,9 @@ namespace CandyShopSystem
         private void CargarEstados()
         {
             Control cboEstadoCtrl = BuscarControlPorNombre(this, "cboEstado") ?? BuscarControlPorNombre(this, "cmbEstado");
-            if (cboEstadoCtrl is ComboBox cmb)
+            ComboBox cmb = ObtenerComboBoxInterno(cboEstadoCtrl);
+
+            if (cmb != null)
             {
                 DataTable dtEstado = new DataTable();
                 dtEstado.Columns.Add("id_estado", typeof(int));
@@ -72,7 +75,7 @@ namespace CandyShopSystem
             }
         }
 
-        private void btnGuardar_Click(object sender, EventArgs e)
+        private async void btnGuardar_Click(object sender, EventArgs e)
         {
             Control txtNombreCtrl = BuscarControlPorNombre(this, "txtNombreProveedor") ?? BuscarControlPorNombre(this, "txtNombre");
             Control txtContactoCtrl = BuscarControlPorNombre(this, "txtContacto");
@@ -85,13 +88,8 @@ namespace CandyShopSystem
             string direccion = ExtraerTexto(txtDireccionCtrl);
             string telefono = ExtraerTexto(txtTelefonoCtrl);
 
-            int idEstado = 11;
-            if (cboEstadoCtrl is ComboBox cmb && cmb.SelectedValue != null)
-            {
-                idEstado = Convert.ToInt32(cmb.SelectedValue);
-            }
+            int idEstado = ObtenerIdEstadoSeleccionado(cboEstadoCtrl);
 
-            // Validaciones
             if (string.IsNullOrWhiteSpace(nombre))
             {
                 MessageBox.Show("Ingrese el nombre del proveedor.", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -112,7 +110,7 @@ namespace CandyShopSystem
 
             EProveedor nuevoProveedor = new EProveedor
             {
-                IdProveedor = 0, // 0 indica registro nuevo
+                IdProveedor = 0,
                 NombreProveedor = nombre,
                 Contacto = contacto,
                 Direccion = direccion,
@@ -120,8 +118,7 @@ namespace CandyShopSystem
                 IdEstado = idEstado
             };
 
-            string mensaje = string.Empty;
-            bool exito = objProveedorBl.GuardarProveedor(nuevoProveedor, out mensaje);
+            var (exito, mensaje) = await objProveedorBl.GuardarProveedorAsync(nuevoProveedor);
 
             if (exito)
             {
@@ -139,6 +136,37 @@ namespace CandyShopSystem
         {
             this.DialogResult = DialogResult.Cancel;
             this.Close();
+        }
+
+        private ComboBox ObtenerComboBoxInterno(Control ctrl)
+        {
+            if (ctrl is ComboBox cmb) return cmb;
+            if (ctrl != null)
+            {
+                foreach (Control hijo in ctrl.Controls)
+                {
+                    if (hijo is ComboBox cmbHijo) return cmbHijo;
+                }
+            }
+            return null;
+        }
+
+        private int ObtenerIdEstadoSeleccionado(Control cboControl)
+        {
+            ComboBox cmb = ObtenerComboBoxInterno(cboControl);
+            if (cmb != null && cmb.SelectedValue != null)
+            {
+                if (int.TryParse(cmb.SelectedValue.ToString(), out int id))
+                {
+                    return id;
+                }
+            }
+
+            string texto = ExtraerTexto(cboControl);
+            if (texto.Equals("Inactivo", StringComparison.OrdinalIgnoreCase))
+                return 12;
+
+            return 11;
         }
 
         private string ExtraerTexto(Control ctrl)

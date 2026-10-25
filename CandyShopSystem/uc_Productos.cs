@@ -146,7 +146,7 @@ namespace PresentationLayer
         {
             try
             {
-                List<EProducto> lista = await Task.Run(() => objProductoBl.ObtenerProductos());
+                List<EProducto> lista = await objProductoBl.ObtenerProductosAsync();
                 tablaProductos = ConvertirListaADataTable(lista);
 
                 bindingSourceProductos.DataSource = tablaProductos;
@@ -177,7 +177,9 @@ namespace PresentationLayer
             dt.Columns.Add("IdMarca", typeof(int));
             dt.Columns.Add("NombreMarca", typeof(string));
             dt.Columns.Add("IdTipoProducto", typeof(int));
-            dt.Columns.Add("TipoProductoDescripcion", typeof(string));
+            dt.Columns.Add("NombreTipo", typeof(string));
+            dt.Columns.Add("IdEstado", typeof(int));
+            dt.Columns.Add("Estado", typeof(string));
 
             foreach (var item in lista)
             {
@@ -186,10 +188,12 @@ namespace PresentationLayer
                     item.NombreProducto,
                     item.IdCategoria,
                     item.NombreCategoria,
-                    item.IdMarca,
+                    (object)item.IdMarca ?? DBNull.Value,
                     item.NombreMarca,
                     item.IdTipoProducto,
-                    item.TipoProductoDescripcion
+                    item.NombreTipo,
+                    item.IdEstado,
+                    item.Estado
                 );
             }
 
@@ -227,24 +231,36 @@ namespace PresentationLayer
                 if (dgv.Columns["IdCategoria"] != null) dgv.Columns["IdCategoria"].Visible = false;
                 if (dgv.Columns["IdMarca"] != null) dgv.Columns["IdMarca"].Visible = false;
                 if (dgv.Columns["IdTipoProducto"] != null) dgv.Columns["IdTipoProducto"].Visible = false;
+                if (dgv.Columns["IdEstado"] != null) dgv.Columns["IdEstado"].Visible = false;
+
+                if (dgv.Columns["Estado"] == null && tablaProductos.Columns.Contains("Estado"))
+                {
+                    DataGridViewTextBoxColumn colEst = new DataGridViewTextBoxColumn
+                    {
+                        Name = "Estado",
+                        DataPropertyName = "Estado",
+                        HeaderText = "ESTADO"
+                    };
+                    dgv.Columns.Add(colEst);
+                }
+                else if (dgv.Columns["Estado"] != null)
+                {
+                    dgv.Columns["Estado"].HeaderText = "ESTADO";
+                    dgv.Columns["Estado"].Visible = true;
+                }
 
                 if (dgv.Columns["NombreProducto"] != null) dgv.Columns["NombreProducto"].HeaderText = "PRODUCTO";
                 if (dgv.Columns["NombreCategoria"] != null) dgv.Columns["NombreCategoria"].HeaderText = "CATEGORÍA";
                 if (dgv.Columns["NombreMarca"] != null) dgv.Columns["NombreMarca"].HeaderText = "MARCA";
-                if (dgv.Columns["TipoProductoDescripcion"] != null) dgv.Columns["TipoProductoDescripcion"].HeaderText = "TIPO PRODUCTO";
-
-                if (dgv.Columns["IdProducto"] != null) dgv.Columns["IdProducto"].FillWeight = 40;
-                if (dgv.Columns["NombreProducto"] != null) dgv.Columns["NombreProducto"].FillWeight = 160;
-                if (dgv.Columns["NombreCategoria"] != null) dgv.Columns["NombreCategoria"].FillWeight = 110;
-                if (dgv.Columns["NombreMarca"] != null) dgv.Columns["NombreMarca"].FillWeight = 100;
-                if (dgv.Columns["TipoProductoDescripcion"] != null) dgv.Columns["TipoProductoDescripcion"].FillWeight = 110;
+                if (dgv.Columns["NombreTipo"] != null) dgv.Columns["NombreTipo"].HeaderText = "TIPO PRODUCTO";
 
                 int index = 0;
                 if (dgv.Columns["IdProducto"] != null) dgv.Columns["IdProducto"].DisplayIndex = index++;
                 if (dgv.Columns["NombreProducto"] != null) dgv.Columns["NombreProducto"].DisplayIndex = index++;
                 if (dgv.Columns["NombreCategoria"] != null) dgv.Columns["NombreCategoria"].DisplayIndex = index++;
                 if (dgv.Columns["NombreMarca"] != null) dgv.Columns["NombreMarca"].DisplayIndex = index++;
-                if (dgv.Columns["TipoProductoDescripcion"] != null) dgv.Columns["TipoProductoDescripcion"].DisplayIndex = index++;
+                if (dgv.Columns["NombreTipo"] != null) dgv.Columns["NombreTipo"].DisplayIndex = index++;
+                if (dgv.Columns["Estado"] != null) dgv.Columns["Estado"].DisplayIndex = index++;
 
                 if (dgv.Columns["colEditar"] != null) dgv.Columns["colEditar"].DisplayIndex = index++;
                 if (dgv.Columns["colEliminar"] != null) dgv.Columns["colEliminar"].DisplayIndex = index++;
@@ -301,7 +317,7 @@ namespace PresentationLayer
                 busqueda = busqueda.Replace("'", "''").Trim();
 
                 string filtroBusqueda = string.Format(
-                    "NombreProducto LIKE '%{0}%' OR NombreCategoria LIKE '%{0}%' OR NombreMarca LIKE '%{0}%' OR TipoProductoDescripcion LIKE '%{0}%'",
+                    "NombreProducto LIKE '%{0}%' OR NombreCategoria LIKE '%{0}%' OR NombreMarca LIKE '%{0}%' OR NombreTipo LIKE '%{0}%' OR Estado LIKE '%{0}%'",
                     busqueda
                 );
 
@@ -331,15 +347,16 @@ namespace PresentationLayer
                     NombreProducto = rowView["NombreProducto"].ToString(),
                     IdCategoria = Convert.ToInt32(rowView["IdCategoria"]),
                     NombreCategoria = rowView["NombreCategoria"].ToString(),
-                    IdMarca = Convert.ToInt32(rowView["IdMarca"]),
+                    IdMarca = rowView["IdMarca"] != DBNull.Value ? Convert.ToInt32(rowView["IdMarca"]) : (int?)null,
                     NombreMarca = rowView["NombreMarca"].ToString(),
                     IdTipoProducto = Convert.ToInt32(rowView["IdTipoProducto"]),
-                    TipoProductoDescripcion = rowView["TipoProductoDescripcion"].ToString()
+                    NombreTipo = rowView["NombreTipo"].ToString(),
+                    IdEstado = Convert.ToInt32(rowView["IdEstado"]),
+                    Estado = rowView["Estado"].ToString()
                 };
 
                 string colName = dgv.Columns[e.ColumnIndex].Name;
 
-                // Editar Producto
                 if (colName == "colEditar")
                 {
                     using (FormEditarProducto modal = new FormEditarProducto(productoSeleccionado))
@@ -350,7 +367,6 @@ namespace PresentationLayer
                         }
                     }
                 }
-                // Eliminar Producto
                 else if (colName == "colEliminar")
                 {
                     var result = MessageBox.Show(
@@ -362,17 +378,16 @@ namespace PresentationLayer
 
                     if (result == DialogResult.Yes)
                     {
-                        string mensaje = string.Empty;
-                        bool respuesta = objProductoBl.EliminarProducto(productoSeleccionado.IdProducto, out mensaje);
+                        var (exito, mensaje) = await objProductoBl.EliminarProductoAsync(productoSeleccionado.IdProducto);
 
-                        if (respuesta)
+                        if (exito)
                         {
                             MessageBox.Show("¡Producto eliminado correctamente!", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
                             await CargarTablaProductosAsync();
                         }
                         else
                         {
-                            MessageBox.Show("No se pudo eliminar el producto: " + mensaje, "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            MessageBox.Show(mensaje, "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         }
                     }
                 }

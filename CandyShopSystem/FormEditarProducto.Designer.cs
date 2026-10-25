@@ -41,6 +41,8 @@
             this.btnCancelar = new FontAwesome.Sharp.IconButton();
             this.btnGuardar = new FontAwesome.Sharp.IconButton();
             this.cboMarca = new System.Windows.Forms.ComboBox();
+            this.cboEstado = new System.Windows.Forms.ComboBox();
+            this.label5 = new System.Windows.Forms.Label();
             this.pnlHeaderModal.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -199,12 +201,33 @@
             this.cboMarca.Size = new System.Drawing.Size(292, 24);
             this.cboMarca.TabIndex = 70;
             // 
+            // cboEstado
+            // 
+            this.cboEstado.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboEstado.FormattingEnabled = true;
+            this.cboEstado.Location = new System.Drawing.Point(304, 339);
+            this.cboEstado.Name = "cboEstado";
+            this.cboEstado.Size = new System.Drawing.Size(163, 24);
+            this.cboEstado.TabIndex = 72;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.Location = new System.Drawing.Point(5, 347);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(148, 16);
+            this.label5.TabIndex = 71;
+            this.label5.Text = "Estado del Producto";
+            // 
             // FormEditarProducto
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(235)))), ((int)(((byte)(243)))));
             this.ClientSize = new System.Drawing.Size(782, 451);
+            this.Controls.Add(this.cboEstado);
+            this.Controls.Add(this.label5);
             this.Controls.Add(this.cboMarca);
             this.Controls.Add(this.cboCategoria);
             this.Controls.Add(this.btnCancelar);
@@ -241,5 +264,7 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label lblTituloModal;
         private System.Windows.Forms.ComboBox cboMarca;
+        private System.Windows.Forms.ComboBox cboEstado;
+        private System.Windows.Forms.Label label5;
     }
 }

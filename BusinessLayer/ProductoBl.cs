@@ -1,7 +1,8 @@
-﻿using DataAccessLayer;
-using EntityLayer;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Data;
+using System.Threading.Tasks;
+using DataAccessLayer;
+using EntityLayer;
 
 namespace BusinessLayer
 {
@@ -9,28 +10,39 @@ namespace BusinessLayer
     {
         private ProductoDal objProductoDal = new ProductoDal();
 
-        public List<EProducto> ObtenerProductos()
+        public async Task<List<EProducto>> ObtenerProductosAsync()
         {
-            return objProductoDal.ObtenerProductos();
+            return await objProductoDal.ObtenerProductosAsync();
         }
 
-        public bool RegistrarProducto(EProducto obj, out string mensaje)
+        public async Task<DataSet> ObtenerCatalogosProductoAsync()
         {
-            return objProductoDal.RegistrarProducto(obj, out mensaje);
+            return await objProductoDal.ObtenerCatalogosProductoAsync();
         }
 
-        public bool EditarProducto(EProducto obj, out string mensaje)
+        public async Task<(bool Exito, string Mensaje)> GuardarProductoAsync(EProducto producto)
         {
-            return objProductoDal.EditarProducto(obj, out mensaje);
+            if (string.IsNullOrWhiteSpace(producto.NombreProducto))
+            {
+                return (false, "El nombre del producto no puede estar vacío.");
+            }
+
+            if (producto.IdCategoria <= 0)
+            {
+                return (false, "Debe seleccionar una categoría válida.");
+            }
+
+            if (producto.IdTipoProducto <= 0)
+            {
+                return (false, "Debe seleccionar un tipo de producto válido.");
+            }
+
+            return await objProductoDal.GuardarProductoAsync(producto);
         }
 
-        public bool EliminarProducto(int idProducto, out string mensaje)
+        public async Task<(bool Exito, string Mensaje)> EliminarProductoAsync(int idProducto)
         {
-            return objProductoDal.EliminarProducto(idProducto, out mensaje);
+            return await objProductoDal.EliminarProductoAsync(idProducto);
         }
-
-        public DataTable ObtenerCategoriasCombo() => objProductoDal.ObtenerCategoriasCombo();
-        public DataTable ObtenerMarcasCombo() => objProductoDal.ObtenerMarcasCombo();
-        public DataTable ObtenerTiposProductoCombo() => objProductoDal.ObtenerTiposProductoCombo();
     }
 }

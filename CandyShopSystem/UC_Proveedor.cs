@@ -147,7 +147,8 @@ namespace PresentationLayer
         {
             try
             {
-                List<EProveedor> lista = await Task.Run(() => objProveedorBl.ObtenerProveedores());
+               
+                List<EProveedor> lista = await objProveedorBl.ObtenerProveedoresAsync();
                 tablaProveedores = ConvertirListaADataTable(lista);
 
                 bindingSourceProveedores.DataSource = tablaProveedores;
@@ -359,8 +360,8 @@ namespace PresentationLayer
 
                     if (result == DialogResult.Yes)
                     {
-                        string mensaje = string.Empty;
-                        bool respuesta = objProveedorBl.EliminarProveedor(proveedorSeleccionado.IdProveedor, out mensaje);
+                      
+                        var (respuesta, mensaje) = await objProveedorBl.EliminarProveedorAsync(proveedorSeleccionado.IdProveedor);
 
                         if (respuesta)
                         {

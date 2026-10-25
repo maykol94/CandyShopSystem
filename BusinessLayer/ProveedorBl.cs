@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using DataAccessLayer;
 using EntityLayer;
 
@@ -8,42 +9,37 @@ namespace BusinessLayer
     {
         private ProveedorDal objProveedorDal = new ProveedorDal();
 
-        // Obtener lista de proveedores
-        public List<EProveedor> ObtenerProveedores()
+        // Obtener lista de proveedores (Asíncrono)
+        public async Task<List<EProveedor>> ObtenerProveedoresAsync()
         {
-            return objProveedorDal.ObtenerProveedores();
+            return await objProveedorDal.ObtenerProveedoresAsync();
         }
 
-        // Guardar o Editar proveedor con validaciones de negocio
-        public bool GuardarProveedor(EProveedor obj, out string Mensaje)
+        // Guardar o Editar proveedor con validaciones (Asíncrono)
+        public async Task<(bool Exito, string Mensaje)> GuardarProveedorAsync(EProveedor obj)
         {
-            Mensaje = string.Empty;
-
             if (string.IsNullOrWhiteSpace(obj.NombreProveedor))
             {
-                Mensaje = "El nombre del proveedor no puede estar vacío.";
-                return false;
+                return (false, "El nombre del proveedor no puede estar vacío.");
             }
 
             if (string.IsNullOrWhiteSpace(obj.Contacto))
             {
-                Mensaje = "El nombre de contacto no puede estar vacío.";
-                return false;
+                return (false, "El nombre de contacto no puede estar vacío.");
             }
 
             if (string.IsNullOrWhiteSpace(obj.Telefono))
             {
-                Mensaje = "El teléfono no puede estar vacío.";
-                return false;
+                return (false, "El teléfono no puede estar vacío.");
             }
 
-            return objProveedorDal.GuardarProveedor(obj, out Mensaje);
+            return await objProveedorDal.GuardarProveedorAsync(obj);
         }
 
-        // Eliminar proveedor
-        public bool EliminarProveedor(int idProveedor, out string Mensaje)
+        // Eliminar proveedor (Asíncrono)
+        public async Task<(bool Exito, string Mensaje)> EliminarProveedorAsync(int idProveedor)
         {
-            return objProveedorDal.EliminarProveedor(idProveedor, out Mensaje);
+            return await objProveedorDal.EliminarProveedorAsync(idProveedor);
         }
     }
 }
