@@ -10,18 +10,18 @@ using BusinessLayer;
 using EntityLayer;
 using FontAwesome.Sharp;
 
-namespace CandyShopSystem
+namespace PresentationLayer
 {
-    public partial class UC_Stock : UserControl
+    public partial class UC_Inventario : UserControl
     {
-        private StockBl objStockBl = new StockBl();
+        private InventarioBl objInventarioBl = new InventarioBl();
         private BindingSource bindingSourceInventario = new BindingSource();
         private List<EInventario> listaInventario = new List<EInventario>();
 
         private Image imgMas;
         private Image imgMenos;
 
-        public UC_Stock()
+        public UC_Inventario()
         {
             InitializeComponent();
             this.BackColor = Color.FromArgb(253, 246, 248);
@@ -131,7 +131,7 @@ namespace CandyShopSystem
         {
             try
             {
-                listaInventario = await Task.Run(() => objStockBl.ObtenerInventario());
+                listaInventario = await objInventarioBl.ObtenerInventarioAsync();
                 DataTable dt = ConvertirListaADataTable(listaInventario);
 
                 bindingSourceInventario.DataSource = dt;
@@ -156,7 +156,7 @@ namespace CandyShopSystem
 
         private void ActualizarBannerAlerta()
         {
-            int rep = listaInventario.Count(x => x.StockActual <= x.StockMinimo);
+            int rep = listaInventario.Count(x => x.CantidadDisponible <= x.DiasAlerta);
 
             Control lblA = BuscarControlPorNombre(this, "lblAlertaTexto");
             Control pnlA = BuscarControlPorNombre(this, "pnlAlerta");
@@ -180,15 +180,18 @@ namespace CandyShopSystem
         {
             DataTable dt = new DataTable();
             dt.Columns.Add("IdStock", typeof(int));
-            dt.Columns.Add("NombreProducto", typeof(string));
+            dt.Columns.Add("Producto", typeof(string));
             dt.Columns.Add("Categoria", typeof(string));
-            dt.Columns.Add("StockActual", typeof(int));
-            dt.Columns.Add("StockMinimo", typeof(int));
+            dt.Columns.Add("CantidadDisponible", typeof(int));
+            dt.Columns.Add("PrecioCompra", typeof(decimal));
+            dt.Columns.Add("PrecioVenta", typeof(decimal));
+            dt.Columns.Add("FechaIngreso", typeof(string));
+            dt.Columns.Add("DiasAlerta", typeof(int));
             dt.Columns.Add("Estado", typeof(string));
 
             foreach (var item in lista)
             {
-                dt.Rows.Add(item.IdStock, item.NombreProducto, item.Categoria, item.StockActual, item.StockMinimo, item.Estado);
+                dt.Rows.Add(item.IdStock, item.Producto, item.Categoria, item.CantidadDisponible, item.PrecioCompra, item.PrecioVenta, item.FechaIngreso, item.DiasAlerta, item.Estado);
             }
 
             return dt;
@@ -222,30 +225,40 @@ namespace CandyShopSystem
             if (dgv.Columns.Count > 0)
             {
                 if (dgv.Columns["IdStock"] != null) dgv.Columns["IdStock"].Visible = false;
+                if (dgv.Columns["DiasAlerta"] != null) dgv.Columns["DiasAlerta"].Visible = false;
 
-                if (dgv.Columns["NombreProducto"] != null) dgv.Columns["NombreProducto"].HeaderText = "PRODUCTO";
+                if (dgv.Columns["Producto"] != null) dgv.Columns["Producto"].HeaderText = "PRODUCTO";
                 if (dgv.Columns["Categoria"] != null) dgv.Columns["Categoria"].HeaderText = "CATEGORÍA";
-                if (dgv.Columns["StockActual"] != null) dgv.Columns["StockActual"].HeaderText = "STOCK ACTUAL";
-                if (dgv.Columns["StockMinimo"] != null) dgv.Columns["StockMinimo"].HeaderText = "MÍNIMO";
+                if (dgv.Columns["CantidadDisponible"] != null) dgv.Columns["CantidadDisponible"].HeaderText = "STOCK";
+                if (dgv.Columns["PrecioCompra"] != null) dgv.Columns["PrecioCompra"].HeaderText = "PRECIO COMPRA";
+                if (dgv.Columns["PrecioVenta"] != null) dgv.Columns["PrecioVenta"].HeaderText = "PRECIO VENTA";
+                if (dgv.Columns["FechaIngreso"] != null) dgv.Columns["FechaIngreso"].HeaderText = "FECHA ENTRADA";
                 if (dgv.Columns["Estado"] != null) dgv.Columns["Estado"].HeaderText = "ESTADO";
 
-                if (dgv.Columns["NombreProducto"] != null) dgv.Columns["NombreProducto"].FillWeight = 160;
-                if (dgv.Columns["Categoria"] != null) dgv.Columns["Categoria"].FillWeight = 100;
-                if (dgv.Columns["StockActual"] != null) dgv.Columns["StockActual"].FillWeight = 80;
-                if (dgv.Columns["StockMinimo"] != null) dgv.Columns["StockMinimo"].FillWeight = 70;
-                if (dgv.Columns["Estado"] != null) dgv.Columns["Estado"].FillWeight = 90;
-                if (dgv.Columns["colRestar"] != null) dgv.Columns["colRestar"].Width = 40;
-                if (dgv.Columns["colSumar"] != null) dgv.Columns["colSumar"].Width = 40;
+                if (dgv.Columns["Producto"] != null) dgv.Columns["Producto"].FillWeight = 140;
+                if (dgv.Columns["Categoria"] != null) dgv.Columns["Categoria"].FillWeight = 90;
+                if (dgv.Columns["CantidadDisponible"] != null) dgv.Columns["CantidadDisponible"].FillWeight = 60;
+                if (dgv.Columns["PrecioCompra"] != null) dgv.Columns["PrecioCompra"].FillWeight = 85;
+                if (dgv.Columns["PrecioVenta"] != null) dgv.Columns["PrecioVenta"].FillWeight = 85;
+                if (dgv.Columns["FechaIngreso"] != null) dgv.Columns["FechaIngreso"].FillWeight = 90;
+                if (dgv.Columns["Estado"] != null) dgv.Columns["Estado"].FillWeight = 80;
 
-                if (dgv.Columns["StockActual"] != null) dgv.Columns["StockActual"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
-                if (dgv.Columns["StockMinimo"] != null) dgv.Columns["StockMinimo"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                if (dgv.Columns["PrecioCompra"] != null) dgv.Columns["PrecioCompra"].DefaultCellStyle.Format = "C$ #,##0.00";
+                if (dgv.Columns["PrecioVenta"] != null) dgv.Columns["PrecioVenta"].DefaultCellStyle.Format = "C$ #,##0.00";
+
+                if (dgv.Columns["CantidadDisponible"] != null) dgv.Columns["CantidadDisponible"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
+                if (dgv.Columns["PrecioCompra"] != null) dgv.Columns["PrecioCompra"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                if (dgv.Columns["PrecioVenta"] != null) dgv.Columns["PrecioVenta"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
+                if (dgv.Columns["FechaIngreso"] != null) dgv.Columns["FechaIngreso"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
                 if (dgv.Columns["Estado"] != null) dgv.Columns["Estado"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter;
 
                 int index = 0;
-                if (dgv.Columns["NombreProducto"] != null) dgv.Columns["NombreProducto"].DisplayIndex = index++;
+                if (dgv.Columns["Producto"] != null) dgv.Columns["Producto"].DisplayIndex = index++;
                 if (dgv.Columns["Categoria"] != null) dgv.Columns["Categoria"].DisplayIndex = index++;
-                if (dgv.Columns["StockActual"] != null) dgv.Columns["StockActual"].DisplayIndex = index++;
-                if (dgv.Columns["StockMinimo"] != null) dgv.Columns["StockMinimo"].DisplayIndex = index++;
+                if (dgv.Columns["CantidadDisponible"] != null) dgv.Columns["CantidadDisponible"].DisplayIndex = index++;
+                if (dgv.Columns["PrecioCompra"] != null) dgv.Columns["PrecioCompra"].DisplayIndex = index++;
+                if (dgv.Columns["PrecioVenta"] != null) dgv.Columns["PrecioVenta"].DisplayIndex = index++;
+                if (dgv.Columns["FechaIngreso"] != null) dgv.Columns["FechaIngreso"].DisplayIndex = index++;
                 if (dgv.Columns["Estado"] != null) dgv.Columns["Estado"].DisplayIndex = index++;
                 if (dgv.Columns["colRestar"] != null) dgv.Columns["colRestar"].DisplayIndex = index++;
                 if (dgv.Columns["colSumar"] != null) dgv.Columns["colSumar"].DisplayIndex = index++;
@@ -267,9 +280,10 @@ namespace CandyShopSystem
 
                     string estado = e.Value.ToString();
                     bool esDisponible = estado.Equals("Disponible", StringComparison.OrdinalIgnoreCase);
+                    bool esReponer = estado.Equals("Reponer", StringComparison.OrdinalIgnoreCase);
 
-                    Color backPill = esDisponible ? Color.FromArgb(220, 245, 230) : Color.FromArgb(255, 225, 230);
-                    Color textPill = esDisponible ? Color.FromArgb(35, 135, 75) : Color.FromArgb(220, 50, 80);
+                    Color backPill = esDisponible ? Color.FromArgb(220, 245, 230) : (esReponer ? Color.FromArgb(255, 243, 205) : Color.FromArgb(255, 225, 230));
+                    Color textPill = esDisponible ? Color.FromArgb(35, 135, 75) : (esReponer ? Color.FromArgb(133, 100, 4) : Color.FromArgb(220, 50, 80));
 
                     int pillWidth = 85;
                     int pillHeight = 24;
@@ -341,8 +355,7 @@ namespace CandyShopSystem
                         int idStock = Convert.ToInt32(rowView["IdStock"]);
                         int cambio = colName == "colSumar" ? 1 : -1;
 
-                        string mensaje = string.Empty;
-                        bool exito = objStockBl.AjustarStock(idStock, cambio, out mensaje);
+                        var (exito, mensaje) = await objInventarioBl.AjustarStockAsync(idStock, cambio);
 
                         if (exito)
                         {
@@ -350,7 +363,7 @@ namespace CandyShopSystem
                         }
                         else
                         {
-                            MessageBox.Show("No se pudo ajustar el stock: " + mensaje, "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            MessageBox.Show("No se pudo ajustar el inventario: " + mensaje, "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                         }
                     }
                 }
@@ -371,7 +384,7 @@ namespace CandyShopSystem
                 }
 
                 busqueda = busqueda.Replace("'", "''").Trim();
-                bindingSourceInventario.Filter = string.Format("NombreProducto LIKE '%{0}%' OR Categoria LIKE '%{0}%'", busqueda);
+                bindingSourceInventario.Filter = string.Format("Producto LIKE '%{0}%' OR Categoria LIKE '%{0}%' OR Estado LIKE '%{0}%'", busqueda);
             }
             catch (Exception)
             {

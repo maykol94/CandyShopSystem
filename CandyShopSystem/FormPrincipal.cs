@@ -145,7 +145,7 @@ namespace CandyShopSystem
             //limpia el panel contenedor antes de agregar el UserControl de Stock
             panelContenedor.Controls.Clear();
 
-            UC_Stock ucStock = new UC_Stock();
+            UC_Inventario ucStock = new UC_Inventario();
 
             ucStock.Dock = DockStyle.Fill;
 

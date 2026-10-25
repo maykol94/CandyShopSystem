@@ -84,9 +84,9 @@
             this.btnNuevoProducto.FlatAppearance.BorderSize = 0;
             this.btnNuevoProducto.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.btnNuevoProducto.ForeColor = System.Drawing.Color.White;
-            this.btnNuevoProducto.Location = new System.Drawing.Point(837, 10);
+            this.btnNuevoProducto.Location = new System.Drawing.Point(761, 10);
             this.btnNuevoProducto.Name = "btnNuevoProducto";
-            this.btnNuevoProducto.Size = new System.Drawing.Size(139, 40);
+            this.btnNuevoProducto.Size = new System.Drawing.Size(215, 40);
             this.btnNuevoProducto.TabIndex = 5;
             this.btnNuevoProducto.Text = "+Nuevos Productos";
             this.btnNuevoProducto.TextColor = System.Drawing.Color.White;

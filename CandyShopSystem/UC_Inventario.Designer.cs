@@ -1,6 +1,6 @@
-﻿namespace CandyShopSystem
+﻿namespace PresentationLayer
 {
-    partial class UC_Stock
+    partial class UC_Inventario
     {
         /// <summary> 
         /// Variable del diseñador necesaria.
@@ -127,7 +127,7 @@
             this.dgvInventario.SortStringChangedInvokeBeforeDatasourceUpdate = true;
             this.dgvInventario.TabIndex = 4;
             // 
-            // UC_Stock
+            // UC_Inventario
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -136,7 +136,7 @@
             this.Controls.Add(this.pnlAlerta);
             this.Controls.Add(this.pnlHeader2);
             this.Controls.Add(this.pnlHeader);
-            this.Name = "UC_Stock";
+            this.Name = "UC_Inventario";
             this.Size = new System.Drawing.Size(1280, 720);
             this.pnlHeader.ResumeLayout(false);
             this.pnlHeader.PerformLayout();

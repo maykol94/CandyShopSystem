@@ -274,11 +274,11 @@
     <Compile Include="UC_Proveedor.Designer.cs">
       <DependentUpon>UC_Proveedor.cs</DependentUpon>
     </Compile>
-    <Compile Include="UC_Stock.cs">
+    <Compile Include="UC_Inventario.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="UC_Stock.Designer.cs">
-      <DependentUpon>UC_Stock.cs</DependentUpon>
+    <Compile Include="UC_Inventario.Designer.cs">
+      <DependentUpon>UC_Inventario.cs</DependentUpon>
     </Compile>
     <EmbeddedResource Include="FormAtenderCliente.resx">
       <DependentUpon>FormAtenderCliente.cs</DependentUpon>
@@ -338,8 +338,8 @@
     <EmbeddedResource Include="UC_Proveedor.resx">
       <DependentUpon>UC_Proveedor.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UC_Stock.resx">
-      <DependentUpon>UC_Stock.cs</DependentUpon>
+    <EmbeddedResource Include="UC_Inventario.resx">
+      <DependentUpon>UC_Inventario.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

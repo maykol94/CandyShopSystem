@@ -3,10 +3,13 @@
     public class EInventario
     {
         public int IdStock { get; set; }
-        public string NombreProducto { get; set; }
+        public string Producto { get; set; }
         public string Categoria { get; set; }
-        public int StockActual { get; set; }
-        public int StockMinimo { get; set; }
-        public string Estado { get; set; } 
+        public int CantidadDisponible { get; set; }
+        public decimal PrecioCompra { get; set; }
+        public decimal PrecioVenta { get; set; }
+        public string FechaIngreso { get; set; }
+        public int DiasAlerta { get; set; }
+        public string Estado { get; set; }
     }
 }
