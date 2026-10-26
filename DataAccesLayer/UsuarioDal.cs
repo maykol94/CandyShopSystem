@@ -1,20 +1,18 @@
-﻿using DataAccessLayer;
-using EntityLayer;
-using Microsoft.Data.SqlClient; 
+﻿using EntityLayer;
+using Microsoft.Data.SqlClient;
 using System;
 using System.Data;
 
-namespace DataAccesLayer
+namespace DataAccessLayer
 {
     public class UsuarioDAL
     {
-        //validar usuario y contraseña para iniciar sesión, usando un procedimiento almacenado
         public EUsuario ValidarUsuario(string usuario, string clave, out string mensaje)
         {
             EUsuario oUsuario = null;
             mensaje = string.Empty;
 
-            using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
+            using (SqlConnection oconexion = Conexion.ObtenerConexion())
             {
                 try
                 {
@@ -33,7 +31,7 @@ namespace DataAccesLayer
                     cmd.ExecuteNonQuery();
 
                     bool esValido = Convert.ToBoolean(cmd.Parameters["@EsValido"].Value);
-                    mensaje = cmd.Parameters["@Mensaje"].Value.ToString();
+                    mensaje = cmd.Parameters["@Mensaje"].Value != DBNull.Value ? cmd.Parameters["@Mensaje"].Value.ToString() : string.Empty;
 
                     if (esValido)
                     {
@@ -48,20 +46,19 @@ namespace DataAccesLayer
                 catch (Exception ex)
                 {
                     oUsuario = null;
-                    mensaje = "Error al conectar con la base de datos: " + ex.Message;
+                    mensaje = "Error de conexión: " + ex.Message;
                 }
             }
 
             return oUsuario;
         }
 
-        // para mandar a llamar el procedimiento almacenado para registrar un usuario
         public bool RegistrarUsuario(string usuario, string clave, int idRol, out string mensaje)
         {
             bool resultado = false;
             mensaje = string.Empty;
 
-            using (SqlConnection oconexion = new SqlConnection(Conexion.cadena))
+            using (SqlConnection oconexion = Conexion.ObtenerConexion())
             {
                 try
                 {
@@ -79,7 +76,7 @@ namespace DataAccesLayer
                     cmd.ExecuteNonQuery();
 
                     resultado = Convert.ToBoolean(cmd.Parameters["@Resultado"].Value);
-                    mensaje = cmd.Parameters["@Mensaje"].Value.ToString();
+                    mensaje = cmd.Parameters["@Mensaje"].Value != DBNull.Value ? cmd.Parameters["@Mensaje"].Value.ToString() : string.Empty;
                 }
                 catch (Exception ex)
                 {

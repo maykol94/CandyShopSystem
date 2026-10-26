@@ -29,6 +29,8 @@
         private void InitializeComponent()
         {
             this.panelMenu = new System.Windows.Forms.Panel();
+            this.button2 = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             this.btnInventario = new System.Windows.Forms.Button();
             this.btnPedidos = new System.Windows.Forms.Button();
             this.btnVentas = new System.Windows.Forms.Button();
@@ -49,6 +51,8 @@
             // panelMenu
             // 
             this.panelMenu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(235)))), ((int)(((byte)(243)))));
+            this.panelMenu.Controls.Add(this.button2);
+            this.panelMenu.Controls.Add(this.button1);
             this.panelMenu.Controls.Add(this.btnInventario);
             this.panelMenu.Controls.Add(this.btnPedidos);
             this.panelMenu.Controls.Add(this.btnVentas);
@@ -63,6 +67,32 @@
             this.panelMenu.Name = "panelMenu";
             this.panelMenu.Size = new System.Drawing.Size(221, 673);
             this.panelMenu.TabIndex = 0;
+            // 
+            // button2
+            // 
+            this.button2.Dock = System.Windows.Forms.DockStyle.Top;
+            this.button2.FlatAppearance.BorderSize = 0;
+            this.button2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button2.Location = new System.Drawing.Point(0, 436);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(221, 40);
+            this.button2.TabIndex = 10;
+            this.button2.Text = "Reportes";
+            this.button2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.button2.UseVisualStyleBackColor = true;
+            // 
+            // button1
+            // 
+            this.button1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.button1.FlatAppearance.BorderSize = 0;
+            this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button1.Location = new System.Drawing.Point(0, 396);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(221, 40);
+            this.button1.TabIndex = 9;
+            this.button1.Text = "compra";
+            this.button1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.button1.UseVisualStyleBackColor = true;
             // 
             // btnInventario
             // 
@@ -104,6 +134,7 @@
             this.btnVentas.Text = "Ventas";
             this.btnVentas.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.btnVentas.UseVisualStyleBackColor = true;
+            this.btnVentas.Click += new System.EventHandler(this.btnVentas_Click);
             // 
             // btnProductos
             // 
@@ -252,6 +283,8 @@
         private System.Windows.Forms.Button btnPedidos;
         private System.Windows.Forms.Button btnInventario;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button button1;
     }
 }
 

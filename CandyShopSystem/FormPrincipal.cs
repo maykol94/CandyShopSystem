@@ -185,5 +185,17 @@ namespace CandyShopSystem
             ucPedidos.BringToFront();
             ucPedidos.Show();
         }
+
+        private void btnVentas_Click(object sender, EventArgs e)
+        {
+            UC_Ventas uC_Ventas = new UC_Ventas();
+            uC_Ventas.Dock = DockStyle.Fill;
+
+            panelContenedor.Controls.Clear();
+
+            panelContenedor.Controls.Add(uC_Ventas);
+            uC_Ventas.BringToFront();
+            uC_Ventas.Show();
+        }
     }
 }

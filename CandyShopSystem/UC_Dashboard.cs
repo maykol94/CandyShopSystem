@@ -72,7 +72,7 @@ namespace CandyShopSystem
             if (pnlMasVendidos != null)
             {
                 pnlMasVendidos.Left = 20;
-                pnlMasVendidos.Width = anchoDisponible; 
+                pnlMasVendidos.Width = anchoDisponible;
             }
 
             DataGridView[] grids = new DataGridView[]
@@ -101,7 +101,9 @@ namespace CandyShopSystem
 
                 AsignarTextoLabel("lblTotalClientes", datos.TotalClientes.ToString());
                 AsignarTextoLabel("lblTotalProductos", datos.TotalProductos.ToString());
+
                 AsignarTextoLabel("lblVentasHoy", string.Format("C$ {0:N2}", datos.VentasHoy));
+
                 AsignarTextoLabel("lblPedidosPendientesCard", datos.PedidosPendientes.ToString());
                 AsignarTextoLabel("lblStockDisponible", datos.StockDisponible.ToString());
                 AsignarTextoLabel("lblPorReponer", datos.PorReponer.ToString());
@@ -163,7 +165,8 @@ namespace CandyShopSystem
             {
                 if (dgvVentas.Columns["TOTAL"] != null)
                 {
-                    dgvVentas.Columns["TOTAL"].DefaultCellStyle.Format = "C2";
+                    // Formato explícito para Córdobas (C$ #,##0.00) en la grilla
+                    dgvVentas.Columns["TOTAL"].DefaultCellStyle.Format = "C$ #,##0.00";
                     dgvVentas.Columns["TOTAL"].DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight;
                 }
                 if (dgvVentas.Columns["FECHA"] != null)
@@ -172,7 +175,7 @@ namespace CandyShopSystem
                 }
             }
 
-            // Productos mas Vendidos
+            // Productos más Vendidos
             var dgvMasVendidos = BuscarControlPorNombre(this, "dgvProductosMasVendidos") as DataGridView;
             if (dgvMasVendidos != null && dgvMasVendidos.Columns.Count > 0)
             {

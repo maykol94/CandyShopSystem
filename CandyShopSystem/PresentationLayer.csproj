@@ -280,6 +280,12 @@
     <Compile Include="UC_Inventario.Designer.cs">
       <DependentUpon>UC_Inventario.cs</DependentUpon>
     </Compile>
+    <Compile Include="UC_Ventas.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UC_Ventas.Designer.cs">
+      <DependentUpon>UC_Ventas.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="FormAtenderCliente.resx">
       <DependentUpon>FormAtenderCliente.cs</DependentUpon>
     </EmbeddedResource>
@@ -340,6 +346,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UC_Inventario.resx">
       <DependentUpon>UC_Inventario.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UC_Ventas.resx">
+      <DependentUpon>UC_Ventas.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">

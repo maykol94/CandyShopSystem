@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using DataAccesLayer;
+using DataAccessLayer;
 using EntityLayer;
 
 namespace BusinessLayer
@@ -11,7 +10,6 @@ namespace BusinessLayer
 
         public EUsuario ValidarUsuario(string usuario, string clave, out string mensaje)
         {
-            // Validaciones previas en la capa de negocio
             if (string.IsNullOrWhiteSpace(usuario))
             {
                 mensaje = "El nombre de usuario no puede estar vacío.";
@@ -24,7 +22,7 @@ namespace BusinessLayer
                 return null;
             }
 
-            return objUsuarioDAL.ValidarUsuario(usuario, clave, out mensaje);
+            return objUsuarioDAL.ValidarUsuario(usuario.Trim(), clave.Trim(), out mensaje);
         }
 
         public bool RegistrarUsuario(string usuario, string clave, int idRol, out string mensaje)
@@ -47,7 +45,7 @@ namespace BusinessLayer
                 return false;
             }
 
-            return objUsuarioDAL.RegistrarUsuario(usuario, clave, idRol, out mensaje);
+            return objUsuarioDAL.RegistrarUsuario(usuario.Trim(), clave.Trim(), idRol, out mensaje);
         }
     }
 }

@@ -9,13 +9,13 @@ namespace BusinessLayer
     {
         private ProveedorDal objProveedorDal = new ProveedorDal();
 
-        // Obtener lista de proveedores (Asíncrono)
+        //obtener lista de proveedores
         public async Task<List<EProveedor>> ObtenerProveedoresAsync()
         {
             return await objProveedorDal.ObtenerProveedoresAsync();
         }
 
-        // Guardar o Editar proveedor con validaciones (Asíncrono)
+        // Guardar o Editar proveedor con validaciones
         public async Task<(bool Exito, string Mensaje)> GuardarProveedorAsync(EProveedor obj)
         {
             if (string.IsNullOrWhiteSpace(obj.NombreProveedor))
@@ -36,7 +36,7 @@ namespace BusinessLayer
             return await objProveedorDal.GuardarProveedorAsync(obj);
         }
 
-        // Eliminar proveedor (Asíncrono)
+        // Eliminar proveedor
         public async Task<(bool Exito, string Mensaje)> EliminarProveedorAsync(int idProveedor)
         {
             return await objProveedorDal.EliminarProveedorAsync(idProveedor);
