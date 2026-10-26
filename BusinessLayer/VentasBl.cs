@@ -9,19 +9,20 @@ namespace BusinessLayer
     {
         private VentasDal objVentasDal = new VentasDal();
 
-        public async Task<(bool Exito, string Mensaje, int IdFactura)> RegistrarVentaAsync(EFactura objFactura, List<EDetalleFactura> oDetalle)
+        public async Task<(bool Exito, string Mensaje)> RegistrarVentaAsync(EFactura factura, List<EDetalleFactura> carrito)
         {
-            if (objFactura.IdCliente <= 0)
+            if (factura == null) return (false, "La factura no contiene datos.");
+            if (factura.IdCliente <= 0) return (false, "Seleccione un cliente válido.");
+            if (factura.IdTrabajador <= 0) return (false, "Credenciales de trabajador inválidas.");
+            if (carrito == null || carrito.Count == 0) return (false, "El carrito de ventas está vacío.");
+
+            foreach (var item in carrito)
             {
-                return (false, "Debe seleccionar un cliente válido.", 0);
+                if (item.IdVariacion <= 0) return (false, "Un producto en el carrito tiene un ID de variación inválido.");
+                if (item.Cantidad <= 0) return (false, "La cantidad a vender debe ser mayor a cero.");
             }
 
-            if (oDetalle == null || oDetalle.Count == 0)
-            {
-                return (false, "El detalle de la venta no puede estar vacío.", 0);
-            }
-
-            return await objVentasDal.RegistrarVentaAsync(objFactura, oDetalle);
+            return await objVentasDal.RegistrarVentaAsync(factura, carrito);
         }
     }
 }

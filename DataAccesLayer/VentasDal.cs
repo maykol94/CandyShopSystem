@@ -9,58 +9,92 @@ namespace DataAccessLayer
 {
     public class VentasDal
     {
-        public async Task<(bool Exito, string Mensaje, int IdFactura)> RegistrarVentaAsync(EFactura factura, List<EDetalleFactura> carrito)
+        public async Task<(bool Exito, string Mensaje)> RegistrarVentaAsync(EFactura factura, List<EDetalleFactura> carrito)
         {
-            bool exito = false;
-            string mensaje = string.Empty;
-            int idFacturaGenerada = 0;
-
-            try
+            using (SqlConnection oConexion = Conexion.ObtenerConexion())
             {
-                DataTable dtDetalles = new DataTable();
-                dtDetalles.Columns.Add("id_variacion", typeof(int));
-                dtDetalles.Columns.Add("cantidad", typeof(int));
-                dtDetalles.Columns.Add("precio_venta", typeof(decimal));
-                dtDetalles.Columns.Add("descuento_unitario", typeof(decimal));
+                await oConexion.OpenAsync();
 
-                foreach (var item in carrito)
+                using (SqlTransaction transaccion = oConexion.BeginTransaction())
                 {
-                    dtDetalles.Rows.Add(item.IdVariacion, item.Cantidad, item.PrecioVenta, item.DescuentoUnitario);
-                }
-
-                using (SqlConnection oConexion = Conexion.ObtenerConexion())
-                {
-                    using (SqlCommand cmd = new SqlCommand("Ventas.sp_registrar_venta", oConexion))
+                    try
                     {
-                        cmd.CommandType = CommandType.StoredProcedure;
-                        cmd.Parameters.AddWithValue("@id_cliente", factura.IdCliente);
-                        cmd.Parameters.AddWithValue("@id_trabajador", factura.IdTrabajador);
-                        cmd.Parameters.AddWithValue("@forma_pago", factura.FormaPago);
-                        cmd.Parameters.AddWithValue("@descuento_factura", factura.DescuentoFactura);
+                        string queryFactura = @"
+                            INSERT INTO Ventas.Factura (id_cliente, id_trabajador, fecha_hora, forma_pago, descuento_factura, monto_total) 
+                            VALUES (@id_cliente, @id_trabajador, GETDATE(), @forma_pago, @descuento_factura, 0);
+                            SELECT SCOPE_IDENTITY();";
 
-                       
-
-                        await oConexion.OpenAsync();
-
-                        using (SqlDataReader dr = await cmd.ExecuteReaderAsync())
+                        int idFactura = 0;
+                        using (SqlCommand cmdFactura = new SqlCommand(queryFactura, oConexion, transaccion))
                         {
-                            if (await dr.ReadAsync())
+                            cmdFactura.CommandType = CommandType.Text;
+                            cmdFactura.Parameters.AddWithValue("@id_cliente", factura.IdCliente);
+                            cmdFactura.Parameters.AddWithValue("@id_trabajador", factura.IdTrabajador);
+                            cmdFactura.Parameters.AddWithValue("@forma_pago", factura.FormaPago);
+                            cmdFactura.Parameters.AddWithValue("@descuento_factura", factura.DescuentoFactura);
+
+                            idFactura = Convert.ToInt32(await cmdFactura.ExecuteScalarAsync());
+                        }
+
+                        decimal montoTotalCalculado = 0;
+
+                        foreach (var item in carrito)
+                        {
+                            string queryDetalle = @"
+                                INSERT INTO Ventas.DetalleFactura (id_factura, id_variacion, cantidad, precio_venta, descuento_unitario) 
+                                VALUES (@id_factura, @id_variacion, @cantidad, @precio_venta, @descuento_unitario);";
+
+                            using (SqlCommand cmdDetalle = new SqlCommand(queryDetalle, oConexion, transaccion))
                             {
-                                idFacturaGenerada = Convert.ToInt32(dr["id_factura_generada"]);
-                                exito = true;
-                                mensaje = "Venta registrada con éxito.";
+                                cmdDetalle.CommandType = CommandType.Text;
+                                cmdDetalle.Parameters.AddWithValue("@id_factura", idFactura);
+                                cmdDetalle.Parameters.AddWithValue("@id_variacion", item.IdVariacion);
+                                cmdDetalle.Parameters.AddWithValue("@cantidad", item.Cantidad);
+                                cmdDetalle.Parameters.AddWithValue("@precio_venta", item.PrecioVenta);
+                                cmdDetalle.Parameters.AddWithValue("@descuento_unitario", item.DescuentoUnitario);
+
+                                await cmdDetalle.ExecuteNonQueryAsync();
+                            }
+
+                            montoTotalCalculado += (item.Cantidad * (item.PrecioVenta - item.DescuentoUnitario));
+
+                            string queryStock = @"
+                                UPDATE Inventario.Stock 
+                                SET cantidad_disponible = cantidad_disponible - @cantidad 
+                                WHERE id_variacion = @id_variacion AND cantidad_disponible > 0;";
+
+                            using (SqlCommand cmdStock = new SqlCommand(queryStock, oConexion, transaccion))
+                            {
+                                cmdStock.CommandType = CommandType.Text;
+                                cmdStock.Parameters.AddWithValue("@cantidad", item.Cantidad);
+                                cmdStock.Parameters.AddWithValue("@id_variacion", item.IdVariacion);
+
+                                await cmdStock.ExecuteNonQueryAsync();
                             }
                         }
+
+                        montoTotalCalculado -= factura.DescuentoFactura;
+
+                        string queryUpdate = "UPDATE Ventas.Factura SET monto_total = @monto_total WHERE id_factura = @id_factura";
+                        using (SqlCommand cmdUpdate = new SqlCommand(queryUpdate, oConexion, transaccion))
+                        {
+                            cmdUpdate.CommandType = CommandType.Text;
+                            cmdUpdate.Parameters.AddWithValue("@monto_total", montoTotalCalculado);
+                            cmdUpdate.Parameters.AddWithValue("@id_factura", idFactura);
+
+                            await cmdUpdate.ExecuteNonQueryAsync();
+                        }
+
+                        transaccion.Commit();
+                        return (true, $"Venta registrada exitosamente. Factura N° {idFactura}");
+                    }
+                    catch (Exception ex)
+                    {
+                        transaccion.Rollback();
+                        return (false, "Error al registrar la venta: " + ex.Message);
                     }
                 }
             }
-            catch (Exception ex)
-            {
-                exito = false;
-                mensaje = ex.Message;
-            }
-
-            return (exito, mensaje, idFacturaGenerada);
         }
     }
 }

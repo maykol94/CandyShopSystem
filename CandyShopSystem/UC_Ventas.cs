@@ -16,7 +16,6 @@ namespace CandyShopSystem
         private InventarioBl objInventarioBl = new InventarioBl();
         private VentasBl objVentasBl = new VentasBl();
 
-        
         private List<ECliente> listaClientes = new List<ECliente>();
         private List<EInventario> listaInventario = new List<EInventario>();
         private DataTable dtCarrito = new DataTable();
@@ -52,7 +51,6 @@ namespace CandyShopSystem
             await CargarClientesAsync();
             await CargarProductosInventarioAsync();
         }
-
 
         private void AjustarLayoutPantallaCompleta()
         {
@@ -124,7 +122,6 @@ namespace CandyShopSystem
             }
         }
 
-       
         private void EstilarDataGridViewCarrito()
         {
             dgvCarrito.BackgroundColor = Color.White;
@@ -191,7 +188,6 @@ namespace CandyShopSystem
             }
         }
 
-        
         private async Task CargarClientesAsync()
         {
             try
@@ -243,7 +239,7 @@ namespace CandyShopSystem
 
                     cboProducto.DataSource = disponibles;
                     cboProducto.DisplayMember = "Producto";
-                    cboProducto.ValueMember = "IdStock";
+                    cboProducto.ValueMember = "IdVariacion";
 
                     cboProducto.SelectedIndexChanged += cboProducto_SelectedIndexChanged;
                     ActualizarDetallesProductoSeleccionado();
@@ -267,10 +263,7 @@ namespace CandyShopSystem
                 if (label11 != null) label11.Text = "";
 
                 if (lblDisponibles != null) lblDisponibles.Text = $"Disponibles: {prod.CantidadDisponible}";
-
-                
                 if (lblPrecioVenta != null) lblPrecioVenta.Text = $"C$ {prod.PrecioVenta:N2}";
-                
 
                 if (nudCantidad != null)
                 {
@@ -280,7 +273,6 @@ namespace CandyShopSystem
                 }
             }
         }
-
 
         #region --- 4. CARRITO DE COMPRAS Y DESCUENTOS ---
 
@@ -363,7 +355,7 @@ namespace CandyShopSystem
             }
 
             DataRow filaExistente = dtCarrito.AsEnumerable()
-                .FirstOrDefault(row => row.Field<int>("IdStock") == prod.IdStock);
+                .FirstOrDefault(row => row.Field<int>("IdVariacion") == prod.IdVariacion);
 
             if (filaExistente != null)
             {
@@ -378,7 +370,7 @@ namespace CandyShopSystem
             }
             else
             {
-                dtCarrito.Rows.Add(prod.IdStock, prod.IdStock, prod.Producto, cantidad, prod.PrecioVenta, descuentoIngresado);
+                dtCarrito.Rows.Add(prod.IdStock, prod.IdVariacion, prod.Producto, cantidad, prod.PrecioVenta, descuentoIngresado);
             }
 
             CalcularTotalesVenta();
@@ -418,10 +410,8 @@ namespace CandyShopSystem
 
         private void txtDescuentoGlobal_TextChanged(object sender, EventArgs e)
         {
-            
+            CalcularTotalesVenta();
         }
-
-        
 
         private async void btnProcesarVenta_Click(object sender, EventArgs e)
         {
@@ -437,50 +427,56 @@ namespace CandyShopSystem
                 return;
             }
 
-            decimal totalDescuentoCalculado = 0;
-            foreach (DataRow row in dtCarrito.Rows)
+            try
             {
-                totalDescuentoCalculado += (Convert.ToInt32(row["Cantidad"]) * Convert.ToDecimal(row["DescuentoUnitario"]));
-            }
+                btnProcesarVenta.Enabled = false;
 
-            EFactura factura = new EFactura
-            {
-                IdCliente = Convert.ToInt32(cboCliente.SelectedValue),
-                IdTrabajador = SesionUsuario.IdTrabajador > 0 ? SesionUsuario.IdTrabajador : 1,
-                FormaPago = "Efectivo",
-                DescuentoFactura = totalDescuentoCalculado
-            };
-
-            List<EDetalleFactura> carrito = new List<EDetalleFactura>();
-            foreach (DataRow row in dtCarrito.Rows)
-            {
-                carrito.Add(new EDetalleFactura
+                decimal totalDescuentoCalculado = 0;
+                foreach (DataRow row in dtCarrito.Rows)
                 {
-                    IdVariacion = Convert.ToInt32(row["IdVariacion"]),
-                    Cantidad = Convert.ToInt32(row["Cantidad"]),
-                    PrecioVenta = Convert.ToDecimal(row["Precio"]),
-                    DescuentoUnitario = Convert.ToDecimal(row["DescuentoUnitario"])
-                });
+                    totalDescuentoCalculado += (Convert.ToInt32(row["Cantidad"]) * Convert.ToDecimal(row["DescuentoUnitario"]));
+                }
+
+                EFactura factura = new EFactura
+                {
+                    IdCliente = Convert.ToInt32(cboCliente.SelectedValue),
+                    IdTrabajador = SesionUsuario.IdTrabajador > 0 ? SesionUsuario.IdTrabajador : 1,
+                    FormaPago = cboFormaPago != null && cboFormaPago.SelectedItem != null ? cboFormaPago.SelectedItem.ToString() : "Efectivo",
+                    DescuentoFactura = totalDescuentoCalculado
+                };
+
+                List<EDetalleFactura> carrito = new List<EDetalleFactura>();
+                foreach (DataRow row in dtCarrito.Rows)
+                {
+                    carrito.Add(new EDetalleFactura
+                    {
+                        IdVariacion = Convert.ToInt32(row["IdVariacion"]),
+                        Cantidad = Convert.ToInt32(row["Cantidad"]),
+                        PrecioVenta = Convert.ToDecimal(row["Precio"]),
+                        DescuentoUnitario = Convert.ToDecimal(row["DescuentoUnitario"])
+                    });
+                }
+
+                var (exito, mensaje) = await objVentasBl.RegistrarVentaAsync(factura, carrito);
+
+                if (exito)
+                {
+                    MessageBox.Show(mensaje, "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    btnLimpiar_Click(sender, e);
+                    await CargarProductosInventarioAsync();
+                }
+                else
+                {
+                    MessageBox.Show("No se pudo registrar la venta: " + mensaje, "Error de Venta", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
-
-            btnProcesarVenta.Enabled = false;
-
-            var (exito, mensaje, idFactura) = await objVentasBl.RegistrarVentaAsync(factura, carrito);
-
-            btnProcesarVenta.Enabled = true;
-
-            if (exito)
+            catch (Exception ex)
             {
-                MessageBox.Show($"¡Venta procesada con éxito!\nNúmero de Factura: #{idFactura}", "Facturación", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                dtCarrito.Rows.Clear();
-                if (txtDescuentoGlobal != null) txtDescuentoGlobal.Text = "0.00";
-                CalcularTotalesVenta();
-                await CargarProductosInventarioAsync();
+                MessageBox.Show("Ocurrió un error inesperado: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            else
+            finally
             {
-                MessageBox.Show("No se pudo registrar la venta: " + mensaje, "Error de Venta", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                btnProcesarVenta.Enabled = true;
             }
         }
 

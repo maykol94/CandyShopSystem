@@ -16,7 +16,12 @@ namespace BusinessLayer
 
         public async Task<(bool Exito, string Mensaje)> AjustarStockAsync(int idStock, int cantidadCambio)
         {
-            if (idStock <= 0) return (false, "El ID de stock no es válido.");
+            // Validamos e indicamos al usuario que debe ir al módulo de compras
+            if (idStock <= 0)
+            {
+                return (false, "Este producto no tiene historial. Ve al módulo de 'compra' para registrar su primer ingreso con su lote, precios y fechas.");
+            }
+
             if (cantidadCambio == 0) return (false, "La cantidad a cambiar no puede ser cero.");
 
             return await objInventarioDal.AjustarStockAsync(idStock, cantidadCambio);
@@ -25,7 +30,6 @@ namespace BusinessLayer
         public async Task<(bool Exito, string Mensaje)> EliminarStockAsync(int idStock)
         {
             if (idStock <= 0) return (false, "El ID de stock no es válido.");
-
             return await objInventarioDal.EliminarStockAsync(idStock);
         }
     }
