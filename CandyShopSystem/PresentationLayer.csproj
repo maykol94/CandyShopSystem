@@ -188,6 +188,12 @@
     <Compile Include="FormEditarProveedor.Designer.cs">
       <DependentUpon>FormEditarProveedor.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormPruebaCompra.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormPruebaCompra.Designer.cs">
+      <DependentUpon>FormPruebaCompra.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormRegistrarProveedor.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -236,6 +242,12 @@
     <Compile Include="FormRegistrarPedido.Designer.cs">
       <DependentUpon>FormRegistrarPedido.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormRegistroCompra.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormRegistroCompra.Designer.cs">
+      <DependentUpon>FormRegistroCompra.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormRegistroUsuario.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -249,6 +261,12 @@
     </Compile>
     <Compile Include="UC_Clientes.Designer.cs">
       <DependentUpon>UC_Clientes.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UC_Compras.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UC_Compras.Designer.cs">
+      <DependentUpon>UC_Compras.cs</DependentUpon>
     </Compile>
     <Compile Include="UC_Dashboard.cs">
       <SubType>UserControl</SubType>
@@ -301,6 +319,9 @@
     <EmbeddedResource Include="FormPrincipal.resx">
       <DependentUpon>FormPrincipal.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FormPruebaCompra.resx">
+      <DependentUpon>FormPruebaCompra.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormRegistrarProducto.resx">
       <DependentUpon>FormRegistrarProducto.cs</DependentUpon>
     </EmbeddedResource>
@@ -309,6 +330,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormRegistrarProveedor.resx">
       <DependentUpon>FormRegistrarProveedor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormRegistroCompra.resx">
+      <DependentUpon>FormRegistroCompra.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormRegistroUsuario.resx">
       <DependentUpon>FormRegistroUsuario.cs</DependentUpon>
@@ -325,6 +349,9 @@
     </Compile>
     <EmbeddedResource Include="UC_Clientes.resx">
       <DependentUpon>UC_Clientes.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UC_Compras.resx">
+      <DependentUpon>UC_Compras.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UC_Dashboard.resx">
       <DependentUpon>UC_Dashboard.cs</DependentUpon>

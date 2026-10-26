@@ -472,5 +472,20 @@ namespace CandyShopSystem
 
             return "";
         }
+
+        private void pnlFooter_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void lblGestiondeclientes_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void pnlHeaderClientes_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
     }
 }
