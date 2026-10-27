@@ -209,5 +209,17 @@ namespace CandyShopSystem
             uC_Compras.BringToFront();
             uC_Compras.Show();
         }
+
+        private void btnReportes_Click(object sender, EventArgs e)
+        {
+            UC_Reportes uC_Reportes = new UC_Reportes();
+            uC_Reportes.Dock = DockStyle.Fill;
+
+            panelContenedor.Controls.Clear();
+
+            panelContenedor.Controls.Add(uC_Reportes);
+            uC_Reportes.BringToFront();
+            uC_Reportes.Show();
+        }
     }
 }

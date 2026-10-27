@@ -200,12 +200,6 @@
     <Compile Include="FormRegistrarProveedor.Designer.cs">
       <DependentUpon>FormRegistrarProveedor.cs</DependentUpon>
     </Compile>
-    <Compile Include="FormAtenderCliente.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="FormAtenderCliente.Designer.cs">
-      <DependentUpon>FormAtenderCliente.cs</DependentUpon>
-    </Compile>
     <Compile Include="FormClienteModal.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -298,15 +292,18 @@
     <Compile Include="UC_Inventario.Designer.cs">
       <DependentUpon>UC_Inventario.cs</DependentUpon>
     </Compile>
+    <Compile Include="UC_Reportes.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UC_Reportes.Designer.cs">
+      <DependentUpon>UC_Reportes.cs</DependentUpon>
+    </Compile>
     <Compile Include="UC_Ventas.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="UC_Ventas.Designer.cs">
       <DependentUpon>UC_Ventas.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="FormAtenderCliente.resx">
-      <DependentUpon>FormAtenderCliente.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="FormClienteModal.resx">
       <DependentUpon>FormClienteModal.cs</DependentUpon>
     </EmbeddedResource>
@@ -374,6 +371,9 @@
     <EmbeddedResource Include="UC_Inventario.resx">
       <DependentUpon>UC_Inventario.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="UC_Reportes.resx">
+      <DependentUpon>UC_Reportes.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="UC_Ventas.resx">
       <DependentUpon>UC_Ventas.cs</DependentUpon>
     </EmbeddedResource>
@@ -401,6 +401,10 @@
     <ProjectReference Include="..\BusinessLayer\BusinessLayer.csproj">
       <Project>{aefdb548-756d-45b2-a487-df0474b82771}</Project>
       <Name>BusinessLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DataAccesLayer\DataAccesLayer.csproj">
+      <Project>{db39354a-58ff-4f3b-a713-94b19a395227}</Project>
+      <Name>DataAccesLayer</Name>
     </ProjectReference>
     <ProjectReference Include="..\EntityLayer\EntityLayer.csproj">
       <Project>{0ef549b6-7693-4d99-9762-386e45912416}</Project>

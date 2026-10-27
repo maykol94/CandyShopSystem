@@ -34,7 +34,6 @@
             this.lblGestiondeclientes = new System.Windows.Forms.Label();
             this.txtBuscar = new RJCodeAdvance.RJControls.RJTextBox();
             this.pnlFooter = new System.Windows.Forms.Panel();
-            this.btnAtenderCliente = new RJCodeAdvance.RJControls.RJButton();
             this.btnBuscar = new FontAwesome.Sharp.IconButton();
             this.pnlGrid = new System.Windows.Forms.Panel();
             this.dgvClientes = new Zuby.ADGV.AdvancedDataGridView();
@@ -124,7 +123,6 @@
             // pnlFooter
             // 
             this.pnlFooter.BackColor = System.Drawing.Color.White;
-            this.pnlFooter.Controls.Add(this.btnAtenderCliente);
             this.pnlFooter.Controls.Add(this.txtBuscar);
             this.pnlFooter.Controls.Add(this.btnBuscar);
             this.pnlFooter.Dock = System.Windows.Forms.DockStyle.Top;
@@ -133,25 +131,6 @@
             this.pnlFooter.Size = new System.Drawing.Size(1280, 70);
             this.pnlFooter.TabIndex = 1;
             this.pnlFooter.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlFooter_Paint);
-            // 
-            // btnAtenderCliente
-            // 
-            this.btnAtenderCliente.BackColor = System.Drawing.Color.MediumSlateBlue;
-            this.btnAtenderCliente.BackgroundColor = System.Drawing.Color.MediumSlateBlue;
-            this.btnAtenderCliente.BorderColor = System.Drawing.Color.PaleVioletRed;
-            this.btnAtenderCliente.BorderRadius = 8;
-            this.btnAtenderCliente.BorderSize = 0;
-            this.btnAtenderCliente.FlatAppearance.BorderSize = 0;
-            this.btnAtenderCliente.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnAtenderCliente.ForeColor = System.Drawing.Color.White;
-            this.btnAtenderCliente.Location = new System.Drawing.Point(1120, 23);
-            this.btnAtenderCliente.Name = "btnAtenderCliente";
-            this.btnAtenderCliente.Size = new System.Drawing.Size(150, 40);
-            this.btnAtenderCliente.TabIndex = 7;
-            this.btnAtenderCliente.Text = "AtenderCliente";
-            this.btnAtenderCliente.TextColor = System.Drawing.Color.White;
-            this.btnAtenderCliente.UseVisualStyleBackColor = false;
-            this.btnAtenderCliente.Click += new System.EventHandler(this.btnAtenderCliente_Click);
             // 
             // btnBuscar
             // 
@@ -229,6 +208,5 @@
         private RJCodeAdvance.RJControls.RJTextBox txtBuscar;
         private Zuby.ADGV.AdvancedDataGridView dgvClientes;
         private System.Windows.Forms.Label label1;
-        private RJCodeAdvance.RJControls.RJButton btnAtenderCliente;
     }
 }

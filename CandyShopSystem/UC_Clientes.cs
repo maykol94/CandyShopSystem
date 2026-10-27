@@ -88,27 +88,7 @@ namespace CandyShopSystem
                 btnN.Click += btnNuevoCliente_Click;
             }
 
-            Control btnAtender = BuscarControlPorNombre(this, "btnAtenderCliente") ?? BuscarControlPorNombre(this, "btnAtender");
-            if (btnAtender != null)
-            {
-                btnAtender.Click -= btnAtenderCliente_Click;
-                btnAtender.Click += btnAtenderCliente_Click;
-            }
-
-            if (dgvClientes != null)
-            {
-                dgvClientes.FilterStringChanged -= dgvClientes_FilterStringChanged;
-                dgvClientes.FilterStringChanged += dgvClientes_FilterStringChanged;
-
-                dgvClientes.SortStringChanged -= dgvClientes_SortStringChanged;
-                dgvClientes.SortStringChanged += dgvClientes_SortStringChanged;
-
-                dgvClientes.CellContentClick -= dgvClientes_CellContentClick;
-                dgvClientes.CellContentClick += dgvClientes_CellContentClick;
-
-                dgvClientes.CellPainting -= dgvClientes_CellPainting;
-                dgvClientes.CellPainting += dgvClientes_CellPainting;
-            }
+            
         }
 
         private void UC_Clientes_Resize(object sender, EventArgs e)
@@ -421,22 +401,7 @@ namespace CandyShopSystem
             }
         }
 
-        private void btnAtenderCliente_Click(object sender, EventArgs e)
-        {
-            if (colaAtencionClientes != null && colaAtencionClientes.Count > 0)
-            {
-                ECliente clienteParaAtender = colaAtencionClientes.Dequeue();
-
-                using (FormAtenderCliente modal = new FormAtenderCliente(clienteParaAtender, colaAtencionClientes.Count))
-                {
-                    modal.ShowDialog();
-                }
-            }
-            else
-            {
-                MessageBox.Show("No hay clientes pendientes en la cola de atención.", "Cola Vacía", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-        }
+        
 
         private Control BuscarControlPorNombre(Control contenedor, string nombre)
         {
