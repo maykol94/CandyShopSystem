@@ -2,16 +2,14 @@
 using EntityLayer;
 using Microsoft.Data.SqlClient;
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Text;
 
 namespace DataAccesLayer
 {
     public class ComprasDal
     {
-
         private string cadena = Conexion.cadena;
+
         public DataTable ObtenerCompras()
         {
             DataTable dtResultado = new DataTable("Compra");
@@ -22,14 +20,16 @@ namespace DataAccesLayer
                 {
                     sqlCon.Open();
 
-                    string query = @"SELECT c.id_compra, 
-                                    pr.nombre_proveedor, 
-                                    c.fecha_compra, 
-                                    c.total_monto,
-                                    c.estado_pago
-                             FROM compras.compra c
-                             INNER JOIN proveedor.proveedor pr ON c.id_proveedor = pr.id_proveedor
-                             ORDER BY c.fecha_compra DESC";
+                    // Usamos CAST(... AS DATE) para omitir la hora y mostrar solo la fecha limpia
+                    string query = @"SELECT 
+                                        c.id_compra AS [ID Compra], 
+                                        pr.nombre_proveedor AS [Proveedor], 
+                                        CAST(c.fecha_compra AS DATE) AS [Fecha], 
+                                        c.total_monto AS [Total (C$)],
+                                        c.estado_pago AS [Estado Pago]
+                                     FROM compras.compra c
+                                     INNER JOIN proveedor.proveedor pr ON c.id_proveedor = pr.id_proveedor
+                                     ORDER BY c.fecha_compra DESC";
 
                     SqlCommand comando = new SqlCommand(query, sqlCon);
                     SqlDataAdapter da = new SqlDataAdapter(comando);
@@ -53,10 +53,7 @@ namespace DataAccesLayer
                 using (SqlConnection sqlCon = new SqlConnection(Conexion.cadena))
                 {
                     sqlCon.Open();
-
-                    // Trae TODOS los proveedores sin filtrar por estado
                     string query = "SELECT id_proveedor, nombre_proveedor FROM proveedor.proveedor";
-
                     SqlCommand comando = new SqlCommand(query, sqlCon);
                     SqlDataAdapter da = new SqlDataAdapter(comando);
                     da.Fill(dtResultado);
@@ -97,7 +94,6 @@ namespace DataAccesLayer
             }
         }
 
-
         public DataTable ObtenerVariaciones()
         {
             DataTable dtResultado = new DataTable("Variacion");
@@ -107,8 +103,6 @@ namespace DataAccesLayer
                 using (SqlConnection sqlCon = new SqlConnection(Conexion.cadena))
                 {
                     sqlCon.Open();
-
-                    // Consulta corregida usando 'descripcion' en lugar de 'nombre_variacion'
                     string query = @"SELECT v.id_variacion, 
                                     p.nombre_producto + ' - ' + v.descripcion AS nombre_completo,
                                     s.precio_compra
@@ -137,9 +131,7 @@ namespace DataAccesLayer
                 using (SqlConnection sqlCon = new SqlConnection(Conexion.cadena))
                 {
                     sqlCon.Open();
-
                     string query = "UPDATE compras.compra SET estado_pago = @estado WHERE id_compra = @id";
-
                     SqlCommand comando = new SqlCommand(query, sqlCon);
                     comando.Parameters.AddWithValue("@estado", nuevoEstado);
                     comando.Parameters.AddWithValue("@id", idCompra);
@@ -153,6 +145,5 @@ namespace DataAccesLayer
                 return ex.Message;
             }
         }
-
     }
 }

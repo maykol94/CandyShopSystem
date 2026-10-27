@@ -16,7 +16,7 @@ namespace CandyShopSystem
 
             // Iniciar la aplicación desde la pantalla de Login
             //Application.Run(new FormLogin());
-            Application.Run(new FormPruebaCompra());
+            Application.Run(new FormLogin());
         }
     }
 }

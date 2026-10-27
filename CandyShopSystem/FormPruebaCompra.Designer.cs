@@ -1,4 +1,6 @@
-﻿namespace CandyShopSystem
+﻿using PresentationLayer;
+
+namespace CandyShopSystem
 {
     partial class FormPruebaCompra
     {
@@ -28,7 +30,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.uC_Compras1 = new CandyShopSystem.UC_Compras();
+            this.uC_Compras1 = new PresentationLayer.UC_Compras();
             this.SuspendLayout();
             // 
             // uC_Compras1

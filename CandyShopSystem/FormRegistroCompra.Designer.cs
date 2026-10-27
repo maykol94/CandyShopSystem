@@ -152,19 +152,21 @@
             // 
             // btnAgregar
             // 
-            this.btnAgregar.Location = new System.Drawing.Point(241, 430);
+            this.btnAgregar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(237)))), ((int)(((byte)(77)))), ((int)(((byte)(145)))));
+            this.btnAgregar.ForeColor = System.Drawing.Color.White;
+            this.btnAgregar.Location = new System.Drawing.Point(309, 430);
             this.btnAgregar.Name = "btnAgregar";
-            this.btnAgregar.Size = new System.Drawing.Size(94, 35);
+            this.btnAgregar.Size = new System.Drawing.Size(126, 35);
             this.btnAgregar.TabIndex = 15;
             this.btnAgregar.Text = "Agregar +";
-            this.btnAgregar.UseVisualStyleBackColor = true;
+            this.btnAgregar.UseVisualStyleBackColor = false;
             this.btnAgregar.Click += new System.EventHandler(this.btnAgregar_Click);
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(356, 430);
+            this.button1.Location = new System.Drawing.Point(470, 430);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(94, 35);
+            this.button1.Size = new System.Drawing.Size(121, 35);
             this.button1.TabIndex = 16;
             this.button1.Text = "Cancelar";
             this.button1.UseVisualStyleBackColor = true;
@@ -183,7 +185,8 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(475, 477);
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(235)))), ((int)(((byte)(243)))));
+            this.ClientSize = new System.Drawing.Size(645, 477);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.btnAgregar);
@@ -199,7 +202,9 @@
             this.Controls.Add(this.cmbProveedor);
             this.Controls.Add(this.lblProveedor);
             this.Controls.Add(this.label1);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "FormRegistroCompra";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "FormRegistroCompra";
             this.Load += new System.EventHandler(this.FormRegistroCompra_Load);
             this.ResumeLayout(false);

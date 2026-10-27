@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Data;
+﻿using System.Data;
 using DataAccessLayer;
 using EntityLayer;
 using DataAccesLayer;
@@ -10,7 +7,6 @@ namespace BusinessLayer
 {
     public class CompraBl
     {
-
         private ComprasDal objCompraDal;
 
         public CompraBl()
