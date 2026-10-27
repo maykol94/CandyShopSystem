@@ -14,5 +14,7 @@ namespace EntityLayer
         public decimal TotalMonto { get; set; }
         public string EstadoPago { get; set; }
 
+        public decimal PrecioVenta { get; set; }
+
     }
 }

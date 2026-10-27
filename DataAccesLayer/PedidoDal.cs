@@ -1,126 +1,107 @@
-﻿using DataAccessLayer;
-using EntityLayer;
+﻿using EntityLayer;
 using Microsoft.Data.SqlClient;
 using System;
-using System.Collections.Generic;
 using System.Data;
 
-namespace DataAccesLayer
+namespace DataAccessLayer
 {
-    public class PedidoDal
+    public class PedidosDal
     {
-        private string cadenaConexion = Conexion.cadena;
-
-        public List<EPedido> ObtenerPedidosPendientes()
+        public string RegistrarPedido(EPedido pedido, out int idPedidoGenerado)
         {
-            List<EPedido> lista = new List<EPedido>();
-
-            using (SqlConnection oconexion = new SqlConnection(cadenaConexion))
+            idPedidoGenerado = 0;
+            try
             {
-                try
+                using (SqlConnection sqlCon = new SqlConnection(Conexion.cadena))
                 {
-                    SqlCommand cmd = new SqlCommand("sp_ObtenerPedidosPendientes", oconexion);
+                    sqlCon.Open();
+                    SqlCommand cmd = new SqlCommand("sp_RegistrarPedido", sqlCon);
                     cmd.CommandType = CommandType.StoredProcedure;
 
-                    oconexion.Open();
+                    cmd.Parameters.AddWithValue("@id_factura", pedido.IdFactura);
+                    cmd.Parameters.AddWithValue("@fecha_entrega", pedido.FechaEntrega);
+                    cmd.Parameters.AddWithValue("@direccion_adicional", pedido.DireccionAdicional);
+                    cmd.Parameters.AddWithValue("@id_estado", pedido.IdEstado);
 
-                    using (SqlDataReader dr = cmd.ExecuteReader())
+                    // Parámetro de salida que devuelve el ID del pedido creado
+                    SqlParameter outParam = new SqlParameter("@id_pedido_generado", SqlDbType.Int);
+                    outParam.Direction = ParameterDirection.Output;
+                    cmd.Parameters.Add(outParam);
+
+                    cmd.ExecuteNonQuery();
+
+                    idPedidoGenerado = Convert.ToInt32(outParam.Value);
+                    return "OK";
+                }
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
+        // 1. Método para obtener los pedidos (usando tu vista o consulta a la base de datos)
+        public DataTable ObtenerPedidosPendientes()
+        {
+            DataTable tabla = new DataTable();
+            try
+            {
+                using (SqlConnection sqlCon = new SqlConnection(Conexion.cadena))
+                {
+                    sqlCon.Open();
+                    //para obtener los pedidos pendientes se usa la vista de pedidos pendientes (Ventas.vw_PedidosPendientes)
+                    string query = "SELECT id_pedido, id_factura, fecha_entrega, direccion_adicional, id_estado AS IdEstado, 'Pendiente' AS estado_texto FROM Ventas.Pedido";
+
+                    using (SqlCommand cmd = new SqlCommand(query, sqlCon))
                     {
-                        while (dr.Read())
+                        using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
                         {
-                            lista.Add(new EPedido()
-                            {
-                                IdPedido = Convert.ToInt32(dr["id_pedido"]),
-                                IdFactura = Convert.ToInt32(dr["id_factura"]),
-                                FechaEntrega = dr["fecha_entrega"].ToString(),
-                                DireccionAdicional = dr["direccion_adicional"].ToString(),
-                                IdEstado = Convert.ToInt32(dr["id_estado"])
-                            });
+                            adapter.Fill(tabla);
                         }
                     }
                 }
-                catch (Exception)
-                {
-                    lista = new List<EPedido>();
-                }
             }
-
-            return lista;
-        }
-
-        public bool RegistrarPedido(EPedido obj, out string mensaje)
-        {
-            bool respuesta = false;
-            mensaje = string.Empty;
-
-            using (SqlConnection oconexion = new SqlConnection(cadenaConexion))
+            catch (Exception)
             {
-                try
-                {
-                    SqlCommand cmd = new SqlCommand("sp_RegistrarPedido", oconexion);
-                    cmd.CommandType = CommandType.StoredProcedure;
-
-                    //para q la fecga de entrega sea valida, si no lo es se asigna la fecha actual
-                    if (!DateTime.TryParse(obj.FechaEntrega, out DateTime fechaValida))
-                    {
-                        fechaValida = DateTime.Now;
-                    }
-
-                    cmd.Parameters.AddWithValue("id_factura", obj.IdFactura);
-                    cmd.Parameters.AddWithValue("fecha_entrega", fechaValida);
-                    cmd.Parameters.AddWithValue("direccion_adicional", obj.DireccionAdicional);
-                    cmd.Parameters.AddWithValue("id_estado", obj.IdEstado);
-                    cmd.Parameters.Add("id_pedido_generado", SqlDbType.Int).Direction = ParameterDirection.Output;
-
-                    oconexion.Open();
-                    cmd.ExecuteNonQuery();
-
-                    obj.IdPedido = Convert.ToInt32(cmd.Parameters["id_pedido_generado"].Value);
-                    respuesta = true;
-                }
-                catch (Exception ex)
-                {
-                    respuesta = false;
-                    mensaje = ex.Message;
-                }
+                // Manejo de errores si es necesario
             }
-
-            return respuesta;
+            return tabla;
         }
 
+        // 2. Método para despachar o cambiar el estado del pedido en la base de datos
         public bool DespacharPedido(int idPedido, out string mensaje)
         {
-            bool respuesta = false;
             mensaje = string.Empty;
-
-            using (SqlConnection oconexion = new SqlConnection(cadenaConexion))
+            try
             {
-                try
+                using (SqlConnection sqlCon = new SqlConnection(Conexion.cadena))
                 {
-                    SqlCommand cmd = new SqlCommand("sp_DespacharPedido", oconexion);
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("id_pedido", idPedido);
+                    sqlCon.Open();
+                    //al despachar se cambia el estado a 15 y ya no sale en la tabla
+                    string query = "UPDATE Ventas.Pedido SET id_estado = 15 WHERE id_pedido = @id_pedido";
 
-                    oconexion.Open();
-                    int filasAfectadas = cmd.ExecuteNonQuery();
+                    using (SqlCommand cmd = new SqlCommand(query, sqlCon))
+                    {
+                        cmd.Parameters.AddWithValue("@id_pedido", idPedido);
+                        int filasAfectadas = cmd.ExecuteNonQuery();
 
-                    if (filasAfectadas > 0)
-                    {
-                        respuesta = true;
+                        if (filasAfectadas > 0)
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            mensaje = "No se encontró el pedido a actualizar.";
+                            return false;
+                        }
                     }
-                    else
-                    {
-                        mensaje = $"No se encontró el registro con id_pedido = {idPedido} en la tabla Ventas.Pedido.";
-                    }
-                }
-                catch (Exception ex)
-                {
-                    respuesta = false;
-                    mensaje = ex.Message;
                 }
             }
-
-            return respuesta;
+            catch (Exception ex)
+            {
+                mensaje = ex.Message;
+                return false;
+            }
         }
     }
 }

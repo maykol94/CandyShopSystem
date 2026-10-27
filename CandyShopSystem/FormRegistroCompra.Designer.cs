@@ -43,6 +43,8 @@
             this.btnAgregar = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.txtPrecioVenta = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
             // label1
@@ -92,7 +94,7 @@
             // lblSubtotal
             // 
             this.lblSubtotal.AutoSize = true;
-            this.lblSubtotal.Location = new System.Drawing.Point(177, 274);
+            this.lblSubtotal.Location = new System.Drawing.Point(177, 285);
             this.lblSubtotal.Name = "lblSubtotal";
             this.lblSubtotal.Size = new System.Drawing.Size(23, 16);
             this.lblSubtotal.TabIndex = 5;
@@ -175,11 +177,27 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 274);
+            this.label2.Location = new System.Drawing.Point(12, 285);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(59, 16);
             this.label2.TabIndex = 17;
             this.label2.Text = "Subtotal:";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(12, 342);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(84, 16);
+            this.label3.TabIndex = 18;
+            this.label3.Text = "Precio Venta";
+            // 
+            // txtPrecioVenta
+            // 
+            this.txtPrecioVenta.Location = new System.Drawing.Point(180, 336);
+            this.txtPrecioVenta.Name = "txtPrecioVenta";
+            this.txtPrecioVenta.Size = new System.Drawing.Size(100, 22);
+            this.txtPrecioVenta.TabIndex = 19;
             // 
             // FormRegistroCompra
             // 
@@ -187,6 +205,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(235)))), ((int)(((byte)(243)))));
             this.ClientSize = new System.Drawing.Size(645, 477);
+            this.Controls.Add(this.txtPrecioVenta);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.btnAgregar);
@@ -229,5 +249,7 @@
         private System.Windows.Forms.Button btnAgregar;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox txtPrecioVenta;
     }
 }

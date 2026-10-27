@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
@@ -13,10 +12,6 @@ namespace CandyShopSystem
     public partial class UC_Pedidos : UserControl
     {
         private PedidoBl objPedidoBl = new PedidoBl();
-
-        //cola fifo de pedidos pendientes
-        private Queue<EPedido> colaPedidos = new Queue<EPedido>();
-
         private BindingSource bindingSourcePedidos = new BindingSource();
         private DataTable tablaPedidos = new DataTable();
 
@@ -98,15 +93,52 @@ namespace CandyShopSystem
         {
             try
             {
-                List<EPedido> lista = await Task.Run(() => objPedidoBl.ObtenerPedidosPendientes());
+                DataTable tablaOriginal = await Task.Run(() => objPedidoBl.ObtenerTablaPedidosPendientes());
 
-                colaPedidos.Clear();
-                foreach (var p in lista)
+                // Creamos una copia o filtramos la tabla para excluir los entregados
+                tablaPedidos = tablaOriginal.Clone(); 
+
+                if (!tablaPedidos.Columns.Contains("estado_texto"))
                 {
-                    colaPedidos.Enqueue(p);
+                    tablaPedidos.Columns.Add("estado_texto", typeof(string));
                 }
 
-                RefrescarGridDesdeCola();
+                foreach (DataRow row in tablaOriginal.Rows)
+                {
+                    int idEstado = 13;
+                    if (tablaOriginal.Columns.Contains("id_estado") && row["id_estado"] != DBNull.Value)
+                    {
+                        idEstado = Convert.ToInt32(row["id_estado"]);
+                    }
+                    else if (tablaOriginal.Columns.Contains("IdEstado") && row["IdEstado"] != DBNull.Value)
+                    {
+                        idEstado = Convert.ToInt32(row["IdEstado"]);
+                    }
+
+                    string textoEstado = "Pendiente";
+                    if (idEstado == 14)
+                    {
+                        textoEstado = "En ruta";
+                    }
+                    else if (idEstado == 15)
+                    {
+                        textoEstado = "Entregado";
+                        
+                        continue;
+                    }
+
+                    // Importamos la fila a nuestra tabla filtrada y le asignamos su texto
+                    DataRow nuevaFila = tablaPedidos.NewRow();
+                    nuevaFila.ItemArray = row.ItemArray;
+                    nuevaFila["estado_texto"] = textoEstado;
+                    tablaPedidos.Rows.Add(nuevaFila);
+                }
+
+                bindingSourcePedidos.DataSource = tablaPedidos;
+                dgvPedidos.DataSource = bindingSourcePedidos;
+
+                AjustarEncabezadosGrid();
+                ActualizarEtiquetaContador();
             }
             catch (Exception ex)
             {
@@ -114,33 +146,6 @@ namespace CandyShopSystem
             }
         }
 
-        private void RefrescarGridDesdeCola()
-        {
-            if (dgvPedidos != null)
-            {
-                dgvPedidos.DataSource = null;
-                dgvPedidos.Columns.Clear();
-            }
-
-            tablaPedidos = new DataTable();
-            tablaPedidos.Columns.Add("id_pedido", typeof(int));
-            tablaPedidos.Columns.Add("id_factura", typeof(int));
-            tablaPedidos.Columns.Add("fecha_entrega", typeof(string));
-            tablaPedidos.Columns.Add("direccion_adicional", typeof(string));
-            tablaPedidos.Columns.Add("estado_texto", typeof(string));
-
-            foreach (EPedido p in colaPedidos)
-            {
-                string txtEstado = p.IdEstado == 13 ? "Pendiente" : (p.IdEstado == 14 ? "En ruta" : "Entregado");
-                tablaPedidos.Rows.Add(p.IdPedido, p.IdFactura, p.FechaEntrega, p.DireccionAdicional, txtEstado);
-            }
-
-            bindingSourcePedidos.DataSource = tablaPedidos;
-            dgvPedidos.DataSource = bindingSourcePedidos;
-
-            AjustarEncabezadosGrid();
-            ActualizarEtiquetaContador();
-        }
 
         private void AjustarEncabezadosGrid()
         {
@@ -184,24 +189,24 @@ namespace CandyShopSystem
             {
                 e.Paint(e.CellBounds, DataGridViewPaintParts.All & ~DataGridViewPaintParts.ContentForeground);
 
-                string estadoStr = e.Value != null ? e.Value.ToString() : "";
+                string estadoStr = e.Value != null ? e.Value.ToString().Trim() : "";
 
-                //color de pendientes 
+                // Colores predeterminados (Pendiente)
                 Color bgBadge = Color.FromArgb(254, 243, 199);
                 Color textBadge = Color.FromArgb(180, 130, 20);
 
                 if (estadoStr.Equals("En ruta", StringComparison.OrdinalIgnoreCase))
                 {
-                    bgBadge = Color.FromArgb(224, 231, 255); 
-                    textBadge = Color.FromArgb(67, 56, 202);
+                    bgBadge = Color.FromArgb(224, 231, 255); // Azul claro suave
+                    textBadge = Color.FromArgb(67, 56, 202);  // Azul oscuro/índigo
                 }
                 else if (estadoStr.Equals("Entregado", StringComparison.OrdinalIgnoreCase) || estadoStr.Equals("Listo", StringComparison.OrdinalIgnoreCase))
                 {
-                    bgBadge = Color.FromArgb(220, 252, 231);
-                    textBadge = Color.FromArgb(22, 101, 52);
+                    bgBadge = Color.FromArgb(220, 252, 231); // Verde claro
+                    textBadge = Color.FromArgb(22, 101, 52);   // Verde oscuro
                 }
 
-                Rectangle rectBadge = new Rectangle(e.CellBounds.Left + 8, e.CellBounds.Top + 10, 88, 26);
+                Rectangle rectBadge = new Rectangle(e.CellBounds.Left + 8, e.CellBounds.Top + 10, 95, 26);
                 using (GraphicsPath path = CrearPathRedondeado(rectBadge, 12))
                 using (SolidBrush brushBg = new SolidBrush(bgBadge))
                 {
@@ -241,38 +246,34 @@ namespace CandyShopSystem
             }
         }
 
-        private void btnDespacharPedido_Click(object sender, EventArgs e)
+        private async void btnDespacharPedido_Click(object sender, EventArgs e)
         {
-            if (colaPedidos != null && colaPedidos.Count > 0)
+            if (dgvPedidos.SelectedRows.Count > 0)
             {
-                EPedido pedidoAtendido = colaPedidos.Dequeue();
+                int idPedidoSeleccionado = Convert.ToInt32(dgvPedidos.SelectedRows[0].Cells["id_pedido"].Value);
 
                 string mensajeBD = string.Empty;
-                bool despachadoBD = objPedidoBl.DespacharPedido(pedidoAtendido.IdPedido, out mensajeBD);
+                bool despachadoBD = objPedidoBl.DespacharPedido(idPedidoSeleccionado, out mensajeBD);
 
                 if (despachadoBD)
                 {
                     MessageBox.Show(
-                        $"Pedido Despachado\n\n" +
-                        $"N Pedido: #{pedidoAtendido.IdPedido}\n" +
-                        $"N Factura: #{pedidoAtendido.IdFactura}\n" +
-                        $"Dirección: {pedidoAtendido.DireccionAdicional}\n\n" +
-                        $"Quedan {colaPedidos.Count} pedidos pendientes en cola.",
+                        $"¡Pedido #{idPedidoSeleccionado} despachado con éxito!",
                         "Éxito al Despachar",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Information
                     );
+
+                    await CargarPedidosDesdeBDAsync();
                 }
                 else
                 {
-                    MessageBox.Show("Detalle en BD: " + mensajeBD, "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("No se pudo despachar el pedido: " + mensajeBD, "Aviso", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
-
-                RefrescarGridDesdeCola();
             }
             else
             {
-                MessageBox.Show("No hay pedidos pendientes en la cola de despacho.", "Cola Vacía", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Por favor, seleccione un pedido de la lista para despachar.", "Selección Requerida", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
@@ -281,7 +282,7 @@ namespace CandyShopSystem
             Control lblContador = BuscarControlPorNombre(this, "lblContadorCola") ?? BuscarControlPorNombre(this, "lblPedidosPendientes");
             if (lblContador != null)
             {
-                lblContador.Text = $"Pedidos pendientes en cola: {colaPedidos.Count}";
+                lblContador.Text = $"Pedidos pendientes: {dgvPedidos.Rows.Count}";
             }
         }
 

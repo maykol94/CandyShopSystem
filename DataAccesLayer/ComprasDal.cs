@@ -83,6 +83,7 @@ namespace DataAccesLayer
                     cmd.Parameters.AddWithValue("@id_variacion", detalle.IdVariacion);
                     cmd.Parameters.AddWithValue("@cantidad", detalle.CantidadCompra);
                     cmd.Parameters.AddWithValue("@costo_unitario", detalle.CostoUnitario);
+                    cmd.Parameters.AddWithValue("@precio_venta", detalle.PrecioVenta);
 
                     cmd.ExecuteNonQuery();
                     return "OK";

@@ -1,34 +1,31 @@
-﻿using System.Collections.Generic;
-using DataAccesLayer;
+﻿using System;
+using System.Data;
+using DataAccessLayer;
 using EntityLayer;
 
 namespace BusinessLayer
 {
     public class PedidoBl
     {
-        private PedidoDal objPedidoDal = new PedidoDal();
+        private PedidosDal objPedidosDal = new PedidosDal();
 
-        public List<EPedido> ObtenerPedidosPendientes()
+        // Método para registrar el pedido
+        public string RegistrarPedido(EPedido pedido, out int idPedidoGenerado)
         {
-            return objPedidoDal.ObtenerPedidosPendientes();
+            return objPedidosDal.RegistrarPedido(pedido, out idPedidoGenerado);
         }
 
-        public bool RegistrarPedido(EPedido obj, out string mensaje)
+        // Método para obtener la tabla de pedidos pendientes (Soluciona el primer error)
+        public DataTable ObtenerTablaPedidosPendientes()
         {
-            mensaje = string.Empty;
-
-            if (string.IsNullOrWhiteSpace(obj.DireccionAdicional))
-            {
-                mensaje = "La dirección adicional de entrega es requerida.";
-                return false;
-            }
-
-            return objPedidoDal.RegistrarPedido(obj, out mensaje);
+            // Llama al método correspondiente de tu capa de datos (o la vista de la BD)
+            return objPedidosDal.ObtenerPedidosPendientes();
         }
 
+        // Método para despachar o cambiar el estado del pedido (Soluciona el segundo error)
         public bool DespacharPedido(int idPedido, out string mensaje)
         {
-            return objPedidoDal.DespacharPedido(idPedido, out mensaje);
+            return objPedidosDal.DespacharPedido(idPedido, out mensaje);
         }
     }
 }

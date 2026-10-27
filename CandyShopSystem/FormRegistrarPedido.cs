@@ -58,33 +58,33 @@ namespace CandyShopSystem
                 idEstado = Convert.ToInt32(cmb.SelectedValue);
             }
 
-            //sevalida el numero de factura
+            // Se valida el número de factura
             if (!int.TryParse(idFacturaTexto, out int idFactura))
             {
                 MessageBox.Show("Ingrese un número de factura válido.", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            //se valida la fecha de entrega
-            string fechaEntregaFormateada = string.Empty;
-            if (DateTime.TryParse(fechaTexto, out DateTime fechaValida))
+            // Se valida la fecha de entrega como DateTime (Soporta DateTimePicker o TextBox)
+            DateTime fechaValida = DateTime.Now;
+            if (txtFechaCtrl is DateTimePicker dtp)
             {
-                fechaEntregaFormateada = fechaValida.ToString("yyyy-MM-dd");
+                fechaValida = dtp.Value;
             }
-            else
+            else if (!DateTime.TryParse(fechaTexto, out fechaValida))
             {
-                MessageBox.Show("Ingrese una fecha válida en el formato (yyyy-MM-dd).", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Ingrese una fecha válida.", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            //valida la dirección de entrega y el cliente
+            // Valida la dirección de entrega y el cliente
             if (string.IsNullOrWhiteSpace(direccionSolo) && string.IsNullOrWhiteSpace(cliente))
             {
                 MessageBox.Show("Ingrese el cliente o la dirección de entrega.", "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
-            //conecta las 2 txtbox en un solo string para guardar en la base de datos
+            // Conecta las variables en un solo string para guardar en la base de datos
             string direccionCompleta = string.Empty;
             if (!string.IsNullOrWhiteSpace(cliente) && !string.IsNullOrWhiteSpace(direccionSolo))
             {
@@ -102,23 +102,23 @@ namespace CandyShopSystem
             EPedido nuevoPedido = new EPedido
             {
                 IdFactura = idFactura,
-                FechaEntrega = fechaEntregaFormateada,
+                FechaEntrega = fechaValida, 
                 DireccionAdicional = direccionCompleta,
                 IdEstado = idEstado
             };
 
-            string mensaje = string.Empty;
-            bool exito = objPedidoBl.RegistrarPedido(nuevoPedido, out mensaje);
+            int idPedidoGenerado = 0;
+            string respuesta = objPedidoBl.RegistrarPedido(nuevoPedido, out idPedidoGenerado);
 
-            if (exito)
+            if (respuesta == "OK")
             {
-                MessageBox.Show("¡Pedido registrado correctamente!", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show($"¡Pedido #{idPedidoGenerado} registrado correctamente!", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 this.DialogResult = DialogResult.OK;
                 this.Close();
             }
             else
             {
-                MessageBox.Show("Error al registrar pedido: " + mensaje, "Error BD", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Error al registrar pedido: " + respuesta, "Error BD", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -131,6 +131,8 @@ namespace CandyShopSystem
         private string ExtraerTexto(Control ctrl)
         {
             if (ctrl == null) return string.Empty;
+
+            if (ctrl is DateTimePicker) return string.Empty;
 
             var propTexts = ctrl.GetType().GetProperty("Texts");
             if (propTexts != null)

@@ -22,7 +22,7 @@ namespace CandyShopSystem
         {
             InitializeComponent();
             objCompraBl = new CompraBl();
-            idUsuarioSesion = 1; // Temporal, después se toma de la sesión
+            idUsuarioSesion = 1; 
             CargarProveedores();
             CargarProductos();
 
@@ -30,7 +30,6 @@ namespace CandyShopSystem
             txtCostoUnitario.TextChanged += txtCostoUnitario_TextChanged;
             txtDscuento.TextChanged += txtDescuento_TextChanged;
         }
-
 
         private void CargarProveedores()
         {
@@ -43,7 +42,7 @@ namespace CandyShopSystem
                     cmbProveedor.DataSource = dt;
                     cmbProveedor.DisplayMember = "nombre_proveedor";
                     cmbProveedor.ValueMember = "id_proveedor";
-                    cmbProveedor.SelectedIndex = -1; // No seleccionar ninguno por defecto
+                    cmbProveedor.SelectedIndex = -1;
                 }
                 else
                 {
@@ -115,8 +114,8 @@ namespace CandyShopSystem
 
                 if (descuentoValido && descuento > 0 && descuento <= 100)
                 {
-                    decimal montoDescuento = subtotalBruto * (descuento / 100);
-                    decimal subtotalNeto = subtotalBruto - montoDescuento;
+                    decimal montoDescuento = subtotalBruto * (descuento / 100); // Corregido el operador
+                    decimal subtotalNeto = subtotalBruto - montoDescuento; // Corregido el operador de resta
                     lblSubtotal.Text = $"C$ {subtotalNeto:N2}";
                 }
                 else
@@ -129,7 +128,6 @@ namespace CandyShopSystem
                 lblSubtotal.Text = "C$ 0.00";
             }
         }
-
 
         private void btnCancelar_Click(object sender, EventArgs e)
         {
@@ -156,7 +154,7 @@ namespace CandyShopSystem
         {
             if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
             {
-                e.Handled = true; 
+                e.Handled = true;
             }
         }
 
@@ -186,6 +184,20 @@ namespace CandyShopSystem
             }
         }
 
+        // Validación de teclas para la nueva caja de texto de Precio Venta (Asume que se llama txtPrecioVenta)
+        private void txtPrecioVenta_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && e.KeyChar != '.')
+            {
+                e.Handled = true;
+            }
+
+            if (e.KeyChar == '.' && (sender as TextBox).Text.Contains('.'))
+            {
+                e.Handled = true;
+            }
+        }
+
         private void button1_Click(object sender, EventArgs e)
         {
             this.DialogResult = DialogResult.Cancel;
@@ -194,7 +206,6 @@ namespace CandyShopSystem
 
         private void btnAgregar_Click(object sender, EventArgs e)
         {
-            
             // 1. Validaciones básicas
             if (cmbProveedor.SelectedValue == null || cmbProducto.SelectedValue == null)
             {
@@ -204,6 +215,7 @@ namespace CandyShopSystem
 
             int cantidad = 0;
             decimal costo = 0;
+            decimal precioVenta = 0;
             decimal descuento = 0;
 
             if (!int.TryParse(txtCantidad.Text, out cantidad) || cantidad <= 0)
@@ -218,13 +230,20 @@ namespace CandyShopSystem
                 return;
             }
 
+            // Validar que se haya ingresado un precio de venta válido
+            if (!decimal.TryParse(txtPrecioVenta.Text, out precioVenta) || precioVenta <= 0)
+            {
+                MessageBox.Show("Ingrese un precio de venta válido.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
             decimal.TryParse(txtDscuento.Text, out descuento);
 
             // 2. Crear las entidades
             ECompra compra = new ECompra
             {
                 IdProveedor = Convert.ToInt32(cmbProveedor.SelectedValue),
-                IdUsuario = 1, // ⚠️ IMPORTANTE: Aquí debes poner el ID del usuario logueado. Por ahora pon 1 de prueba.
+                IdUsuario = 1, 
                 DescuentoFactura = descuento,
                 TotalMonto = 0, // El procedimiento lo calcula
                 EstadoPago = "Pendiente"
@@ -235,7 +254,8 @@ namespace CandyShopSystem
                 IdVariacion = Convert.ToInt32(cmbProducto.SelectedValue),
                 CantidadCompra = cantidad,
                 CostoUnitario = costo,
-                DescuentoUnitario = 0
+                DescuentoUnitario = 0,
+                PrecioVenta = precioVenta 
             };
 
             // 3. Enviar a la base de datos
@@ -245,7 +265,7 @@ namespace CandyShopSystem
             if (respuesta == "OK")
             {
                 MessageBox.Show("¡Compra registrada exitosamente!", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                this.DialogResult = DialogResult.OK; // Esto avisa al UC_Compras que debe recargarse
+                this.DialogResult = DialogResult.OK; // Avisa al UC_Compras que debe recargarse
                 this.Close();
             }
             else

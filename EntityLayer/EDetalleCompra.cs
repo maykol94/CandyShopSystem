@@ -13,5 +13,6 @@ namespace EntityLayer
         public decimal CostoUnitario { get; set; }
         public decimal DescuentoUnitario { get; set; }
         public decimal Subtotal { get; set; }
+        public decimal PrecioVenta { get; set; }
     }
 }

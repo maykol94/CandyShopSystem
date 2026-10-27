@@ -26,7 +26,8 @@ namespace BusinessLayer
 
         public string RegistrarCompra(ECompra compra, EDetalleCompra detalle)
         {
-            return objCompraDal.RegistrarCompra(compra, detalle);
+            ComprasDal objComprasDal = new ComprasDal();
+            return objComprasDal.RegistrarCompra(compra, detalle);
         }
 
         public DataTable ObtenerVariaciones()
