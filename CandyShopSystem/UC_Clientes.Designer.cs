@@ -55,7 +55,7 @@
             this.pnlHeaderClientes.Padding = new System.Windows.Forms.Padding(20, 15, 20, 10);
             this.pnlHeaderClientes.Size = new System.Drawing.Size(1280, 70);
             this.pnlHeaderClientes.TabIndex = 0;
-            this.pnlHeaderClientes.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlHeaderClientes_Paint);
+            
             // 
             // label1
             // 
@@ -96,7 +96,7 @@
             this.lblGestiondeclientes.Size = new System.Drawing.Size(126, 32);
             this.lblGestiondeclientes.TabIndex = 0;
             this.lblGestiondeclientes.Text = "Clientes";
-            this.lblGestiondeclientes.Click += new System.EventHandler(this.lblGestiondeclientes_Click);
+          
             // 
             // txtBuscar
             // 
@@ -130,7 +130,7 @@
             this.pnlFooter.Name = "pnlFooter";
             this.pnlFooter.Size = new System.Drawing.Size(1280, 70);
             this.pnlFooter.TabIndex = 1;
-            this.pnlFooter.Paint += new System.Windows.Forms.PaintEventHandler(this.pnlFooter_Paint);
+
             // 
             // btnBuscar
             // 

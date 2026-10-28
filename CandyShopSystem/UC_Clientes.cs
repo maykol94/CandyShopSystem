@@ -88,7 +88,21 @@ namespace CandyShopSystem
                 btnN.Click += btnNuevoCliente_Click;
             }
 
-            
+           
+            if (dgvClientes != null)
+            {
+                dgvClientes.FilterStringChanged -= dgvClientes_FilterStringChanged;
+                dgvClientes.FilterStringChanged += dgvClientes_FilterStringChanged;
+
+                dgvClientes.SortStringChanged -= dgvClientes_SortStringChanged;
+                dgvClientes.SortStringChanged += dgvClientes_SortStringChanged;
+
+                dgvClientes.CellContentClick -= dgvClientes_CellContentClick;
+                dgvClientes.CellContentClick += dgvClientes_CellContentClick;
+
+                dgvClientes.CellPainting -= dgvClientes_CellPainting;
+                dgvClientes.CellPainting += dgvClientes_CellPainting;
+            }
         }
 
         private void UC_Clientes_Resize(object sender, EventArgs e)
@@ -436,21 +450,6 @@ namespace CandyShopSystem
             }
 
             return "";
-        }
-
-        private void pnlFooter_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void lblGestiondeclientes_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void pnlHeaderClientes_Paint(object sender, PaintEventArgs e)
-        {
-
         }
     }
 }

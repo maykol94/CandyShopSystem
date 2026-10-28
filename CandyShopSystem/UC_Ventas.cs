@@ -260,7 +260,7 @@ namespace CandyShopSystem
         {
             if (cboProducto != null && cboProducto.SelectedItem is EInventario prod)
             {
-                if (label11 != null) label11.Text = "";
+                if (lblC != null) lblC.Text = "";
 
                 if (lblDisponibles != null) lblDisponibles.Text = $"Disponibles: {prod.CantidadDisponible}";
                 if (lblPrecioVenta != null) lblPrecioVenta.Text = $"C$ {prod.PrecioVenta:N2}";

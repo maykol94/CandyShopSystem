@@ -46,9 +46,6 @@
             this.pnlProductosMasVendidos = new System.Windows.Forms.Panel();
             this.dgvProductosMasVendidos = new Zuby.ADGV.AdvancedDataGridView();
             this.pnlResumenInventario = new System.Windows.Forms.Panel();
-            this.pnlCardPedidosResumen = new System.Windows.Forms.Panel();
-            this.label6 = new System.Windows.Forms.Label();
-            this.lblPedidosPendientesResumen = new System.Windows.Forms.Label();
             this.pnlCardPorReponer = new System.Windows.Forms.Panel();
             this.label5 = new System.Windows.Forms.Label();
             this.lblPorReponer = new System.Windows.Forms.Label();
@@ -67,7 +64,6 @@
             this.pnlProductosMasVendidos.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvProductosMasVendidos)).BeginInit();
             this.pnlResumenInventario.SuspendLayout();
-            this.pnlCardPedidosResumen.SuspendLayout();
             this.pnlCardPorReponer.SuspendLayout();
             this.pnlCardStockDisponible.SuspendLayout();
             this.SuspendLayout();
@@ -258,41 +254,12 @@
             // 
             // pnlResumenInventario
             // 
-            this.pnlResumenInventario.Controls.Add(this.pnlCardPedidosResumen);
             this.pnlResumenInventario.Controls.Add(this.pnlCardPorReponer);
             this.pnlResumenInventario.Controls.Add(this.pnlCardStockDisponible);
             this.pnlResumenInventario.Location = new System.Drawing.Point(9, 503);
             this.pnlResumenInventario.Name = "pnlResumenInventario";
             this.pnlResumenInventario.Size = new System.Drawing.Size(1113, 139);
             this.pnlResumenInventario.TabIndex = 3;
-            // 
-            // pnlCardPedidosResumen
-            // 
-            this.pnlCardPedidosResumen.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(227)))), ((int)(((byte)(242)))), ((int)(((byte)(253)))));
-            this.pnlCardPedidosResumen.Controls.Add(this.label6);
-            this.pnlCardPedidosResumen.Controls.Add(this.lblPedidosPendientesResumen);
-            this.pnlCardPedidosResumen.Location = new System.Drawing.Point(808, 21);
-            this.pnlCardPedidosResumen.Name = "pnlCardPedidosResumen";
-            this.pnlCardPedidosResumen.Size = new System.Drawing.Size(200, 100);
-            this.pnlCardPedidosResumen.TabIndex = 2;
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(10, 13);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(122, 16);
-            this.label6.TabIndex = 1;
-            this.label6.Text = "Pedidos Pendietes";
-            // 
-            // lblPedidosPendientesResumen
-            // 
-            this.lblPedidosPendientesResumen.AutoSize = true;
-            this.lblPedidosPendientesResumen.Location = new System.Drawing.Point(14, 54);
-            this.lblPedidosPendientesResumen.Name = "lblPedidosPendientesResumen";
-            this.lblPedidosPendientesResumen.Size = new System.Drawing.Size(13, 16);
-            this.lblPedidosPendientesResumen.TabIndex = 0;
-            this.lblPedidosPendientesResumen.Text = "ll";
             // 
             // pnlCardPorReponer
             // 
@@ -400,8 +367,6 @@
             this.pnlProductosMasVendidos.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dgvProductosMasVendidos)).EndInit();
             this.pnlResumenInventario.ResumeLayout(false);
-            this.pnlCardPedidosResumen.ResumeLayout(false);
-            this.pnlCardPedidosResumen.PerformLayout();
             this.pnlCardPorReponer.ResumeLayout(false);
             this.pnlCardPorReponer.PerformLayout();
             this.pnlCardStockDisponible.ResumeLayout(false);
@@ -431,9 +396,6 @@
         private System.Windows.Forms.Panel pnlProductosMasVendidos;
         private Zuby.ADGV.AdvancedDataGridView dgvProductosMasVendidos;
         private System.Windows.Forms.Panel pnlResumenInventario;
-        private System.Windows.Forms.Panel pnlCardPedidosResumen;
-        private System.Windows.Forms.Label label6;
-        private System.Windows.Forms.Label lblPedidosPendientesResumen;
         private System.Windows.Forms.Panel pnlCardPorReponer;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label lblPorReponer;

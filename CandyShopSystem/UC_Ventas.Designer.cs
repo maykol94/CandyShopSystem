@@ -32,6 +32,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label = new System.Windows.Forms.Label();
             this.panelCliente = new ReaLTaiizor.Controls.Panel();
+            this.cboCliente = new System.Windows.Forms.ComboBox();
             this.lblTipoCliente = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.panelAtendidoPor = new ReaLTaiizor.Controls.Panel();
@@ -40,17 +41,20 @@
             this.lblNombreTrabajador = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.panelFormaPago = new ReaLTaiizor.Controls.Panel();
+            this.cboFormaPago = new System.Windows.Forms.ComboBox();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.panelDescuento = new ReaLTaiizor.Controls.Panel();
+            this.txtDescuentoGlobal = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.panelProductos = new ReaLTaiizor.Controls.Panel();
+            this.lblPrecioVenta = new System.Windows.Forms.Label();
+            this.cboProducto = new System.Windows.Forms.ComboBox();
             this.nudCantidad = new System.Windows.Forms.NumericUpDown();
             this.btnAnadir = new RJCodeAdvance.RJControls.RJButton();
             this.label12 = new System.Windows.Forms.Label();
-            this.label11 = new System.Windows.Forms.Label();
             this.lblDisponibles = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
             this.label10 = new System.Windows.Forms.Label();
@@ -63,13 +67,9 @@
             this.lblMontoTotal = new System.Windows.Forms.Label();
             this.lblDescuento = new System.Windows.Forms.Label();
             this.lblSubtotal = new System.Windows.Forms.Label();
-            this.cboCliente = new System.Windows.Forms.ComboBox();
-            this.cboFormaPago = new System.Windows.Forms.ComboBox();
-            this.cboProducto = new System.Windows.Forms.ComboBox();
             this.dgvCarrito = new Zuby.ADGV.AdvancedDataGridView();
             this.panelcarrito = new ReaLTaiizor.Controls.Panel();
-            this.lblPrecioVenta = new System.Windows.Forms.Label();
-            this.txtDescuentoGlobal = new System.Windows.Forms.TextBox();
+            this.lblC = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.panelCliente.SuspendLayout();
             this.panelAtendidoPor.SuspendLayout();
@@ -132,6 +132,14 @@
             this.panelCliente.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
             this.panelCliente.TabIndex = 2;
             this.panelCliente.Text = "panel3";
+            // 
+            // cboCliente
+            // 
+            this.cboCliente.FormattingEnabled = true;
+            this.cboCliente.Location = new System.Drawing.Point(12, 49);
+            this.cboCliente.Name = "cboCliente";
+            this.cboCliente.Size = new System.Drawing.Size(356, 24);
+            this.cboCliente.TabIndex = 3;
             // 
             // lblTipoCliente
             // 
@@ -217,6 +225,14 @@
             this.panelFormaPago.TabIndex = 3;
             this.panelFormaPago.Text = "panel4";
             // 
+            // cboFormaPago
+            // 
+            this.cboFormaPago.FormattingEnabled = true;
+            this.cboFormaPago.Location = new System.Drawing.Point(13, 59);
+            this.cboFormaPago.Name = "cboFormaPago";
+            this.cboFormaPago.Size = new System.Drawing.Size(355, 24);
+            this.cboFormaPago.TabIndex = 3;
+            // 
             // label4
             // 
             this.label4.AutoSize = true;
@@ -252,6 +268,13 @@
             this.panelDescuento.TabIndex = 4;
             this.panelDescuento.Text = "panel5";
             // 
+            // txtDescuentoGlobal
+            // 
+            this.txtDescuentoGlobal.Location = new System.Drawing.Point(15, 59);
+            this.txtDescuentoGlobal.Name = "txtDescuentoGlobal";
+            this.txtDescuentoGlobal.Size = new System.Drawing.Size(116, 22);
+            this.txtDescuentoGlobal.TabIndex = 5;
+            // 
             // label8
             // 
             this.label8.AutoSize = true;
@@ -284,12 +307,12 @@
             // panelProductos
             // 
             this.panelProductos.BackColor = System.Drawing.Color.White;
+            this.panelProductos.Controls.Add(this.lblC);
             this.panelProductos.Controls.Add(this.lblPrecioVenta);
             this.panelProductos.Controls.Add(this.cboProducto);
             this.panelProductos.Controls.Add(this.nudCantidad);
             this.panelProductos.Controls.Add(this.btnAnadir);
             this.panelProductos.Controls.Add(this.label12);
-            this.panelProductos.Controls.Add(this.label11);
             this.panelProductos.Controls.Add(this.lblDisponibles);
             this.panelProductos.Controls.Add(this.label9);
             this.panelProductos.Controls.Add(this.label10);
@@ -301,6 +324,23 @@
             this.panelProductos.SmoothingType = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
             this.panelProductos.TabIndex = 4;
             this.panelProductos.Text = "panel6";
+            // 
+            // lblPrecioVenta
+            // 
+            this.lblPrecioVenta.AutoSize = true;
+            this.lblPrecioVenta.Location = new System.Drawing.Point(862, 53);
+            this.lblPrecioVenta.Name = "lblPrecioVenta";
+            this.lblPrecioVenta.Size = new System.Drawing.Size(50, 16);
+            this.lblPrecioVenta.TabIndex = 10;
+            this.lblPrecioVenta.Text = "C$ 0.00";
+            // 
+            // cboProducto
+            // 
+            this.cboProducto.FormattingEnabled = true;
+            this.cboProducto.Location = new System.Drawing.Point(13, 57);
+            this.cboProducto.Name = "cboProducto";
+            this.cboProducto.Size = new System.Drawing.Size(355, 24);
+            this.cboProducto.TabIndex = 9;
             // 
             // nudCantidad
             // 
@@ -337,16 +377,6 @@
             this.label12.Size = new System.Drawing.Size(117, 20);
             this.label12.TabIndex = 6;
             this.label12.Text = "Precio Venta";
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label11.Location = new System.Drawing.Point(621, 23);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(83, 20);
-            this.label11.TabIndex = 5;
-            this.label11.Text = "Cantidad";
             // 
             // lblDisponibles
             // 
@@ -492,30 +522,6 @@
             this.lblSubtotal.Size = new System.Drawing.Size(0, 20);
             this.lblSubtotal.TabIndex = 6;
             // 
-            // cboCliente
-            // 
-            this.cboCliente.FormattingEnabled = true;
-            this.cboCliente.Location = new System.Drawing.Point(12, 49);
-            this.cboCliente.Name = "cboCliente";
-            this.cboCliente.Size = new System.Drawing.Size(356, 24);
-            this.cboCliente.TabIndex = 3;
-            // 
-            // cboFormaPago
-            // 
-            this.cboFormaPago.FormattingEnabled = true;
-            this.cboFormaPago.Location = new System.Drawing.Point(13, 59);
-            this.cboFormaPago.Name = "cboFormaPago";
-            this.cboFormaPago.Size = new System.Drawing.Size(355, 24);
-            this.cboFormaPago.TabIndex = 3;
-            // 
-            // cboProducto
-            // 
-            this.cboProducto.FormattingEnabled = true;
-            this.cboProducto.Location = new System.Drawing.Point(13, 57);
-            this.cboProducto.Name = "cboProducto";
-            this.cboProducto.Size = new System.Drawing.Size(355, 24);
-            this.cboProducto.TabIndex = 9;
-            // 
             // dgvCarrito
             // 
             this.dgvCarrito.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
@@ -545,21 +551,14 @@
             this.panelcarrito.TabIndex = 4;
             this.panelcarrito.Text = "panel7";
             // 
-            // lblPrecioVenta
+            // lblC
             // 
-            this.lblPrecioVenta.AutoSize = true;
-            this.lblPrecioVenta.Location = new System.Drawing.Point(862, 53);
-            this.lblPrecioVenta.Name = "lblPrecioVenta";
-            this.lblPrecioVenta.Size = new System.Drawing.Size(50, 16);
-            this.lblPrecioVenta.TabIndex = 10;
-            this.lblPrecioVenta.Text = "C$ 0.00";
-            // 
-            // txtDescuentoGlobal
-            // 
-            this.txtDescuentoGlobal.Location = new System.Drawing.Point(15, 59);
-            this.txtDescuentoGlobal.Name = "txtDescuentoGlobal";
-            this.txtDescuentoGlobal.Size = new System.Drawing.Size(116, 22);
-            this.txtDescuentoGlobal.TabIndex = 5;
+            this.lblC.AutoSize = true;
+            this.lblC.Location = new System.Drawing.Point(624, 23);
+            this.lblC.Name = "lblC";
+            this.lblC.Size = new System.Drawing.Size(61, 16);
+            this.lblC.TabIndex = 11;
+            this.lblC.Text = "Cantidad";
             // 
             // UC_Ventas
             // 
@@ -619,7 +618,6 @@
         private System.Windows.Forms.Label label7;
         private ReaLTaiizor.Controls.Panel panelProductos;
         private System.Windows.Forms.Label label12;
-        private System.Windows.Forms.Label label11;
         private System.Windows.Forms.Label lblDisponibles;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label10;
@@ -641,5 +639,6 @@
         private ReaLTaiizor.Controls.Panel panelcarrito;
         private System.Windows.Forms.Label lblPrecioVenta;
         private System.Windows.Forms.TextBox txtDescuentoGlobal;
+        private System.Windows.Forms.Label lblC;
     }
 }
