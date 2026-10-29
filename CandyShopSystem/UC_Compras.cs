@@ -99,9 +99,9 @@ namespace PresentationLayer
 
                 if (nombreColumna == "BtnCambiarEstado")
                 {
-                    // Obtener el ID de la compra y el estado actual usando dbvCompras
-                    int idCompra = Convert.ToInt32(dbvCompras.Rows[e.RowIndex].Cells["ID Compra"].Value);
-                    string estadoActual = dbvCompras.Rows[e.RowIndex].Cells["Estado Pago"].Value.ToString();
+                    // CORREGIDO: Usamos los nombres reales de las columnas del DataTable (id_compra y estado_pago)
+                    int idCompra = Convert.ToInt32(dbvCompras.Rows[e.RowIndex].Cells["id_compra"].Value);
+                    string estadoActual = dbvCompras.Rows[e.RowIndex].Cells["estado_pago"].Value.ToString();
 
                     // Alternar estado de forma inteligente entre pendiente y Pagado al contado
                     string nuevoEstado = (estadoActual.ToLower() == "pendiente") ? "Pagado al contado" : "pendiente";

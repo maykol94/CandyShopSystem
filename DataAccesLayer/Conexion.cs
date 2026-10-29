@@ -15,4 +15,3 @@ namespace DataAccessLayer
 }
 
 
-//esta bien solo estaba probando con el de cliente, para ver q funcionen los cambio

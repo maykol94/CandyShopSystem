@@ -38,7 +38,6 @@ namespace CandyShopSystem
                 dtEstado.Rows.Add(11, "Activo");
                 dtEstado.Rows.Add(12, "Inactivo");
 
-                // Configurar miembros antes de asignar el DataSource
                 cmb.DisplayMember = "descripcion";
                 cmb.ValueMember = "id_estado";
                 cmb.DataSource = dtEstado;
@@ -169,7 +168,6 @@ namespace CandyShopSystem
 
         private ComboBox ObtenerComboBoxEstado()
         {
-           
             string[] nombresPosibles = { "cboEstado", "cmbEstado", "cbEstado", "cboEstadoProveedor", "cmbEstadoProveedor" };
             foreach (string nombre in nombresPosibles)
             {
@@ -194,13 +192,40 @@ namespace CandyShopSystem
         private void EstablecerTexto(Control ctrl, string valor)
         {
             if (ctrl == null) return;
-            ctrl.Text = valor;
+
+            var propTexts = ctrl.GetType().GetProperty("Texts");
+            if (propTexts != null)
+            {
+                propTexts.SetValue(ctrl, valor ?? string.Empty);
+                return;
+            }
+
+            var propText = ctrl.GetType().GetProperty("Text");
+            if (propText != null)
+            {
+                propText.SetValue(ctrl, valor ?? string.Empty);
+            }
         }
 
         private string ExtraerTexto(Control ctrl)
         {
             if (ctrl == null) return string.Empty;
-            return ctrl.Text.Trim();
+
+            var propTexts = ctrl.GetType().GetProperty("Texts");
+            if (propTexts != null)
+            {
+                string valTexts = propTexts.GetValue(ctrl, null) as string;
+                if (!string.IsNullOrWhiteSpace(valTexts)) return valTexts.Trim();
+            }
+
+            var propText = ctrl.GetType().GetProperty("Text");
+            if (propText != null)
+            {
+                string valText = propText.GetValue(ctrl, null) as string;
+                if (!string.IsNullOrWhiteSpace(valText)) return valText.Trim();
+            }
+
+            return string.Empty;
         }
 
         private TextBox BuscarTextBoxInterno(Control contenedor)

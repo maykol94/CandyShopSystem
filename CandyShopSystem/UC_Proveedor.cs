@@ -63,9 +63,20 @@ namespace PresentationLayer
                     var evtRJ = txtB.GetType().GetEvent("_TextChanged");
                     if (evtRJ != null)
                     {
-                        var handler = Delegate.CreateDelegate(evtRJ.EventHandlerType, this, GetType().GetMethod("FiltrarTabla", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance));
-                        evtRJ.RemoveEventHandler(txtB, handler);
-                        evtRJ.AddEventHandler(txtB, handler);
+                        try
+                        {
+                            var methodInfo = GetType().GetMethod("FiltrarTabla", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                            if (methodInfo != null)
+                            {
+                                var handler = Delegate.CreateDelegate(evtRJ.EventHandlerType, this, methodInfo);
+                                evtRJ.RemoveEventHandler(txtB, handler);
+                                evtRJ.AddEventHandler(txtB, handler);
+                            }
+                        }
+                        catch
+                        {
+                            // Si ocurre algún conflicto con el delegado personalizado se omite de forma segura 
+                        }
                     }
                 }
             }
@@ -147,7 +158,6 @@ namespace PresentationLayer
         {
             try
             {
-               
                 List<EProveedor> lista = await objProveedorBl.ObtenerProveedoresAsync();
                 tablaProveedores = ConvertirListaADataTable(lista);
 
@@ -337,7 +347,6 @@ namespace PresentationLayer
 
                 string colName = dgv.Columns[e.ColumnIndex].Name;
 
-                // Editar Proveedor
                 if (colName == "colEditar")
                 {
                     using (FormEditarProveedor modal = new FormEditarProveedor(proveedorSeleccionado))
@@ -348,7 +357,6 @@ namespace PresentationLayer
                         }
                     }
                 }
-                // Eliminar Proveedor
                 else if (colName == "colEliminar")
                 {
                     var result = MessageBox.Show(
@@ -360,7 +368,6 @@ namespace PresentationLayer
 
                     if (result == DialogResult.Yes)
                     {
-                      
                         var (respuesta, mensaje) = await objProveedorBl.EliminarProveedorAsync(proveedorSeleccionado.IdProveedor);
 
                         if (respuesta)

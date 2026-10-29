@@ -1,4 +1,6 @@
-﻿using System;
+﻿using EntityLayer;
+using Microsoft.Data.SqlClient;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Drawing;
@@ -7,7 +9,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using BusinessLayer;
-using EntityLayer;
 using FontAwesome.Sharp;
 
 namespace PresentationLayer
@@ -353,7 +354,16 @@ namespace PresentationLayer
                     if (rowView != null)
                     {
                         int idStock = Convert.ToInt32(rowView["IdStock"]);
+                        int stockActual = Convert.ToInt32(rowView["CantidadDisponible"]);
                         int cambio = colName == "colSumar" ? 1 : -1;
+
+                        // Validación para bloquear si está intentando sumar a un lote agotado
+                        if (cambio > 0 && stockActual == 0)
+                        {
+                            MessageBox.Show("Este lote está agotado. Debe reabastecer este producto exclusivamente desde el módulo de Compras para crear un lote nuevo.",
+                                "Atención", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                            return;
+                        }
 
                         var (exito, mensaje) = await objInventarioBl.AjustarStockAsync(idStock, cambio);
 

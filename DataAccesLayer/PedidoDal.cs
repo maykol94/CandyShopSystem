@@ -23,7 +23,6 @@ namespace DataAccessLayer
                     cmd.Parameters.AddWithValue("@direccion_adicional", pedido.DireccionAdicional);
                     cmd.Parameters.AddWithValue("@id_estado", pedido.IdEstado);
 
-                    // Parámetro de salida que devuelve el ID del pedido creado
                     SqlParameter outParam = new SqlParameter("@id_pedido_generado", SqlDbType.Int);
                     outParam.Direction = ParameterDirection.Output;
                     cmd.Parameters.Add(outParam);
@@ -40,7 +39,7 @@ namespace DataAccessLayer
             }
         }
 
-        // 1. Método para obtener los pedidos (usando tu vista o consulta a la base de datos)
+        //metodo para obtener los pedidos pendientes usando su Procedimiento Almacenado
         public DataTable ObtenerPedidosPendientes()
         {
             DataTable tabla = new DataTable();
@@ -49,11 +48,9 @@ namespace DataAccessLayer
                 using (SqlConnection sqlCon = new SqlConnection(Conexion.cadena))
                 {
                     sqlCon.Open();
-                    //para obtener los pedidos pendientes se usa la vista de pedidos pendientes (Ventas.vw_PedidosPendientes)
-                    string query = "SELECT id_pedido, id_factura, fecha_entrega, direccion_adicional, id_estado AS IdEstado, 'Pendiente' AS estado_texto FROM Ventas.Pedido";
-
-                    using (SqlCommand cmd = new SqlCommand(query, sqlCon))
+                    using (SqlCommand cmd = new SqlCommand("sp_ObtenerPedidosPendientes", sqlCon))
                     {
+                        cmd.CommandType = CommandType.StoredProcedure;
                         using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
                         {
                             adapter.Fill(tabla);
@@ -61,14 +58,13 @@ namespace DataAccessLayer
                     }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // Manejo de errores si es necesario
+                // Opcional: se puede manejar o loguear el error si lo requiere
             }
             return tabla;
         }
 
-        // 2. Método para despachar o cambiar el estado del pedido en la base de datos
         public bool DespacharPedido(int idPedido, out string mensaje)
         {
             mensaje = string.Empty;
@@ -77,15 +73,16 @@ namespace DataAccessLayer
                 using (SqlConnection sqlCon = new SqlConnection(Conexion.cadena))
                 {
                     sqlCon.Open();
-                    //al despachar se cambia el estado a 15 y ya no sale en la tabla
-                    string query = "UPDATE Ventas.Pedido SET id_estado = 15 WHERE id_pedido = @id_pedido";
-
-                    using (SqlCommand cmd = new SqlCommand(query, sqlCon))
+                    using (SqlCommand cmd = new SqlCommand("sp_DespacharPedido", sqlCon))
                     {
+                        cmd.CommandType = CommandType.StoredProcedure;
                         cmd.Parameters.AddWithValue("@id_pedido", idPedido);
+
+                        cmd.Parameters.AddWithValue("@nuevo_estado", 15);
+
                         int filasAfectadas = cmd.ExecuteNonQuery();
 
-                        if (filasAfectadas > 0)
+                        if (filasAfectadas > 0 || filasAfectadas == -1) // -1 ocurre a veces con ExecuteNonQuery en algunos SPs con SET NOCOUNT ON
                         {
                             return true;
                         }

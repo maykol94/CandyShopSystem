@@ -17,9 +17,9 @@ namespace DataAccessLayer
                 try
                 {
                     oconexion.Open();
-                    string query = "SELECT * FROM dbo.vw_ventas_recientes";
-                    using (SqlCommand cmd = new SqlCommand(query, oconexion))
+                    using (SqlCommand cmd = new SqlCommand("sp_reporte_ventas_recientes", oconexion))
                     {
+                        cmd.CommandType = CommandType.StoredProcedure;
                         using (SqlDataAdapter da = new SqlDataAdapter(cmd))
                         {
                             da.Fill(dt);
@@ -42,9 +42,9 @@ namespace DataAccessLayer
                 try
                 {
                     oconexion.Open();
-                    string query = "SELECT * FROM dbo.vw_ventas_dia";
-                    using (SqlCommand cmd = new SqlCommand(query, oconexion))
+                    using (SqlCommand cmd = new SqlCommand("sp_reporte_ventas_dia", oconexion))
                     {
+                        cmd.CommandType = CommandType.StoredProcedure;
                         using (SqlDataAdapter da = new SqlDataAdapter(cmd))
                         {
                             da.Fill(dt);

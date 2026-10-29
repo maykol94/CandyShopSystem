@@ -15,34 +15,9 @@ namespace DataAccessLayer
 
             using (SqlConnection oConexion = Conexion.ObtenerConexion())
             {
-                // Se consulta desde Variacion con LEFT JOIN a Stock.
-                // Se elimina el WHERE > 0 y se agrupa para calcular totales precisos y mostrar "Agotado".
-                string query = @"
-                    SELECT 
-                        ISNULL(MIN(s.id_stock), 0) AS id_stock,
-                        v.id_variacion,
-                        p.nombre_producto,
-                        ISNULL(c.nombre_categoria, 'Dulces') AS categoria,
-                        ISNULL(MAX(s.precio_compra), 0) AS precio_compra,
-                        ISNULL(MAX(s.precio_venta), 0) AS precio_venta,
-                        ISNULL(SUM(s.cantidad_disponible), 0) AS cantidad_disponible,
-                        ISNULL(MAX(s.fecha_ingreso), GETDATE()) AS fecha_ingreso,
-                        ISNULL(MIN(s.dias_alerta), 10) AS dias_alerta,
-                        CASE 
-                            WHEN ISNULL(SUM(s.cantidad_disponible), 0) <= 0 THEN 'Agotado'
-                            WHEN ISNULL(SUM(s.cantidad_disponible), 0) <= ISNULL(MIN(s.dias_alerta), 10) THEN 'Reponer'
-                            ELSE 'Disponible'
-                        END AS estado
-                    FROM Producto.Variacion v
-                    INNER JOIN Producto.Producto p ON v.id_producto = p.id_producto
-                    LEFT JOIN Catalogo.Catgoria c ON p.id_categoria = c.id_categoria
-                    LEFT JOIN Inventario.Stock s ON v.id_variacion = s.id_variacion
-                    GROUP BY v.id_variacion, p.nombre_producto, c.nombre_categoria
-                    ORDER BY p.nombre_producto ASC";
-
-                using (SqlCommand cmd = new SqlCommand(query, oConexion))
+                using (SqlCommand cmd = new SqlCommand("dbo.sp_obtenerinventario", oConexion))
                 {
-                    cmd.CommandType = CommandType.Text;
+                    cmd.CommandType = CommandType.StoredProcedure;
                     await oConexion.OpenAsync();
 
                     using (SqlDataReader dr = await cmd.ExecuteReaderAsync())

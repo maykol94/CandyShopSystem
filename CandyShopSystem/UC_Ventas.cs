@@ -274,7 +274,7 @@ namespace CandyShopSystem
             }
         }
 
-        #region --- 4. CARRITO DE COMPRAS Y DESCUENTOS ---
+        
 
         private void InicializarEstructuraCarrito()
         {
@@ -450,6 +450,7 @@ namespace CandyShopSystem
                 {
                     carrito.Add(new EDetalleFactura
                     {
+                        IdStock = Convert.ToInt32(row["IdStock"]), // 👈 ¡ESTE ES EL CAMBIO CLAVE QUE FALTABA!
                         IdVariacion = Convert.ToInt32(row["IdVariacion"]),
                         Cantidad = Convert.ToInt32(row["Cantidad"]),
                         PrecioVenta = Convert.ToDecimal(row["Precio"]),
@@ -487,6 +488,6 @@ namespace CandyShopSystem
             CalcularTotalesVenta();
         }
 
-        #endregion
+        
     }
 }

@@ -1,37 +1,24 @@
-﻿using DataAccessLayer;
-using EntityLayer;
+﻿using EntityLayer;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Data;
 
-namespace DataAccesLayer
+namespace DataAccessLayer
 {
     public class ComprasDal
     {
-        private string cadena = Conexion.cadena;
-
         public DataTable ObtenerCompras()
         {
             DataTable dtResultado = new DataTable("Compra");
 
             try
             {
-                using (SqlConnection sqlCon = new SqlConnection(Conexion.cadena))
+                using (SqlConnection sqlCon = Conexion.ObtenerConexion())
                 {
                     sqlCon.Open();
+                    SqlCommand comando = new SqlCommand("Compras.sp_obtenercompras", sqlCon);
+                    comando.CommandType = CommandType.StoredProcedure;
 
-                    // Usamos CAST(... AS DATE) para omitir la hora y mostrar solo la fecha limpia
-                    string query = @"SELECT 
-                                        c.id_compra AS [ID Compra], 
-                                        pr.nombre_proveedor AS [Proveedor], 
-                                        CAST(c.fecha_compra AS DATE) AS [Fecha], 
-                                        c.total_monto AS [Total (C$)],
-                                        c.estado_pago AS [Estado Pago]
-                                     FROM compras.compra c
-                                     INNER JOIN proveedor.proveedor pr ON c.id_proveedor = pr.id_proveedor
-                                     ORDER BY c.fecha_compra DESC";
-
-                    SqlCommand comando = new SqlCommand(query, sqlCon);
                     SqlDataAdapter da = new SqlDataAdapter(comando);
                     da.Fill(dtResultado);
                 }
@@ -50,18 +37,23 @@ namespace DataAccesLayer
 
             try
             {
-                using (SqlConnection sqlCon = new SqlConnection(Conexion.cadena))
+                using (SqlConnection sqlCon = Conexion.ObtenerConexion())
                 {
-                    sqlCon.Open();
-                    string query = "SELECT id_proveedor, nombre_proveedor FROM proveedor.proveedor";
-                    SqlCommand comando = new SqlCommand(query, sqlCon);
-                    SqlDataAdapter da = new SqlDataAdapter(comando);
-                    da.Fill(dtResultado);
+                    using (SqlCommand comando = new SqlCommand("sp_obtenerproveedores", sqlCon))
+                    {
+                        comando.CommandType = CommandType.StoredProcedure;
+                        sqlCon.Open();
+
+                        using (SqlDataAdapter da = new SqlDataAdapter(comando))
+                        {
+                            da.Fill(dtResultado);
+                        }
+                    }
                 }
             }
             catch (Exception ex)
             {
-                dtResultado = null;
+                // En caso de error, puedes manejarlo limpiamente
             }
 
             return dtResultado;
@@ -71,10 +63,10 @@ namespace DataAccesLayer
         {
             try
             {
-                using (SqlConnection sqlCon = new SqlConnection(Conexion.cadena))
+                using (SqlConnection sqlCon = Conexion.ObtenerConexion())
                 {
                     sqlCon.Open();
-                    SqlCommand cmd = new SqlCommand("compras.sp_registrar_compra", sqlCon);
+                    SqlCommand cmd = new SqlCommand("Compras.sp_registrar_compra", sqlCon);
                     cmd.CommandType = CommandType.StoredProcedure;
 
                     cmd.Parameters.AddWithValue("@id_proveedor", compra.IdProveedor);
@@ -84,6 +76,12 @@ namespace DataAccesLayer
                     cmd.Parameters.AddWithValue("@cantidad", detalle.CantidadCompra);
                     cmd.Parameters.AddWithValue("@costo_unitario", detalle.CostoUnitario);
                     cmd.Parameters.AddWithValue("@precio_venta", detalle.PrecioVenta);
+
+                    SqlParameter outputId = new SqlParameter("@id_compra_generada", SqlDbType.Int)
+                    {
+                        Direction = ParameterDirection.Output
+                    };
+                    cmd.Parameters.Add(outputId);
 
                     cmd.ExecuteNonQuery();
                     return "OK";
@@ -101,18 +99,13 @@ namespace DataAccesLayer
 
             try
             {
-                using (SqlConnection sqlCon = new SqlConnection(Conexion.cadena))
+                using (SqlConnection sqlCon = Conexion.ObtenerConexion())
                 {
                     sqlCon.Open();
-                    string query = @"SELECT v.id_variacion, 
-                                    p.nombre_producto + ' - ' + v.descripcion AS nombre_completo,
-                                    s.precio_compra
-                             FROM producto.variacion v
-                             INNER JOIN producto.producto p ON v.id_producto = p.id_producto
-                             LEFT JOIN inventario.stock s ON v.id_variacion = s.id_variacion
-                             ORDER BY p.nombre_producto";
+                    SqlCommand comando = new SqlCommand("Producto.sp_obtenervariaciones", sqlCon);
+                    comando.CommandType = CommandType.StoredProcedure;
+                    comando.Parameters.AddWithValue("@solo_activas", 1);
 
-                    SqlCommand comando = new SqlCommand(query, sqlCon);
                     SqlDataAdapter da = new SqlDataAdapter(comando);
                     da.Fill(dtResultado);
                 }
@@ -129,13 +122,14 @@ namespace DataAccesLayer
         {
             try
             {
-                using (SqlConnection sqlCon = new SqlConnection(Conexion.cadena))
+                using (SqlConnection sqlCon = Conexion.ObtenerConexion())
                 {
                     sqlCon.Open();
-                    string query = "UPDATE compras.compra SET estado_pago = @estado WHERE id_compra = @id";
-                    SqlCommand comando = new SqlCommand(query, sqlCon);
-                    comando.Parameters.AddWithValue("@estado", nuevoEstado);
-                    comando.Parameters.AddWithValue("@id", idCompra);
+                    SqlCommand comando = new SqlCommand("Compras.sp_cambiar_estado_pago", sqlCon);
+                    comando.CommandType = CommandType.StoredProcedure;
+
+                    comando.Parameters.AddWithValue("@id_compra", idCompra);
+                    comando.Parameters.AddWithValue("@estado_pago", nuevoEstado);
 
                     comando.ExecuteNonQuery();
                     return "OK";
